@@ -19,7 +19,7 @@
   services.openssh.enable = true;
   services.openssh.passwordAuthentication = true;
   services.openssh.permitRootLogin = "no";
-  services.k3s.enable = "true";
+  services.k3s.enable = true;
 
   networking.hostName = "nix";
   networking.firewall.enable = false;
