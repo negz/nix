@@ -1,0 +1,17 @@
+images:
+- location: file://nixos.iso
+  arch: "aarch64"
+
+cpus: 4
+memory: 4GiB
+disk: 20GiB
+
+mounts:
+- location: "~"
+- location: "/tmp/lima"
+  writable: true
+
+# We'll install this ourselves.
+containerd:
+  system: false
+  user: false
