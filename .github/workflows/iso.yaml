@@ -13,9 +13,10 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
     - name: Install nixos-generators
-      run: nix-env -i nixpkgs.nixos-generators -f '<nixpkgs>'
+      run: nix-env -i nixos-generators -f '<nixpkgs>'
     - name: Generate ISO
       run: nixos-generate -f iso -c configuration.nix
+    # TODO(negz): I believe nixos-generate will echo the ISO path.
     # - name: Publish ISO to GitHub
     #   uses: actions/upload-artifact@v3
     #   with:
