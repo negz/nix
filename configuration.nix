@@ -1,6 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, ... }:{
 
-{
+  imports = [
+    <nixpkgs/nixos/modules/profiles/minimal.nix>
+  ];
+
   nix = {
     package = pkgs.nixUnstable;
   };
@@ -11,7 +14,6 @@
 
   users.mutableUsers = true;
 
-  documentation.enable = false;
   documentation.doc.enable = false;
   documentation.info.enable = false;
   documentation.man.enable = false;
