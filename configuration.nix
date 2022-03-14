@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:{
+{ config, lib, pkgs, ... }:{
 
   imports = [
     <nixpkgs/nixos/modules/profiles/minimal.nix>
@@ -29,12 +29,9 @@
 
   system.stateVersion = "21.11";
 
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
-
   virtualisation.containerd.enable = true;
 
-  environment.defaultPackages = [ ];
+  environment.defaultPackages = lib.mkForce [];
   environment.systemPackages = [ pkgs.k3s pkgs.vim ];
   environment.variables = { EDITOR = "vim"; };
 
