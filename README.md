@@ -1,2 +1,3 @@
-# limnix
-@Nix on @lima-vm maybe
+# nix
+
+@negz's @NixOS configuration.
