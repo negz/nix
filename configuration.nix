@@ -28,8 +28,14 @@
   networking = {
     hostName = "mael";
     search = [ "v.rk0n.org" ];
-    firewall.enable = false;
     useDHCP = true;
+
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ "tailscale0" ];
+      allowedTCPPorts = [ 22 ];
+      allowedUDPPorts = [ config.services.tailscale.port ];
+    };
   };
 
   time.timeZone = "America/Los_Angeles";
@@ -53,6 +59,7 @@
     openssh.enable = true;
     openssh.permitRootLogin = "no";
     openssh.passwordAuthentication = false;
+    tailscale.enable = true;
   };
 
   programs = {
@@ -62,7 +69,7 @@
 
   environment = {
     defaultPackages = lib.mkForce [];
-    systemPackages = [ ];
+    systemPackages = [ pkgs.tailscale ];
   };
 
   documentation = {
