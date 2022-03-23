@@ -1,40 +1,70 @@
-{ config, lib, pkgs, ... }:{
+{ config, lib, pkgs, modulesPath, ... }:
 
-  imports = [
-    <nixpkgs/nixos/modules/profiles/minimal.nix>
-  ];
+{
+  imports =
+    [
+      ./hardware-configuration.nix
+      (modulesPath + "/profiles/minimal.nix") 
+    ];
+
 
   nix = {
     package = pkgs.nixUnstable;
+    settings.auto-optimise-store = true;
+    gc.automatic = true;
+  };
+
+  nixpkgs = {
+    config.allowUnfree = true;
+    config.allowUnsupportedSystem = true;
+  };
+
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  networking = {
+    hostName = "mael";
+    search = [ "v.rk0n.org" ];
+    firewall.enable = false;
+    useDHCP = true;
   };
 
   time.timeZone = "America/Los_Angeles";
 
   security.sudo.wheelNeedsPassword = false;
 
-  users.mutableUsers = true;
-
-  documentation.doc.enable = false;
-  documentation.info.enable = false;
-  documentation.man.enable = false;
-
-  services.openssh.enable = true;
-  services.openssh.passwordAuthentication = true;
-  services.openssh.permitRootLogin = "no";
-  services.k3s.enable = true;
-
-  networking.hostName = "nix";
-  networking.firewall.enable = false;
-  networking.interfaces.ens160.useDHCP = true;
+  users = {
+    defaultUserShell = pkgs.zsh;
+    users.negz = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" ];
+      openssh.authorizedKeys.keys = [
+        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDEnexRk7YdGNbOOKgZQSzL1/x84/1NNl8m/oWWCjCk2xYZAr8iBFPtFFEWPrdJ+OEJjGrInhqJBkICoF0R4rsHojDMwukbuJT9sFXBzpNwkaP+DPgFzao7FYNoAb555f+JmGEXqvSJTs3crmYQdS09Yy4HqMgCUuYIA987kWQ8LT068pphQTCAX0WyRg7pNF2GSuW6EnGJYJBo081/AVoGuWuF+ciIAN0/q1YcPbQoTPa+Hiu/jLo7rMXeU+PjX4v+fH22kcuQDR6APpOqmB7b9opTOBepy1tDogJwYQNCpFW/gQMsbWcj9kxRe/hNoyCi20iFnJOXQzP393kfEGT5tllYHDpRCaVUUMREtF630A+IAZASRDiAZq/oLZK1mLhwM9KOu4BYBmt0glxLZXt6dsgUD4y7KrLLghrXBXi+aNP4sKKeFzIGH5P1ZqL9dAAAVdjr+yRYIWw0XGVG9FE4qlOfzXtc9e/v2IIubzjx/Cu5LgzakPTaDgDa/nUaIQDCDS95bNa8t/nh1/rLqI/qb3mSKFlY0Z5aDyTjIxDmwuwQQa04zmDKUjgDaZKwoo8gQMVVU5g2fyrC+xK21exffAcPtguIr0x7Z5aeY1dekNESHsaMwzOWLJowIHIWKRLyMlUiuoXmh/FGwWTauSmFF9XJ9GikzT9X9Sz1cIxwMQ== negz@rk0n.org"
+      ];
+    };
+  };
 
   system.stateVersion = "21.11";
 
-  virtualisation.containerd.enable = true;
+  services = {
+    openssh.enable = true;
+    openssh.permitRootLogin = "no";
+    openssh.passwordAuthentication = false;
+  };
 
-  environment.defaultPackages = lib.mkForce [];
-  environment.systemPackages = [ pkgs.k3s pkgs.vim ];
-  environment.variables = { EDITOR = "vim"; };
+  programs = {
+    zsh.enable = true;
+    vim.defaultEditor = true;
+  };
 
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.allowUnsupportedSystem = true;
+  environment = {
+    defaultPackages = lib.mkForce [];
+    systemPackages = [ ];
+  };
+
+  documentation = {
+    enable = true;
+    nixos.enable = true;
+    man.enable = true;
+  };
 }
