@@ -13,7 +13,7 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
-    settings.auto-optimise-store = true;
+    autoOptimiseStore = true;
     gc.automatic = true;
   };
 
