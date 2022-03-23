@@ -70,4 +70,15 @@
     nixos.enable = true;
     man.enable = true;
   };
+
+  containers = {
+    containerd = {
+      autoStart = true;
+      virtualisation.containerd.enable = true;
+    };
+    k3s = {
+      autoStart = true;
+      services.k3s.enable = true;
+    };
+  };
 }
