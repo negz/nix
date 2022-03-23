@@ -9,7 +9,7 @@
   {
     nixosConfigurations = {
 
-      qemu = inputs.nixpkgs.lib.nixosSystem {
+      mael = inputs.nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
           ./configuration.nix
