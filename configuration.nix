@@ -76,12 +76,30 @@
       autoStart = true;
       config = { config, pkgs, ... }: {
         virtualisation.containerd.enable = true;
+        environment = {
+          defaultPackages = lib.mkForce [];
+          systemPackages = [ pkgs.nerdctl ];
+        };
+        documentation = {
+          enable = false;
+          nixos.enable = false;
+          man.enable = false;
+        };
       };
     };
     k3s = {
       autoStart = true;
       config = { config, pkgs, ... }: {
         services.k3s.enable = true;
+        environment = {
+          defaultPackages = lib.mkForce [];
+          systemPackages = [ pkgs.nerdctl ];
+        };
+        documentation = {
+          enable = false;
+          nixos.enable = false;
+          man.enable = false;
+        };
       };
     };
   };
