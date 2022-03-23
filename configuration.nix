@@ -74,11 +74,15 @@
   containers = {
     containerd = {
       autoStart = true;
-      virtualisation.containerd.enable = true;
+      config = { config, pkgs, ... }: {
+        virtualisation.containerd.enable = true;
+      };
     };
     k3s = {
       autoStart = true;
-      services.k3s.enable = true;
+      config = { config, pkgs, ... }: {
+        services.k3s.enable = true;
+      };
     };
   };
 }
