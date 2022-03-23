@@ -5,11 +5,9 @@
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
   };
 
-  outputs = inputs:
-  {
+  outputs = { self, nixpkgs }: {
     nixosConfigurations = {
-
-      mael = inputs.nixpkgs.lib.nixosSystem {
+      mael = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
           ./configuration.nix
