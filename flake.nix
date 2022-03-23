@@ -2,7 +2,7 @@
   description = "A NixOS configuration for a minimal aarch64 qemu VM";
 
   inputs = {
-    nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+    nixpkgs = { url = "github:nixos/nixpkgs/nixos-21.11"; };
   };
 
   outputs = { self, nixpkgs }: {
