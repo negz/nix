@@ -21,7 +21,8 @@ qemu-img create -f qcow2 $NIX_ROOT 80G
 NIX_INSTALL=$PWD/vm/install.iso
 curl -o $NIX_INSTALL https://hydra.nixos.org/build/170436603/download/1/nixos-minimal-21.11.336635.31aa631dbc4-aarch64-linux.iso
 
-# Start the VM
+# Start the VM. Note that unlike the command below this one boots the installer.
+# Ctrl-A-X to stop the VM (or ctrl-A-Ctrl-A-X if you bind Ctrl-A to tmux).
 qemu-system-aarch64 \
     -name mael \
     -machine virt,accel=hvf,highmem=off \
@@ -45,7 +46,7 @@ qemu-system-aarch64 \
     -parallel none \
     -display none \
     -vga none \
-    -serial stdio
+    -serial mon:stdio
 ```
 
 Once the VM is running:
@@ -66,7 +67,7 @@ mkfs.fat -F 32 -n boot /dev/vda2
 
 # Mount the disk
 mount /dev/disk/by-label/nixos /mnt
-mkdir /mnt/boot
+mkdir -p /mnt/boot
 mount /dev/disk/by-label/boot /mnt/boot
 
 # Enable flake support, and install NixOS
@@ -85,6 +86,7 @@ neither `root` nor my user (`negz`) has a password, so no-one can login on the
 console. Instead I rely on Tailscale working so I can connect using my SSH key.
 
 ```
+# Ctrl-A-X to stop the VM (or Ctrl-A-Ctrl-A-X if you bind Ctrl-A to tmux).
 NIX_ROOT=$PWD/vm/nixos.qcow2
 qemu-system-aarch64 \
     -name mael \
@@ -106,5 +108,5 @@ qemu-system-aarch64 \
     -parallel none \
     -display none \
     -vga none \
-    -serial stdio
+    -serial mon:stdio
 ```
