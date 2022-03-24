@@ -74,9 +74,10 @@ mount /dev/disk/by-label/boot /mnt/boot
 nix-env -iA nixos.nixUnstable
 nixos-install --flake github:negz/nix#mael --no-root-password
 
-# TODO(negz): nixos-enter to setup tailscale?
+# Authenticate to Tailscale
+nixos-enter -c 'tailscaled 2>/dev/null & tailscale up'
 
-# Shutdown - you'll want to restart qemu to boot from the disk
+# Shutdown - you'll want different qemu flags to boot from the disk
 shutdown -h now
 ```
 
