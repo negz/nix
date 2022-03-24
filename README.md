@@ -3,6 +3,8 @@
 My Nix configuration. Mostly used to run Docker images without relying on
 Docker Desktop on my M1 Mac. You should probably just use Docker Desktop.
 
+## Create the VM
+
 To create a VM from an M1 Mac:
 
 ```bash
@@ -81,10 +83,12 @@ nixos-enter -c 'tailscaled 2>/dev/null & tailscale up'
 shutdown -h now
 ```
 
-Now you can run and use your new VM. I typically run this inside `tmux` so I can
-keep it running when I'm detached and watch the console. Note that with my setup
-neither `root` nor my user (`negz`) has a password, so no-one can login on the
-console. Instead I rely on Tailscale working so I can connect using my SSH key.
+## Run the VM
+
+I typically run qemu inside `tmux` so I can keep it running when I'm detached
+and watch the console. Note that with my setup neither `root` nor my user
+(`negz`) has a password, so no-one can login on the console. Instead I rely on
+Tailscale working so I can connect using my SSH key.
 
 ```
 # Ctrl-A-X to stop the VM (or Ctrl-A-Ctrl-A-X if you bind Ctrl-A to tmux).
@@ -111,3 +115,47 @@ qemu-system-aarch64 \
     -vga none \
     -serial mon:stdio
 ```
+
+To make `docker` use the VM (from MacOS):
+
+```shell
+docker context create --docker host=ssh://negz@mael --description "Virtual Machine via Tailscale"
+docker context use mael
+```
+
+To teach `kind` about the VM (also from MacOS), create `kind.yaml`:
+
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  apiServerAddress: "0.0.0.0"
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.23.4@sha256:0e34f0d0fd448aa2f2819cfd74e99fe5793a6e4938b328f657c8e3f81ee0dfb9
+kubeadmConfigPatches:
+- |
+  kind: ClusterConfiguration
+  apiServer:
+      certSANs:
+        - "mael"
+```
+
+Then runo
+
+```shell
+kind create cluster --config kind.yaml
+
+sed -Ibak 's/0.0.0.0/mael/' ~/.kube/config
+```
+
+## Potential Improvements
+
+Some ideas to improve on this setup:
+
+* Use https://github.com/LnL7/nix-darwin to manage my Mac.
+* Use https://github.com/nix-community/home-manager to manage both environments.
+* Automatically create port forwards from host to guest Docker ports.
+* Use Nix to build https://github.com/lima-vm/vde_vmnet? Probably not worthwhile
+  unless I also drop Tailscale. Guest -> host with `-netdev user` (user mode
+  qemu networking) sees ~2.5GB/s without Tailscale, and ~500MB/s with it.
