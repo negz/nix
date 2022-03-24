@@ -141,7 +141,7 @@ kubeadmConfigPatches:
         - "mael"
 ```
 
-Then runo
+Then run:
 
 ```shell
 kind create cluster --config kind.yaml
@@ -156,6 +156,3 @@ Some ideas to improve on this setup:
 * Use https://github.com/LnL7/nix-darwin to manage my Mac.
 * Use https://github.com/nix-community/home-manager to manage both environments.
 * Automatically create port forwards from host to guest Docker ports.
-* Use Nix to build https://github.com/lima-vm/vde_vmnet? Probably not worthwhile
-  unless I also drop Tailscale. Guest -> host with `-netdev user` (user mode
-  qemu networking) sees ~2.5GB/s without Tailscale, and ~500MB/s with it.
