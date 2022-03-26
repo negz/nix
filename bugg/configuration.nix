@@ -18,7 +18,26 @@
     config.allowUnsupportedSystem = true;
   };
 
+  time.timeZone = "America/Los_Angeles";
+
   programs.zsh.enable = true; 
+
+  system = {
+    defaults = {
+      NSGlobalDomain = {
+        AppleInterfaceStyleSwitchesAutomatically = true;
+        NSNavPanelExpandedStateForSaveMode = true;
+      };
+      dock = {
+        orientation = "right";
+        show-recents = false;
+        minimize-to-application = true;
+      };
+      SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
+      alf.allowdownloadsignedenabled = 1;
+      finder.CreateDesktop = false;
+    };
+  };
 
   system.stateVersion = 4;
 }
