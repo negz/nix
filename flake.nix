@@ -7,7 +7,7 @@
     };
     darwin = { 
       url = "github:lnl7/nix-darwin/master";
-      nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
