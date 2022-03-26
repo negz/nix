@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 {
   home.packages = [
-    curl
+    pkgs.jq
   ];
 }
