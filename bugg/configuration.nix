@@ -18,8 +18,6 @@
     config.allowUnsupportedSystem = true;
   };
 
-  time.timeZone = "America/Los_Angeles";
-
   programs.zsh.enable = true; 
 
   system = {
