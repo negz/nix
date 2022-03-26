@@ -11,7 +11,7 @@
     };
   };
 
-  outputs = { self, nixpkgs }: {
+  outputs = { self, darwin, nixpkgs }: {
     darwinConfigurations = {
       bugg = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
