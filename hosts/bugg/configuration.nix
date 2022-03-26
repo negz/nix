@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  environment.systemPackages = [ pkgs.vim ];
-
   services.nix-daemon.enable = true;
 
   nix = {
@@ -17,6 +15,8 @@
     config.allowUnfree = true;
     config.allowUnsupportedSystem = true;
   };
+
+  environment.systemPackages = [ pkgs.vim ];
 
   programs.zsh.enable = true; 
 
