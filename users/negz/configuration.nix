@@ -78,8 +78,8 @@
         unbind '"'
         unbind %
         set -g status-interval 1
-        set -g status-bg white
-        set -g status-fg black
+        set -g status-bg "#58a6ff"
+        set -g status-fg "#ffffff"
         set -g status-left ' '
         set -g status-left-length 0
         set -g status-right ' '
@@ -87,7 +87,7 @@
         set-window-option -g window-status-current-style bold
         set-window-option -g window-status-current-format '#I #W '
         set-window-option -g window-status-format '#I #W '
-        set -g pane-active-border-style fg=white
+        set -g pane-active-border-style fg=#58a6ff
       '';
     };
 
@@ -125,6 +125,7 @@
       '';
       plugins = with pkgs.vimPlugins;
         let
+          # TODO(negz): Plumb these down from the flake.
           github-nvim-theme = pkgs.vimUtils.buildVimPluginFrom2Nix {
             name = "github-nvim-theme";
             src = pkgs.fetchFromGitHub {
