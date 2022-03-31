@@ -12,7 +12,7 @@
       rmd = "rm -rf";
       psa = "ps aux";
       l = "ls -FH";
-      t = "tmux attach-session -t0||tmux";
+      t = "tmux attach-session";
     };
 
     packages = [
@@ -61,9 +61,11 @@
     prefix = "C-a";
     terminal = "screen-256color";
     shell = "${pkgs.zsh}/bin/zsh";
+    escapeTime = 0;
+    newSession = true;
+
     extraConfig = ''
       bind-key A command-prompt 'rename-window "%%"'
-      set -sg escape-time 0
       set -g renumber-windows on
       
       set -g visual-bell on
@@ -83,9 +85,9 @@
       set -g status-interval 1
       set -g status-bg white
       set -g status-fg black
-      set -g status-left \'\'
+      set -g status-left ' '
       set -g status-left-length 0
-      set -g status-right \'\'
+      set -g status-right ' '
       set -g status-right-length 0
       
       set-window-option -g window-status-current-style bold
