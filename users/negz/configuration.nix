@@ -60,7 +60,7 @@
     enable = true;
     prefix = "C-a";
     terminal = "screen-256color";
-    shell = "\${pkgs.zsh}/bin/zsh";
+    shell = "${pkgs.zsh}/bin/zsh";
     extraConfig = ''
       bind-key A command-prompt 'rename-window "%%"'
       set -sg escape-time 0
