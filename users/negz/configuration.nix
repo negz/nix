@@ -1,8 +1,31 @@
 { config, lib, pkgs, ... }:
 
 {
-  # TODO(negz): Just use nix-env manually?
-  home.packages = [];
+  home = {
+    enableNixpkgsReleaseCheck = true;
+
+    sessionVariables = {
+      EDITOR = "vim";
+    };
+
+    shellAliases = {
+      rmd = "rm -rf";
+      psa = "ps aux";
+      l = "ls -F";
+      t = "tmux attach-session -t0||tmux";
+    };
+
+    packages = [
+      pkgs.docker
+      pkgs.kubectl
+      pkgs.kind
+      pkgs.qemu # TODO(negz): From master.
+    ];
+
+    sessionPath = [ "$HOME/control/go/bin" ];
+
+    stateVersion = "21.11";
+  };
 
   programs.zsh = {
     enable = true;
@@ -18,9 +41,34 @@
       }
       {
         name = "powerlevel10k-config";
-        src = lib.cleanSource ./p10k.zsh;
-        file = ".p10k.zsh";
+        src = lib.cleanSource ./zsh;
+        file = "p10k.zsh";
      }
     ];
+
+    localVariables = {
+      ZSH_AUTOSUGGEST_STRATEGY = ["history" "completion"];
+    };
+
+    initExtraBeforeCompInit = ''
+      P10KP="$XDG_CACHE_HOME/p10k-instant-prompt-''${(%):-%n}.zsh"; [[ ! -r "$P10KP" ]] || source "$P10KP"
+    '';
+  };
+
+  # TODO(negz): Configure me.
+  programs.tmux = {
+    enable = true;
+  };
+
+  # TODO(negz): Configure me.
+  programs.vim = {
+    enable = true;
+  };
+
+  programs.go = {
+    enable = true;
+    package = pkgs.go;
+    goPath = "control/go";
+    goBin = "control/go/bin";
   };
 }

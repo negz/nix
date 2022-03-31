@@ -20,6 +20,13 @@
 
   programs.zsh.enable = true; 
 
+  users = {
+    users.negz = {
+      home = "/Users/negz";
+      shell = pkgs.zsh;
+    };
+  };
+
   system = {
     defaults = {
       NSGlobalDomain = {

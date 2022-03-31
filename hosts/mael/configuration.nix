@@ -45,6 +45,8 @@
   users = {
     defaultUserShell = pkgs.zsh;
     users.negz = {
+      home = "/home/negz";
+      shell = pkgs.zsh;
       isNormalUser = true;
       extraGroups = [ "wheel" "docker" ];
       openssh.authorizedKeys.keys = [
