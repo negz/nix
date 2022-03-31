@@ -115,7 +115,6 @@
 
     go = {
       enable = true;
-      package = pkgs.go;
       goPath = "control/go";
       goBin = "control/go/bin";
     };
