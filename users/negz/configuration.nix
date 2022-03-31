@@ -5,7 +5,7 @@
     enableNixpkgsReleaseCheck = true;
 
     sessionVariables = {
-      EDITOR = "vim";
+      EDITOR = "nvim";
     };
 
     shellAliases = {
@@ -13,6 +13,7 @@
       psa = "ps aux";
       l = "ls -FH";
       t = "tmux attach-session";
+      view = "nvim -R"; # programs.neovim can't symlink this.
     };
 
     packages = [
@@ -90,9 +91,112 @@
       '';
     };
 
-    # TODO(negz): Configure me.
-    vim = {
+    neovim = {
       enable = true;
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
+      coc = {
+        enable = true;
+        settings = {
+          languageserver = {
+            go = {
+              command = "gopls";
+              rootPatterns = [ "go.mod" ];
+              filetypes = [ "go" ];
+            };
+          };
+        };
+      };
+      extraPackages = [ pkgs.nodejs pkgs.gopls ]; # For CoC
+      extraConfig = ''
+        set hidden
+        set autoindent
+        set smartindent
+        set showmatch
+        set incsearch
+        set noerrorbells
+        set number
+        set numberwidth=4
+        set nowrap
+        set showcmd
+        set scrolloff=3
+        set backspace=2
+      '';
+      plugins = with pkgs.vimPlugins;
+        let
+          github-nvim-theme = pkgs.vimUtils.buildVimPluginFrom2Nix {
+            name = "github-nvim-theme";
+            src = pkgs.fetchFromGitHub {
+              owner = "projekt0n";
+              repo = "github-nvim-theme";
+              rev = "v0.0.4";
+              sha256 = "tnHbM/oUHd/lJmz8VDREWiIRjbnjRx1ZksNh534mqzc=";
+            };
+          };
+          auto-dark-mode = pkgs.vimUtils.buildVimPluginFrom2Nix {
+            name = "auto-dark-mode";
+            src = pkgs.fetchFromGitHub {
+              owner = "f-person";
+              repo = "auto-dark-mode.nvim";
+              rev = "9a7515c180c73ccbab9fce7124e49914f88cd763";
+              sha256 = "kPq/hoSn9/xaienyVWvlhJ2unDjrjhZKdhH5XkB2U0Q=";
+            };
+          };
+        in [
+          vim-nix
+          {
+            plugin = gitsigns-nvim;
+            config= ''
+              lua << END
+              require('gitsigns').setup()
+              END
+            '';
+          }
+          {
+            plugin = github-nvim-theme;
+            config = ''
+              lua << END
+              require('github-theme').setup {
+                theme_style = "dark_default";
+              }
+              END
+            '';
+          }
+          {
+            plugin = lualine-nvim;
+            config= ''
+              lua << END
+              require('lualine').setup {
+                options = {
+                  icons_enabled = false,
+                  section_separators = ' ',
+                  component_separators = ' ',
+                }
+              }
+              END
+            '';
+          }
+          {
+            plugin = auto-dark-mode;
+            config= ''
+              lua << END
+              local auto_dark_mode = require('auto-dark-mode')
+              auto_dark_mode.setup {
+              	set_dark_mode = function()
+              		vim.api.nvim_set_option('background', 'dark')
+              		vim.cmd('colorscheme github_dark_default')
+              	end,
+              	set_light_mode = function()
+              		vim.api.nvim_set_option('background', 'light')
+              		vim.cmd('colorscheme github_light_default')
+              	end,
+              }
+              auto_dark_mode.init()
+              END
+            '';
+          }
+        ];
     };
 
     git = {

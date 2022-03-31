@@ -16,8 +16,6 @@
     config.allowUnsupportedSystem = true;
   };
 
-  environment.systemPackages = [ pkgs.vim ];
-
   programs.zsh.enable = true; 
 
   users = {
