@@ -93,6 +93,26 @@
       enable = true;
     };
 
+    git = {
+      enable = true;
+      userName = "Nic Cope";
+      userEmail = "nicc@rk0n.org";
+      aliases = {
+        b = "branch";
+        ca = "commit -a";
+        co = "checkout";
+        d = "diff";
+        p = "status";
+        ll = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all";
+      };
+      ignores = [ ".DS_Store" ];
+      extraConfig = {
+        push = {
+          default = "current";
+        };
+      };
+    };
+
     go = {
       enable = true;
       package = pkgs.go;
