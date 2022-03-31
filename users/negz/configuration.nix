@@ -11,7 +11,7 @@
     shellAliases = {
       rmd = "rm -rf";
       psa = "ps aux";
-      l = "ls -F";
+      l = "ls -FH";
       t = "tmux attach-session -t0||tmux";
     };
 
@@ -58,6 +58,42 @@
   # TODO(negz): Configure me.
   programs.tmux = {
     enable = true;
+    prefix = "C-a";
+    terminal = "screen-256color";
+    shell = "\${pkgs.zsh}/bin/zsh";
+    extraConfig = ''
+      bind-key A command-prompt 'rename-window "%%"'
+      set -sg escape-time 0
+      set -g renumber-windows on
+      
+      set -g visual-bell on
+      
+      set -g mouse off
+      bind-key m run 'tmux show -g mouse | grep -q on && T=off || T=on;tmux set -g mouse $T;tmux display "Mouse $T"'
+      
+      unbind -Tcopy-mode-vi Enter
+      bind-key -Tcopy-mode-vi 'v' send -X begin-selection
+      
+      bind-key | split-window -h
+      bind-key \\ split-window -h 
+      bind-key - split-window -v
+      unbind '"'
+      unbind %
+      
+      set -g status-interval 1
+      set -g status-bg white
+      set -g status-fg black
+      set -g status-left \'\'
+      set -g status-left-length 0
+      set -g status-right \'\'
+      set -g status-right-length 0
+      
+      set-window-option -g window-status-current-style bold
+      set-window-option -g window-status-current-format '#I #W '
+      set-window-option -g window-status-format '#I #W '
+      
+      set -g pane-active-border-style fg=white
+    '';
   };
 
   # TODO(negz): Configure me.
