@@ -4,7 +4,7 @@
   imports =
     [
       ./hardware-configuration.nix
-      (modulesPath + "/profiles/minimal.nix") 
+      (modulesPath + "/profiles/minimal.nix")
     ];
 
 
@@ -74,7 +74,7 @@
   };
 
   environment = {
-    defaultPackages = lib.mkForce [];
+    defaultPackages = lib.mkForce [ ];
     systemPackages = [ pkgs.tailscale ];
   };
 

@@ -65,11 +65,11 @@
             repo = "zsh-nix-shell";
             rev = "v0.5.0";
             sha256 = "0za4aiwwrlawnia4f29msk822rj9bgcygw6a8a6iikiwzjjz0g91";
-        };
-      }
+          };
+        }
       ];
       localVariables = {
-        ZSH_AUTOSUGGEST_STRATEGY = ["history" "completion"];
+        ZSH_AUTOSUGGEST_STRATEGY = [ "history" "completion" ];
       };
       initExtraBeforeCompInit = ''
         P10KP="$XDG_CACHE_HOME/p10k-instant-prompt-''${(%):-%n}.zsh"; [[ ! -r "$P10KP" ]] || source "$P10KP"
@@ -163,11 +163,12 @@
               sha256 = "kPq/hoSn9/xaienyVWvlhJ2unDjrjhZKdhH5XkB2U0Q=";
             };
           };
-        in [
+        in
+        [
           vim-nix
           {
             plugin = gitsigns-nvim;
-            config= ''
+            config = ''
               lua << END
               require('gitsigns').setup()
               END
@@ -185,7 +186,7 @@
           }
           {
             plugin = lualine-nvim;
-            config= ''
+            config = ''
               lua << END
               require('lualine').setup {
                 options = {
@@ -199,18 +200,18 @@
           }
           {
             plugin = auto-dark-mode;
-            config= ''
+            config = ''
               lua << END
               local auto_dark_mode = require('auto-dark-mode')
               auto_dark_mode.setup {
-              	set_dark_mode = function()
-              		vim.api.nvim_set_option('background', 'dark')
-              		vim.cmd('colorscheme github_dark_default')
-              	end,
-              	set_light_mode = function()
-              		vim.api.nvim_set_option('background', 'light')
-              		vim.cmd('colorscheme github_light_default')
-              	end,
+                set_dark_mode = function()
+                  vim.api.nvim_set_option('background', 'dark')
+                  vim.cmd('colorscheme github_dark_default')
+                end,
+                set_light_mode = function()
+                  vim.api.nvim_set_option('background', 'light')
+                  vim.cmd('colorscheme github_light_default')
+                end,
               }
               auto_dark_mode.init()
               END

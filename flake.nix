@@ -2,7 +2,7 @@
   description = "A NixOS configuration for https://github.com/negz's M1 Mac";
 
   inputs = {
-    darwin = { 
+    darwin = {
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     };
@@ -25,7 +25,8 @@
         system = "aarch64-darwin";
         modules = [
           ./hosts/bugg/configuration.nix
-          hm-darwin.darwinModules.home-manager {
+          hm-darwin.darwinModules.home-manager
+          {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.negz = import ./users/negz/configuration.nix;
@@ -38,7 +39,8 @@
         system = "aarch64-linux";
         modules = [
           ./hosts/mael/configuration.nix
-          hm-nixos.nixosModules.home-manager {
+          hm-nixos.nixosModules.home-manager
+          {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.negz = import ./users/negz/configuration.nix;
