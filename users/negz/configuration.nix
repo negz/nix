@@ -207,6 +207,11 @@
         ];
     };
 
+    ssh = {
+      enable = true;
+      forwardAgent = true;
+    };
+
     git = {
       enable = true;
       userName = "Nic Cope";
