@@ -34,8 +34,7 @@ qemu-img create -f qcow2 $NIX_ROOT 80G
 NIX_INSTALL=$PWD/vm/install.iso
 curl -o $NIX_INSTALL https://hydra.nixos.org/build/170436603/download/1/nixos-minimal-21.11.336635.31aa631dbc4-aarch64-linux.iso
 
-# Start the VM. Note that unlike the command below this one boots the installer.
-# Ctrl-A-X to stop the VM (or ctrl-A-Ctrl-A-X if you bind Ctrl-A to tmux).
+# Start the VM. Ctrl-A-X to kill the VM.
 qemu-system-aarch64 \
     -name mael \
     -machine virt,accel=hvf,highmem=off \
@@ -60,12 +59,8 @@ qemu-system-aarch64 \
     -display none \
     -vga none \
     -serial mon:stdio
-```
 
-Once the VM is running:
-
-```shell
-# Become root.
+# Once the VM is running become root.
 sudo -i
 
 # Partition the disk.
@@ -90,20 +85,8 @@ nixos-install --flake github:negz/nix#mael --no-root-password
 # Authenticate to Tailscale
 nixos-enter -c 'tailscaled 2>/dev/null & tailscale up'
 
-# Shutdown - you'll want different qemu flags to boot from the disk
+# Shutdown - use ./run.sh to boot into the VM.
 shutdown -h now
-```
-
-## Working Environment
-
-I typically run qemu inside `tmux` so I can keep it running when I'm detached
-and watch the console. Note that with my setup neither `root` nor my user
-(`negz`) has a password, so no-one can login on the console. Instead I rely on
-Tailscale working so I can connect using my SSH key.
-
-```shell
-# run.sh in this repo will start the VM.
-./run.sh
 ```
 
 To make `docker` use the VM (from MacOS):
