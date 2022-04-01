@@ -20,6 +20,7 @@
       pkgs.docker
       pkgs.kubectl
       pkgs.kind
+      pkgs.neofetch-unstable
     ];
 
     file = {
