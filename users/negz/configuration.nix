@@ -143,27 +143,6 @@
         set backspace=2
       '';
       plugins = with pkgs.vimPlugins;
-        let
-          # TODO(negz): Plumb these down from the flake.
-          github-nvim-theme = pkgs.vimUtils.buildVimPluginFrom2Nix {
-            name = "github-nvim-theme";
-            src = pkgs.fetchFromGitHub {
-              owner = "projekt0n";
-              repo = "github-nvim-theme";
-              rev = "v0.0.4";
-              sha256 = "tnHbM/oUHd/lJmz8VDREWiIRjbnjRx1ZksNh534mqzc=";
-            };
-          };
-          auto-dark-mode = pkgs.vimUtils.buildVimPluginFrom2Nix {
-            name = "auto-dark-mode";
-            src = pkgs.fetchFromGitHub {
-              owner = "f-person";
-              repo = "auto-dark-mode.nvim";
-              rev = "9a7515c180c73ccbab9fce7124e49914f88cd763";
-              sha256 = "kPq/hoSn9/xaienyVWvlhJ2unDjrjhZKdhH5XkB2U0Q=";
-            };
-          };
-        in
         [
           vim-nix
           {
@@ -175,7 +154,15 @@
             '';
           }
           {
-            plugin = github-nvim-theme;
+            plugin = pkgs.vimUtils.buildVimPluginFrom2Nix {
+              name = "github-nvim-theme";
+              src = pkgs.fetchFromGitHub {
+                owner = "projekt0n";
+                repo = "github-nvim-theme";
+                rev = "v0.0.4";
+                sha256 = "tnHbM/oUHd/lJmz8VDREWiIRjbnjRx1ZksNh534mqzc=";
+              };
+            };
             config = ''
               lua << END
               require('github-theme').setup {
@@ -199,7 +186,15 @@
             '';
           }
           {
-            plugin = auto-dark-mode;
+            plugin = pkgs.vimUtils.buildVimPluginFrom2Nix {
+              name = "auto-dark-mode";
+              src = pkgs.fetchFromGitHub {
+                owner = "f-person";
+                repo = "auto-dark-mode.nvim";
+                rev = "9a7515c180c73ccbab9fce7124e49914f88cd763";
+                sha256 = "kPq/hoSn9/xaienyVWvlhJ2unDjrjhZKdhH5XkB2U0Q=";
+              };
+            };
             config = ''
               lua << END
               local auto_dark_mode = require('auto-dark-mode')
