@@ -9,7 +9,7 @@ headless [NixOS] VM in QEMU. My user on both is configured using [home-manager].
 
 To bootstrap a new M1 Mac, first install [iTerm] and load `iterm2.json`, then:
 
-```bash
+```shell
 # Install the Nix package manager.
 sh <(curl -L https://nixos.org/nix/install)
 
@@ -23,6 +23,7 @@ darwin-rebuild switch --flake github:negz/nix#bugg
 
 Once the Mac is boostrapped, create a VM:
 
+```shell
 # Create a disk for the VM.
 FIRMWARE=$(nix eval --raw 'nixpkgs#qemu')/share/qemu/edk2-aarch64-code.fd
 NIX_ROOT=$PWD/vm/nixos.qcow2
