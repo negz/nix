@@ -23,6 +23,13 @@
       pkgs.qemu # TODO(negz): From master.
     ];
 
+    file = {
+      hushlogin = {
+        target = ".hushlogin";
+        text = "";
+      };
+    };
+
     sessionPath = [ "$HOME/control/go/bin" ];
 
     stateVersion = "21.11";
