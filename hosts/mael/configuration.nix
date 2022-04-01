@@ -18,12 +18,18 @@
   };
 
   nixpkgs = {
-    config.allowUnfree = true;
-    config.allowUnsupportedSystem = true;
+    config = {
+      allowUnfree = true;
+      allowUnsupportedSystem = true;
+    };
   };
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+  };
 
   networking = {
     hostName = "mael";
@@ -59,9 +65,11 @@
   system.stateVersion = "21.11";
 
   services = {
-    openssh.enable = true;
-    openssh.permitRootLogin = "no";
-    openssh.passwordAuthentication = false;
+    openssh = {
+      enable = true;
+      permitRootLogin = "no";
+      passwordAuthentication = false;
+    };
     tailscale.enable = true;
   };
 
@@ -77,11 +85,5 @@
   environment = {
     defaultPackages = lib.mkForce [ ];
     systemPackages = [ pkgs.tailscale ];
-  };
-
-  documentation = {
-    enable = true;
-    nixos.enable = true;
-    man.enable = true;
   };
 }
