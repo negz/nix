@@ -2,6 +2,9 @@
 
 The Nix configuration for my M1 Mac.
 
+![My NixOS Setup!](nix.png "A screenshot of my NixOS terminals")
+
+
 I use [nix-darwin] to configure the Mac's command-line environment. I also run a
 headless [NixOS] VM in QEMU. My user on both is configured using [home-manager].
 
