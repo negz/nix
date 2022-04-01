@@ -22,7 +22,6 @@
       pkgs.kubectl
       pkgs.kubernetes-helm
       pkgs.kind
-      pkgs.neofetch
     ];
 
     file = {
