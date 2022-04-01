@@ -1,5 +1,5 @@
 {
-  description = "A NixOS configuration for a minimal aarch64 qemu VM";
+  description = "A NixOS configuration for https://github.com/negz's M1 Mac";
 
   inputs = {
     darwin = { 
