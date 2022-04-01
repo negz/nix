@@ -20,7 +20,6 @@
       pkgs.docker
       pkgs.kubectl
       pkgs.kind
-      pkgs.qemu # TODO(negz): From master.
     ];
 
     file = {

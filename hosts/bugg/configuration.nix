@@ -11,6 +11,8 @@
     gc.automatic = true;
   };
 
+  environment.systemPackages = [ pkgs.qemu ];
+
   nixpkgs = {
     config.allowUnfree = true;
     config.allowUnsupportedSystem = true;
@@ -22,23 +24,6 @@
     users.negz = {
       home = "/Users/negz";
       shell = pkgs.zsh;
-    };
-  };
-
-  system = {
-    defaults = {
-      NSGlobalDomain = {
-        AppleInterfaceStyleSwitchesAutomatically = true;
-        NSNavPanelExpandedStateForSaveMode = true;
-      };
-      dock = {
-        orientation = "right";
-        show-recents = false;
-        minimize-to-application = true;
-      };
-      SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
-      alf.allowdownloadsignedenabled = 1;
-      finder.CreateDesktop = false;
     };
   };
 
