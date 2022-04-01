@@ -19,6 +19,7 @@
     packages = [
       pkgs.docker
       pkgs.kubectl
+      pkgs.kubernetes-helm
       pkgs.kind
       pkgs.neofetch
     ];
