@@ -1,20 +1,30 @@
 # nix
 
-My Nix configuration. Mostly used to run Docker images without relying on
-Docker Desktop on my M1 Mac. You should probably just use Docker Desktop.
+The Nix configuration for my M1 Mac.
 
-## Create the VM
+I use [nix-darwin] to configure the Mac's command-line environment. I also run a
+headless [NixOS] VM in QEMU. My user on both is configured using [home-manager].
 
-To create a VM from an M1 Mac:
+## Bootstrapping
+
+To bootstrap a new M1 Mac, first install [iTerm] and load `iterm2.json`, then:
 
 ```bash
 # Install the Nix package manager.
 sh <(curl -L https://nixos.org/nix/install)
 
-# Install qemu from master to get https://github.com/NixOS/nixpkgs/pull/164908
-nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA qemu
+# Install nix-darwin
+nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
+./result/bin/darwin-installer
+
+# Rebuild the Mac
+darwin-rebuild switch --flake github:negz/nix#bugg
+```
+
+Once the Mac is boostrapped, create a VM:
 
 # Create a disk for the VM.
+FIRMWARE=$(nix eval --raw 'nixpkgs#qemu')/share/qemu/edk2-aarch64-code.fd
 NIX_ROOT=$PWD/vm/nixos.qcow2
 qemu-img create -f qcow2 $NIX_ROOT 80G
 
@@ -32,9 +42,9 @@ qemu-system-aarch64 \
     -smp 4,sockets=1,cores=4,threads=1 \
     -m 4096 \
     -boot menu=on \
-    -drive if=pflash,format=raw,readonly=on,file=$HOME/.nix-profile/share/qemu/edk2-aarch64-code.fd \
-    -drive if=none,media=disk,id=drive0,cache=writethrough,file=$NIX_ROOT \
-    -drive if=none,media=cdrom,id=drive1,readonly=on,file=$NIX_INSTALL \
+    -drive if=pflash,format=raw,readonly=on,file=${FIRMWARE} \
+    -drive if=none,media=disk,id=drive0,cache=writethrough,file=${NIX_ROOT} \
+    -drive if=none,media=cdrom,id=drive1,readonly=on,file=${NIX_INSTALL} \
     -device virtio-rng-pci \
     -device ramfb \
     -device ahci,id=achi0 \
@@ -83,37 +93,16 @@ nixos-enter -c 'tailscaled 2>/dev/null & tailscale up'
 shutdown -h now
 ```
 
-## Run the VM
+## Working Environment
 
 I typically run qemu inside `tmux` so I can keep it running when I'm detached
 and watch the console. Note that with my setup neither `root` nor my user
 (`negz`) has a password, so no-one can login on the console. Instead I rely on
 Tailscale working so I can connect using my SSH key.
 
-```
-# Ctrl-A-X to stop the VM (or Ctrl-A-Ctrl-A-X if you bind Ctrl-A to tmux).
-NIX_ROOT=$PWD/vm/nixos.qcow2
-qemu-system-aarch64 \
-    -name mael \
-    -machine virt,accel=hvf,highmem=off \
-    -cpu host \
-    -smp 4,sockets=1,cores=4,threads=1 \
-    -m 4096 \
-    -boot menu=on \
-    -drive if=pflash,format=raw,readonly=on,file=$HOME/.nix-profile/share/qemu/edk2-aarch64-code.fd \
-    -drive if=none,media=disk,id=drive0,cache=writethrough,file=$NIX_ROOT \
-    -device virtio-rng-pci \
-    -device ramfb \
-    -device virtio-net-pci,netdev=net0,mac=52:55:55:80:ae:7d \
-    -device qemu-xhci,id=usb-bus \
-    -device usb-kbd,bus=usb-bus.0 \
-    -device usb-mouse,bus=usb-bus.0 \
-    -device virtio-blk-pci,drive=drive0,bootindex=0 \
-    -netdev user,id=net0,net=192.168.100.0/24 \
-    -parallel none \
-    -display none \
-    -vga none \
-    -serial mon:stdio
+```shell
+# run.sh in this repo will start the VM.
+./run.sh
 ```
 
 To make `docker` use the VM (from MacOS):
@@ -149,10 +138,7 @@ kind create cluster --config kind.yaml
 sed -Ibak 's/0.0.0.0/mael/' ~/.kube/config
 ```
 
-## Potential Improvements
-
-Some ideas to improve on this setup:
-
-* Use https://github.com/LnL7/nix-darwin to manage my Mac.
-* Use https://github.com/nix-community/home-manager to manage both environments.
-* Automatically create port forwards from host to guest Docker ports.
+[nix-darwin]: https://github.com/LnL7/nix-darwin
+[NixOS]: https://nixos.org
+[home-manager]: https://github.com/nix-community/home-manager
+[iTerm]: https://iterm2.com
