@@ -5,8 +5,6 @@ The Nix configuration for my M1 Mac.
 I use [nix-darwin] to configure the Mac's command-line environment. I also run a
 headless [NixOS] VM in QEMU. My user on both is configured using [home-manager].
 
-## Bootstrapping
-
 To bootstrap a new M1 Mac, first install [iTerm] and load `iterm2.json`, then:
 
 ```shell
