@@ -48,6 +48,7 @@
       home = "/home/negz";
       shell = pkgs.zsh;
       isNormalUser = true;
+      hashedPassword = "";
       extraGroups = [ "wheel" "docker" ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
