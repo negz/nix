@@ -31,6 +31,8 @@
     };
   };
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   networking = {
     hostName = "mael";
     search = [ "v.rk0n.org" ];
