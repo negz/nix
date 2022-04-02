@@ -55,7 +55,10 @@
   # that so we overwrite it to 'staff'.
   users = {
     defaultUserShell = pkgs.zsh;
-    groups.staff.gid = 20;
+    groups = {
+      staff.gid = 20;
+      lp.gid = 21;
+    };
     users.negz = {
       uid = 501;
       home = "/home/negz";
