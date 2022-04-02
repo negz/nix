@@ -73,7 +73,8 @@
       where = "/Users/negz";
       what = "/Users/negz";
       type = "9p";
-      options = "trans=virtio,version=9p2000.L,msize=512000,cache=mmap";
+      options = "trans=virtio,version=9p2000.L,msize=512000,cache=loose,ro";
+      wantedBy = [ "multi-user.target" ];
     }
   ];
 
