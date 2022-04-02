@@ -53,6 +53,7 @@
   # align our GID because the default MacOS GID is 20 (staff), which collides
   # with the builtin NixOS 20 (lp) group.
   users = {
+    mutableUsers = false;
     defaultUserShell = pkgs.zsh;
     users.negz = {
       uid = 501;
