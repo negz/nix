@@ -61,12 +61,19 @@
       ];
     };
   };
-
-  fileSystems."/home/negz/bugg" = {
-    device = "usersnegz";
-    fsType = "9p";
-    options = [ "trans=virtio" "version=9p2000.L" "msize=104857600" "posixacl" ];
-  };
+  
+  # Use a systemd mount because it will automatically create the mountpoint.
+  # TODO(negz): Allow config.users.users.negz.uid access, which will likely
+  # require setting users.users.negz.uid explicitly.
+  systemd.mounts = [
+    {
+      description = "QEMU host /Users/negz";
+      where = "/Users/negz";
+      what = "usersnegz";
+      type = "9p";
+      options = "trans=virtio,version=9p2000.L,msize=104857600,posixacl";
+    }:
+  ];
 
   system.stateVersion = "21.11";
 
