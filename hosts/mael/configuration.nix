@@ -67,11 +67,11 @@
   # require setting users.users.negz.uid explicitly.
   systemd.mounts = [
     {
-      description = "QEMU host /Users/negz";
+      description = "/Users/negz from QEMU host";
       where = "/Users/negz";
-      what = "usersnegz";
+      what = "/Users/negz";
       type = "9p";
-      options = "trans=virtio,version=9p2000.L,msize=104857600,posixacl";
+      options = "trans=virtio,version=9p2000.L,msize=512000,cache=mmap";
     }
   ];
 

@@ -20,7 +20,7 @@ qemu-system-aarch64 \
     -device usb-kbd,bus=usb-bus.0 \
     -device usb-mouse,bus=usb-bus.0 \
     -device virtio-blk-pci,drive=drive0,bootindex=0 \
-    -device virtio-9p-pci,fsdev=fs0,mount_tag=usersnegz \
+    -device virtio-9p-pci,fsdev=fs0,mount_tag=/Users/negz \
     -parallel none \
     -display none \
     -vga none \
