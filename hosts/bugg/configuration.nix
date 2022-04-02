@@ -22,6 +22,9 @@
 
   users = {
     users.negz = {
+      # This will typically be the first user's UID. See corresponding note on
+      # users.users.negz in hosts/mael/configuration.nix.
+      uid = 501;
       home = "/Users/negz";
       shell = pkgs.zsh;
     };
