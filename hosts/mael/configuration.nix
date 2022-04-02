@@ -65,7 +65,7 @@
   fileSystems."/home/negz/bugg" = {
     device = "usersnegz";
     fsType = "9p";
-    options = "trans=virtio,version=9p2000.L,msize=104857600,posixacl";
+    options = [ "trans=virtio" "version=9p2000.L" "msize=104857600" "posixacl" ];
   };
 
   system.stateVersion = "21.11";
