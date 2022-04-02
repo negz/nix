@@ -48,24 +48,19 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  # We're making an attempt to align our UID and GID with our host so that we
-  # appear to be the same user when interacting with our 9p filesystem. The
-  # first user on MacOS is typically UID 501, GID 20. GID 20 corresponds to the
-  # group 'staff'. On our guest GID 20 is 'lp' (printer access). We don't need
-  # that so we overwrite it to 'staff'.
+  # We're making an attempt to align our UID with our host so that we appear to
+  # be the same user when interacting with our 9p filesystem. We can't easily
+  # align our GID because the default MacOS GID is 20 (staff), which collides
+  # with the builtin NixOS 20 (lp) group.
   users = {
     defaultUserShell = pkgs.zsh;
-    groups = {
-      staff.gid = 20;
-      lp.gid = 21;
-    };
     users.negz = {
       uid = 501;
       home = "/home/negz";
       shell = pkgs.zsh;
       isNormalUser = true;
       hashedPassword = "";
-      extraGroups = [ "wheel" "docker" "staff" ];
+      extraGroups = [ "wheel" "docker" ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
       ];
