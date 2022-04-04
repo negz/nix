@@ -102,32 +102,6 @@ docker context create --docker host=ssh://negz@mael --description "Virtual Machi
 docker context use mael
 ```
 
-To teach `kind` about the VM (also from MacOS), create `kind.yaml`:
-
-```yaml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-networking:
-  apiServerAddress: "0.0.0.0"
-nodes:
-  - role: control-plane
-    image: kindest/node:v1.23.4@sha256:0e34f0d0fd448aa2f2819cfd74e99fe5793a6e4938b328f657c8e3f81ee0dfb9
-kubeadmConfigPatches:
-- |
-  kind: ClusterConfiguration
-  apiServer:
-      certSANs:
-        - "mael"
-```
-
-Then run:
-
-```shell
-kind create cluster --config kind.yaml
-
-sed -Ibak 's/0.0.0.0/mael/' ~/.kube/config
-```
-
 [nix-darwin]: https://github.com/LnL7/nix-darwin
 [NixOS]: https://nixos.org
 [home-manager]: https://github.com/nix-community/home-manager
