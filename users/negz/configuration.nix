@@ -11,7 +11,7 @@
     shellAliases = {
       rmd = "rm -rf";
       psa = "ps aux";
-      l = "ls -FH";
+      l = "exa -F";
       t = "tmux attach-session";
       view = "nvim -R"; # programs.neovim can't symlink this.
       k = "kubectl";
@@ -237,6 +237,19 @@
           default = "current";
         };
       };
+    };
+
+    bat = {
+      enable = true;
+      config = {
+        theme = "GitHub";
+        style = "plain";
+      };
+    };
+
+    exa = {
+      enable = true;
+      enableAliases = true;
     };
 
     go = {
