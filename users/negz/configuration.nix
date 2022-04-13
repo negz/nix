@@ -239,14 +239,6 @@
       };
     };
 
-    bat = {
-      enable = true;
-      config = {
-        theme = "GitHub";
-        style = "plain";
-      };
-    };
-
     exa = {
       enable = true;
       enableAliases = true;
