@@ -4,7 +4,7 @@ FIRMWARE=$(nix eval --raw 'nixpkgs#qemu')/share/qemu/edk2-aarch64-code.fd
 NIX_ROOT=$PWD/vm/nixos.qcow2
 qemu-system-aarch64 \
     -name mael \
-    -machine virt,accel=hvf,highmem=off \
+    -machine virt,accel=hvf \
     -cpu host \
     -smp 4,sockets=1,cores=4,threads=1 \
     -m 4096 \

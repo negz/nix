@@ -43,7 +43,7 @@ curl -o $NIX_INSTALL https://hydra.nixos.org/build/170436603/download/1/nixos-mi
 # Start the VM. Ctrl-A-X to kill the VM.
 qemu-system-aarch64 \
     -name mael \
-    -machine virt,accel=hvf,highmem=off \
+    -machine virt,accel=hvf \
     -cpu host \
     -smp 4,sockets=1,cores=4,threads=1 \
     -m 4096 \
