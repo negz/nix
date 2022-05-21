@@ -116,6 +116,21 @@
       vimdiffAlias = true;
       coc = {
         enable = true;
+
+        # TODO(negz): Remove this once coc-nvim is updated in nixpkgs to
+        # 2022-05-21 or greater per https://github.com/nix-community/home-manager/issues/2966
+        # https://github.com/NixOS/nixpkgs/blob/50bbd084/pkgs/applications/editors/vim/plugins/generated.nix#L1375
+        package = pkgs.vimUtils.buildVimPluginFrom2Nix {
+          pname = "coc.nvim";
+          version = "2022-05-21";
+          src = pkgs.fetchFromGitHub {
+            owner = "neoclide";
+            repo = "coc.nvim";
+            rev = "791c9f673b882768486450e73d8bda10e391401d";
+            sha256 = "sha256-MobgwhFQ1Ld7pFknsurSFAsN5v+vGbEFojTAYD/kI9c=";
+          };
+        };
+
         settings = {
           languageserver = {
             go = {
