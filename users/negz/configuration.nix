@@ -18,10 +18,15 @@
     };
 
     packages = [
+      # Kubernetes things
       pkgs.docker
       pkgs.kubectl
       pkgs.kubernetes-helm
       pkgs.kind
+
+      # Rust things
+      pkgs.rustc
+      pkgs.cargo
     ];
 
     file = {
