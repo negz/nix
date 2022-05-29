@@ -261,6 +261,7 @@
 
     go = {
       enable = true;
+      package = pkgs.go_1_18;
       goPath = "control/go";
       goBin = "control/go/bin";
     };
