@@ -43,6 +43,7 @@
       trustedInterfaces = [ "tailscale0" ];
       allowedTCPPorts = [ 22 ];
       allowedUDPPorts = [ config.services.tailscale.port ];
+      checkReversePath = "loose"; # For Tailscale compatibility.
     };
   };
 
