@@ -1,6 +1,6 @@
 #/usr/bin/env zsh
 
-FIRMWARE=$(nix eval --raw 'nixpkgs#qemu')/share/qemu/edk2-aarch64-code.fd
+FIRMWARE=$PWD/vm/edk2-aarch64-code.fd
 NIX_ROOT=$PWD/vm/nixos.qcow2
 qemu-system-aarch64 \
     -name mael \
