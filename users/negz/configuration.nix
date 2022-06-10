@@ -270,5 +270,9 @@
       goPath = "control/go";
       goBin = "control/go/bin";
     };
+
+    jq = {
+      enable = true;
+    };
   };
 }
