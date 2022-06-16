@@ -256,6 +256,9 @@
         push = {
           default = "current";
         };
+        url = {
+          "git@github.com:" = { insteadOf = "https://github.com/"; };
+        };
       };
     };
 
@@ -269,6 +272,7 @@
       package = pkgs.go_1_18;
       goPath = "control/go";
       goBin = "control/go/bin";
+      goPrivate = [ "github.com/upbound" ];
     };
 
     jq = {
