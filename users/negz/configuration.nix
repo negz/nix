@@ -36,7 +36,7 @@
       };
     };
 
-    sessionPath = [ "$HOME/control/go/bin" ];
+    sessionPath = [ "$HOME/bin" "$HOME/control/go/bin" ];
 
     stateVersion = "21.11";
   };
