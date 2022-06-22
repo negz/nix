@@ -85,6 +85,10 @@
   system.stateVersion = "21.11";
 
   services = {
+    timesyncd = {
+      enable = true;
+      servers = [ "time1.google.com" "time2.google.com" "time3.google.com" "time4.google.com" ];
+    };
     openssh = {
       enable = true;
       permitRootLogin = "no";
