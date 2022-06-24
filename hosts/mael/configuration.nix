@@ -51,15 +51,10 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  # We're making an attempt to align our UID with our host so that we appear to
-  # be the same user when interacting with our 9p filesystem. We can't easily
-  # align our GID because the default MacOS GID is 20 (staff), which collides
-  # with the builtin NixOS 20 (lp) group.
   users = {
     mutableUsers = false;
     defaultUserShell = pkgs.zsh;
     users.negz = {
-      uid = 501;
       home = "/home/negz";
       shell = pkgs.zsh;
       isNormalUser = true;
@@ -70,17 +65,6 @@
       ];
     };
   };
-
-  systemd.mounts = [
-    {
-      description = "/Users/negz from QEMU host";
-      where = "/Users/negz";
-      what = "/Users/negz";
-      type = "9p";
-      options = "trans=virtio,version=9p2000.L,msize=512000,cache=none,ro";
-      wantedBy = [ "multi-user.target" ];
-    }
-  ];
 
   system.stateVersion = "21.11";
 
