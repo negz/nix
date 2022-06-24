@@ -31,22 +31,23 @@ Once the Mac is boostrapped, create a VM:
 
 ```shell
 # Create a disk for the VM.
-FIRMWARE=$(nix eval --raw 'nixpkgs#qemu')/share/qemu/edk2-aarch64-code.fd
+FIRMWARE=$PWD/vm/nixos.fd
 NIX_ROOT=$PWD/vm/nixos.qcow2
+cp $(nix eval --raw 'nixpkgs#qemu')/share/qemu/edk2-aarch64-code.fd $FIRMWARE
 qemu-img create -f qcow2 $NIX_ROOT 80G
 
 # Grab an install ISO from Hydra
-# https://hydra.nixos.org/job/nixos/release-21.11/nixos.iso_minimal.aarch64-linux/all
+# https://hydra.nixos.org/job/nixos/release-22.05/nixos.iso_minimal.aarch64-linux/all
 NIX_INSTALL=$PWD/vm/install.iso
-curl -o $NIX_INSTALL https://hydra.nixos.org/build/170436603/download/1/nixos-minimal-21.11.336635.31aa631dbc4-aarch64-linux.iso
+curl -o $NIX_INSTALL https://hydra.nixos.org/build/181427254/download/1/nixos-minimal-22.05.1191.ccf8bdf7262-aarch64-linux.iso
 
 # Start the VM. Ctrl-A-X to kill the VM.
 qemu-system-aarch64 \
     -name mael \
     -machine virt,accel=hvf \
     -cpu host \
-    -smp 4,sockets=1,cores=4,threads=1 \
-    -m 4096 \
+    -smp 6,sockets=1,cores=6,threads=1 \
+    -m 16384 \
     -boot menu=on \
     -drive if=pflash,format=raw,readonly=on,file=${FIRMWARE} \
     -drive if=none,media=disk,id=drive0,cache=writethrough,file=${NIX_ROOT} \
@@ -85,6 +86,8 @@ mkdir -p /mnt/boot
 mount /dev/disk/by-label/boot /mnt/boot
 
 # Enable flake support, and install NixOS
+# At the time of writing this really needs to be nixUnstable, not nixFlakes to
+# workaround https://github.com/nix-community/home-manager/issues/2074
 nix-env -iA nixos.nixUnstable
 nixos-install --flake github:negz/nix#mael --no-root-password
 

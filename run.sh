@@ -1,13 +1,13 @@
 #/usr/bin/env zsh
 
-FIRMWARE=$PWD/vm/edk2-aarch64-code.fd
+FIRMWARE=$PWD/vm/nixos.fd
 NIX_ROOT=$PWD/vm/nixos.qcow2
 qemu-system-aarch64 \
     -name mael \
     -machine virt,accel=hvf \
     -cpu host \
-    -smp 4,sockets=1,cores=4,threads=1 \
-    -m 4096 \
+    -smp 6,sockets=1,cores=6,threads=1 \
+    -m 16348 \
     -boot menu=on \
     -drive if=pflash,format=raw,readonly=on,file=${FIRMWARE} \
     -drive if=none,media=disk,id=drive0,cache=writethrough,file=${NIX_ROOT} \
