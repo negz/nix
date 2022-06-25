@@ -6,6 +6,7 @@
 
     sessionVariables = {
       EDITOR = "nvim";
+      TMPDIR = "/tmp";  # Prevent nix-shell from using $XDG_RUNTIME_DIR.
     };
 
     shellAliases = {
