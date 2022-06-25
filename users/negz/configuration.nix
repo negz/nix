@@ -27,6 +27,11 @@
       # Rust things
       pkgs.rustc
       pkgs.cargo
+
+      # Required for the VSCode server
+      # Replace the node build in ~/.vscode-server/bin/*/ with
+      # a symlink to /etc/profiles/per-user/negz/bin/node*
+      pkgs.nodejs-16_x
     ];
 
     file = {
