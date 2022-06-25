@@ -22,6 +22,19 @@
       # Replace the node build in ~/.vscode-server/bin/*/ with
       # a symlink to /etc/profiles/per-user/negz/bin/node*
       pkgs.nodejs-16_x
+
+      # Development tools. Ideally we'd just use a shell.nix for these, but it's
+      # tough to get VSCode to respect that.
+      pkgs.gnumake
+      pkgs.gcc   # For cgo
+      pkgs.perl  # For shasum - used in https://github.com/upbound/build
+      pkgs.docker
+      pkgs.kubectl
+      pkgs.kubernetes-helm
+      pkgs.kind
+      pkgs.gopls
+      pkgs.go-outline
+      pkgs.golangci-lint
     ];
 
     file = {
@@ -264,7 +277,7 @@
 
     go = {
       enable = true;
-      package = pkgs.go_1_18;
+      package = pkgs.go_1_17;
       goPath = "control/go";
       goBin = "control/go/bin";
       goPrivate = [ "github.com/upbound" ];
