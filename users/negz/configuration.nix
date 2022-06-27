@@ -36,6 +36,9 @@
       pkgs.gopls
       pkgs.go-outline
       pkgs.golangci-lint
+
+      # Tools I find handy to have around.
+      pkgs.file
     ];
 
     file = {
