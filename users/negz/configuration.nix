@@ -16,6 +16,7 @@
       t = "tmux attach-session";
       view = "nvim -R"; # programs.neovim can't symlink this.
       k = "kubectl";
+      fixssh = "eval $(tmux showenv -s SSH_AUTH_SOCK)";
     };
 
     packages = [
