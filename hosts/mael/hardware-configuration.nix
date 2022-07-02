@@ -3,8 +3,6 @@
 {
   boot.initrd.availableKernelModules = [ "xhci_pci" "usbhid" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.extraModulePackages = [ pkgs.prl-tools ];
-  boot.kernelModules = [ "prl_tg" "prl_eth" "prl_fs" "prl_fs_freeze" ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
