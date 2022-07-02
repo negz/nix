@@ -3,7 +3,7 @@
 {
   boot.initrd.availableKernelModules = [ "xhci_pci" "usbhid" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.extraModulePackages = [ hardware.parallels.package ];
+  boot.extraModulePackages = [ config.hardware.parallels.package ];
   boot.kernelModules = [ "prl_tg" "prl_eth" "prl_fs" "prl_fs_freeze" ];
 
   fileSystems."/" = {
