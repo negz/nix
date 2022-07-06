@@ -11,8 +11,6 @@
     gc.automatic = true;
   };
 
-  environment.systemPackages = [ pkgs.qemu ];
-
   nixpkgs = {
     config.allowUnfree = true;
     config.allowUnsupportedSystem = true;
