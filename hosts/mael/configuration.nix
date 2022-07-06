@@ -74,7 +74,11 @@
       permitRootLogin = "no";
       passwordAuthentication = false;
     };
-    tailscale.enable = true;
+
+    tailscale = {
+      enable = true;
+      package = pkgs.unstable.tailscale;
+    };
   };
 
   programs = {
@@ -88,6 +92,5 @@
 
   environment = {
     defaultPackages = lib.mkForce [ ];
-    systemPackages = [ pkgs.tailscale ];
   };
 }
