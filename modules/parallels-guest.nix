@@ -67,6 +67,17 @@ in
       };
     };
 
+    # TODO(negz): It seems like this should be a child of prltoolsd.
+    systemd.services.prltimesync = {
+      description = "Parallels Time Service";
+      wantedBy = [ "multi-user.target" ];
+      path = [ prl-tools ];
+      serviceConfig = {
+        ExecStart = "${prl-tools}/bin/prltimesync";
+        PIDFile = "/var/run/prltimesync.pid";
+      };
+    };
+
     systemd.services.prlfsmountd = mkIf config.hardware.parallels.autoMountShares {
       description = "Parallels Guest File System Sharing Tool";
       wantedBy = [ "multi-user.target" ];
