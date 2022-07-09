@@ -1,5 +1,5 @@
 { stdenv, lib, makeWrapper, p7zip
-, gawk, util-linux, xorg, glib, dbus-glib, zlib, bbe
+, gawk, util-linux, xorg, glib, dbus-glib, zlib, bbe, bash, timetrap, netcat, cups
 , kernel ? null, libsOnly ? false
 , fetchurl, undmg, perl, autoPatchelfHook
 }:
@@ -8,14 +8,13 @@ assert (!libsOnly) -> kernel != null;
 assert lib.elem stdenv.hostPlatform.system [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
 
 stdenv.mkDerivation rec {
-  version = "${prl_major}.1.4-51567";
-  prl_major = "17";
+  version = "17.1.4-51567";
   pname = "prl-tools";
 
   # We download the full distribution to extract prl-tools-lin.iso from
   # => ${dmg}/Parallels\ Desktop.app/Contents/Resources/Tools/prl-tools-lin.iso
   src = fetchurl {
-    url =  "https://download.parallels.com/desktop/v${prl_major}/${version}/ParallelsDesktop-${version}.dmg";
+    url =  "https://download.parallels.com/desktop/v${lib.versions.major version}/${version}/ParallelsDesktop-${version}.dmg";
     sha256 = "sha256-gjLxQOTFuVghv1Bj+zfbNW97q1IN2rurSnPQi13gzRA=";
   };
 
@@ -44,7 +43,17 @@ stdenv.mkDerivation rec {
 
   kernelVersion = lib.optionalString (!libsOnly) kernel.modDirVersion;
   kernelDir = lib.optionalString (!libsOnly) "${kernel.dev}/lib/modules/${kernelVersion}";
-  scriptPath = lib.concatStringsSep ":" (lib.optionals (!libsOnly) [ "${util-linux}/bin" "${gawk}/bin" ]);
+
+  libPath = lib.concatStringsSep ":" [ "${glib.out}/lib" "${xorg.libXrandr}/lib" ];
+
+  scriptPath = lib.concatStringsSep ":" (lib.optionals (!libsOnly) [
+    "${util-linux}/bin"
+    "${gawk}/bin"
+    "${bash}/bin"
+    "${timetrap}/bin"
+    "${netcat}/bin"
+    "${cups}/sbin"
+  ]);
 
   buildPhase = ''
     if test -z "$libsOnly"; then
@@ -78,13 +87,23 @@ stdenv.mkDerivation rec {
       mkdir -p $out/lib
 
       if test -z "$libsOnly"; then
+        # prltoolsd contains hardcoded /bin/bash path
+        # we're lucky because it uses only -c command
+        # => replace to /bin/sh
+        bbe -e "s:/bin/bash:/bin/sh\x00\x00:" -o bin/prltoolsd.tmp bin/prltoolsd
+        rm -f bin/prltoolsd
+        mv bin/prltoolsd.tmp bin/prltoolsd
+
         # install binaries
         for i in bin/* sbin/prl_nettool sbin/prl_snapshot; do
           # also patch binaries to replace /usr/bin/XXX to XXX
-          # we're lucky here that all this patch are used inside hardocoded shell scripts
-          # => it allows to use space as padding
+          # here a two possible cases:
+          # 1. it is uses as null terminated string and should be truncated by null;
+          # 2. it is uses inside shell script and should be truncated by space.
           for p in bin/* sbin/prl_nettool sbin/prl_snapshot sbin/prlfsmountd; do
             p=$(basename $p)
+            bbe -e "s:/usr/bin/$p\x00:./$p\x00\x00\x00\x00\x00\x00\x00\x00:" -o $i.tmp $i
+            bbe -e "s:/usr/sbin/$p\x00:./$p\x00\x00\x00\x00\x00\x00\x00\x00 :" -o $i $i.tmp
             bbe -e "s:/usr/bin/$p:$p         :" -o $i.tmp $i
             bbe -e "s:/usr/sbin/$p:$p          :" -o $i $i.tmp
           done
@@ -93,8 +112,11 @@ stdenv.mkDerivation rec {
         done
 
         install -Dm755 ../../tools/prlfsmountd.sh $out/sbin/prlfsmountd
-        wrapProgram $out/sbin/prlfsmountd \
-          --prefix PATH ':' "$scriptPath"
+        for f in $out/bin/* $out/sbin/*; do
+          wrapProgram $f \
+            --prefix LD_LIBRARY_PATH ':' "$libPath" \
+            --prefix PATH ':' "$scriptPath"
+        done
 
         for i in lib/libPrl*.0.0; do
           cp $i $out/lib
@@ -103,6 +125,9 @@ stdenv.mkDerivation rec {
 
         mkdir -p $out/share/man/man8
         install -Dm644 ../mount.prl_fs.8 $out/share/man/man8
+
+        substituteInPlace ../99prltoolsd-hibernate \
+          --replace "/bin/bash" "${bash}/bin/bash"
 
         mkdir -p $out/etc/pm/sleep.d
         install -Dm644 ../99prltoolsd-hibernate $out/etc/pm/sleep.d

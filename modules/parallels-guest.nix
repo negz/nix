@@ -60,21 +60,11 @@ in
     systemd.services.prltoolsd = {
       description = "Parallels Tools Service";
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.gawk prl-tools ];
+      path = [ prl-tools ];
       serviceConfig = {
         ExecStart = "${prl-tools}/bin/prltoolsd -f";
         PIDFile = "/var/run/prltoolsd.pid";
-      };
-    };
-
-    # TODO(negz): It seems like this should be a child of prltoolsd.
-    systemd.services.prltimesync = {
-      description = "Parallels Time Service";
-      wantedBy = [ "multi-user.target" ];
-      path = [ prl-tools ];
-      serviceConfig = {
-        ExecStart = "${prl-tools}/bin/prltimesync";
-        PIDFile = "/var/run/prltimesync.pid";
+        WorkingDirectory = "${prl-tools}/bin";
       };
     };
 
@@ -87,6 +77,7 @@ in
         ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /media";
         ExecStopPost = "${prl-tools}/sbin/prlfsmountd -u";
         PIDFile = "/run/prlfsmountd.pid";
+        WorkingDirectory = "${prl-tools}/bin";
       };
     };
 
@@ -98,6 +89,7 @@ in
       serviceConfig = {
         Type = "forking";
         ExecStart = "${prl-tools}/bin/prlshprint";
+        WorkingDirectory = "${prl-tools}/bin";
       };
     };
 
@@ -108,6 +100,7 @@ in
         path = [ prl-tools ];
         serviceConfig = {
           ExecStart = "${prl-tools}/bin/prlcc";
+          WorkingDirectory = "${prl-tools}/bin";
         };
       };
       prldnd = {
@@ -116,6 +109,7 @@ in
         path = [ prl-tools ];
         serviceConfig = {
           ExecStart = "${prl-tools}/bin/prldnd";
+          WorkingDirectory = "${prl-tools}/bin";
         };
       };
       prlcp = {
@@ -125,6 +119,7 @@ in
         serviceConfig = {
           ExecStart = "${prl-tools}/bin/prlcp";
           Restart = "always";
+          WorkingDirectory = "${prl-tools}/bin";
         };
       };
       prlsga = {
@@ -133,6 +128,7 @@ in
         path = [ prl-tools ];
         serviceConfig = {
           ExecStart = "${prl-tools}/bin/prlsga";
+          WorkingDirectory = "${prl-tools}/bin";
         };
       };
       prlshprof = {
@@ -141,6 +137,7 @@ in
         path = [ prl-tools ];
         serviceConfig = {
           ExecStart = "${prl-tools}/bin/prlshprof";
+          WorkingDirectory = "${prl-tools}/bin";
         };
       };
     };
