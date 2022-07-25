@@ -33,9 +33,6 @@
 
 
   networking = {
-    wireless = {
-      enable = true;
-    };
     hostName = "roach";
     search = [ "i.rk0n.org" ];
     useDHCP = true;
