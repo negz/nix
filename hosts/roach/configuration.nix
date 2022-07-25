@@ -97,4 +97,28 @@
   environment = {
     defaultPackages = lib.mkForce [ ];
   };
+
+  systemd = {
+    mounts = [
+      {
+        description = "Media for Plex";
+        where = "/media";
+        what = "/dev/disk/by-uuid/62DE-3E98";
+        type = "exfat";
+        options = "nofail,uid=193,gid=193";  # Plex Media Server runs as uid 193 https://github.com/NixOS/nixpkgs/blob/release-22.05/nixos/modules/misc/ids.nix#L228
+        wantedBy = [ "multi-user.target" ];
+        mountConfig = {
+          TimeoutSec = "10s";
+        };
+      }
+    ];
+    automounts = [
+      {
+        description = "Media for Plex";
+        where = "/mnt/media";
+        wantedBy = [ "multi-user.target" ];
+      }
+    ];
+  };
+
 }
