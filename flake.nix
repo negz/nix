@@ -73,6 +73,19 @@
             }
           ];
         };
+        roach = nixos.lib.nixosSystem {
+          system = "aarch64-linux";
+          modules = [
+            { nixpkgs.overlays = nixos-overlays; }
+            ./hosts/roach/configuration.nix
+            hm-nixos.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.negz = import ./users/negz/configuration.nix;
+            }
+          ];
+        };
       };
     };
 }
