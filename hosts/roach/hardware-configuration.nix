@@ -30,7 +30,7 @@
         options = "nowait,uid=193,gid=193";  # Plex Media Server runs as uid 193 https://github.com/NixOS/nixpkgs/blob/release-22.05/nixos/modules/misc/ids.nix#L228
         wantedBy = [ "multi-user.target" ];
         mountConfig = {
-          TimeoutSec = "10s"
+          TimeoutSec = "10s";
         };
       }
     ];
