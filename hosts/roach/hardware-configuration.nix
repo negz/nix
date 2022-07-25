@@ -41,7 +41,7 @@
         wantedBy = [ "multi-user.target" ];
       }
     ];
-  }
+  };
 
   networking.useDHCP = lib.mkDefault true;
 
