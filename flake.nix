@@ -33,13 +33,19 @@
       darwin-overlays = [
         # Allow configurations to use pkgs.unstable.<package-name>.
         (final: prev: {
-          unstable = nixpkgs-unstable.legacyPackages.${prev.system};
+          unstable = import nixpkgs-unstable {
+            system = prev.system;
+            config.allowUnfree = true;
+          };
         })
       ];
       nixos-overlays = [
         # Allow configurations to use pkgs.unstable.<package-name>.
         (final: prev: {
-          unstable = nixos-unstable.legacyPackages.${prev.system};
+          unstable = import nixos-unstable {
+            system = prev.system;
+            config.allowUnfree = true;
+          };
         })
       ];
     in
