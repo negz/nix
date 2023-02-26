@@ -1,12 +1,6 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-
-  imports = [ ../../modules/parallels-guest.nix ];
-
-  # TODO(negz): Use upstream module once the below PR makes it into a release.
-  # https://github.com/NixOS/nixpkgs/pull/179582
-  disabledModules = [ "virtualisation/parallels-guest.nix" ];
   hardware.parallels = {
     enable = true;
   };

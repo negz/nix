@@ -135,12 +135,6 @@
       vimdiffAlias = true;
       coc = {
         enable = true;
-
-        # TODO(negz): Remove this once coc-nvim is updated in 22.05 to
-        # 2022-05-21 or greater per https://github.com/nix-community/home-manager/issues/2966
-        # https://github.com/NixOS/nixpkgs/blob/50bbd084/pkgs/applications/editors/vim/plugins/generated.nix#L1375
-        package = pkgs.unstable.vimPlugins.coc-nvim;
-
         settings = {
           languageserver = {
             go = {
