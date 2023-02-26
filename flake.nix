@@ -1,9 +1,9 @@
 {
-  description = "A NixOS configuration for https://github.com/negz's M1 Mac";
+  description = "A NixOS configuration for https://github.com/negz's machines";
 
   inputs = {
     nixpkgs = {
-      url = "github:nixos/nixpkgs/release-22.05";
+      url = "github:nixos/nixpkgs/release-22.11";
     };
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -13,17 +13,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hm-darwin = {
-      url = "github:nix-community/home-manager/release-22.05";
+      url = "github:nix-community/home-manager/release-22.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos = {
-      url = "github:nixos/nixpkgs/nixos-22.05";
+      url = "github:nixos/nixpkgs/nixos-22.11";
     };
     nixos-unstable = {
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
     hm-nixos = {
-      url = "github:nix-community/home-manager/release-22.05";
+      url = "github:nix-community/home-manager/release-22.11";
       inputs.nixpkgs.follows = "nixos";
     };
   };
