@@ -7,14 +7,19 @@
       (modulesPath + "/profiles/minimal.nix")
     ];
 
-
   nix = {
     package = pkgs.nixFlakes;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
-    autoOptimiseStore = true;
-    gc.automatic = true;
+
+    gc = {
+      automatic = true;
+    };
+
+    settings = {
+      auto-optimise-store = true;
+    };
   };
 
   nixpkgs = {

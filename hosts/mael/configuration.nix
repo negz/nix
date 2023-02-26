@@ -13,8 +13,14 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
-    autoOptimiseStore = true;
-    gc.automatic = true;
+
+    gc = {
+      automatic = true;
+    };
+
+    settings = {
+      auto-optimise-store = true;
+    };
   };
 
   nixpkgs = {
