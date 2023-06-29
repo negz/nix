@@ -177,14 +177,16 @@
               src = pkgs.fetchFromGitHub {
                 owner = "projekt0n";
                 repo = "github-nvim-theme";
-                rev = "v0.0.4";
-                sha256 = "tnHbM/oUHd/lJmz8VDREWiIRjbnjRx1ZksNh534mqzc=";
+                # TODO(negz): This is roughly v1.0.0. Use a release once one has
+                # https://github.com/projekt0n/github-nvim-theme/issues/254
+                rev = "8b363ab";
+                sha256 = "yNYtp/PULg9KvEpSxSm0vOhPj3EBlFm+uP8w78UIAlg=";
               };
             };
             config = ''
               lua << END
               require('github-theme').setup {
-                theme_style = "dark_default";
+                vim.cmd('colorscheme github_light')
               }
               END
             '';
@@ -209,8 +211,8 @@
               src = pkgs.fetchFromGitHub {
                 owner = "f-person";
                 repo = "auto-dark-mode.nvim";
-                rev = "9a7515c180c73ccbab9fce7124e49914f88cd763";
-                sha256 = "kPq/hoSn9/xaienyVWvlhJ2unDjrjhZKdhH5XkB2U0Q=";
+                rev = "7d15094";
+                sha256 = "f3AJukU9osmHFAWxmSEAw5/GsQyBXDVPdW3eUJJSNpM=";
               };
             };
             config = ''
@@ -219,11 +221,11 @@
               auto_dark_mode.setup {
                 set_dark_mode = function()
                   vim.api.nvim_set_option('background', 'dark')
-                  vim.cmd('colorscheme github_dark_default')
+                  vim.cmd('colorscheme github_dark')
                 end,
                 set_light_mode = function()
                   vim.api.nvim_set_option('background', 'light')
-                  vim.cmd('colorscheme github_light_default')
+                  vim.cmd('colorscheme github_light')
                 end,
               }
               auto_dark_mode.init()
