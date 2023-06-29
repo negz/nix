@@ -78,8 +78,10 @@
   services = {
     openssh = {
       enable = true;
-      permitRootLogin = "no";
-      passwordAuthentication = false;
+      settings = {
+        PermitRootLogin = "no";
+        PasswordAuthentication = false;
+      };
     };
 
     tailscale = {
@@ -93,6 +95,7 @@
     vim.defaultEditor = true;
 
     # For vscode-server - https://nixos.wiki/wiki/Visual_Studio_Code#nix-ld
+    # Note that as of NixOS 23.05 the env vars are set magically.
     nix-ld.enable = true;
   };
 
@@ -102,11 +105,5 @@
 
   environment = {
     defaultPackages = lib.mkForce [ ];
-
-    # For vscode-server - https://nixos.wiki/wiki/Visual_Studio_Code#nix-ld
-    variables = {
-      NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [ pkgs.stdenv.cc.cc ];
-      NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
-    };
   };
 }
