@@ -25,6 +25,11 @@
 
   programs.zsh.enable = true;
 
+  networking = {
+    computerName = "bugg";
+    hostName = "bugg";
+  };
+
   users = {
     users.negz = {
       # This will typically be the first user's UID. See corresponding note on
