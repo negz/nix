@@ -35,8 +35,6 @@
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    # Use unstable in order to get the unstable prl-tools.
-    kernelPackages = pkgs.unstable.linuxPackages_latest;
   };
 
 
