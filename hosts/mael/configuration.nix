@@ -45,10 +45,7 @@
 
     firewall = {
       enable = true;
-      trustedInterfaces = [ "tailscale0" ];
       allowedTCPPorts = [ 22 ];
-      allowedUDPPorts = [ config.services.tailscale.port ];
-      checkReversePath = "loose"; # For Tailscale compatibility.
     };
   };
 
@@ -81,11 +78,6 @@
         PasswordAuthentication = false;
       };
     };
-
-    tailscale = {
-      enable = true;
-      package = pkgs.unstable.tailscale;
-    };
   };
 
   programs = {
@@ -98,7 +90,13 @@
   };
 
   virtualisation = {
-    docker.enable = true;
+    docker = {
+      enable = true;
+      package = pkgs.unstable.docker_24;
+      autoPrune = {
+        enable = true;
+      };
+    };
   };
 
   environment = {
