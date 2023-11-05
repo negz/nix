@@ -246,7 +246,10 @@
         p = "status";
         ll = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all";
       };
-      ignores = [ ".DS_Store" ];
+      ignores = [
+        ".DS_Store"
+        "shell.nix"
+      ];
       extraConfig = {
         push = {
           default = "current";
