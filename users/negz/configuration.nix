@@ -12,7 +12,7 @@
     shellAliases = {
       rmd = "rm -rf";
       psa = "ps aux";
-      l = "exa -F";
+      l = "eza -F";
       t = "tmux attach-session";
       view = "nvim -R"; # programs.neovim can't symlink this.
       k = "kubectl";
@@ -56,7 +56,9 @@
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       enableCompletion = true;
       enableAutosuggestions = true;
-      enableSyntaxHighlighting = true;
+      syntaxHighlighting = {
+        enable = true;
+      };
       defaultKeymap = "emacs";
       plugins = [
         {
@@ -166,15 +168,13 @@
             '';
           }
           {
-            plugin = pkgs.vimUtils.buildVimPluginFrom2Nix {
+            plugin = pkgs.vimUtils.buildVimPlugin {
               name = "github-nvim-theme";
               src = pkgs.fetchFromGitHub {
                 owner = "projekt0n";
                 repo = "github-nvim-theme";
-                # TODO(negz): This is roughly v1.0.0. Use a release once one has
-                # https://github.com/projekt0n/github-nvim-theme/issues/254
-                rev = "8b363ab";
-                sha256 = "yNYtp/PULg9KvEpSxSm0vOhPj3EBlFm+uP8w78UIAlg=";
+                rev = "v1.0.1";
+                sha256 = "30+5q6qE1GCetNKdUC15LcJeat5e0wj9XtNwGdpRsgk=";
               };
             };
             config = ''
@@ -196,33 +196,6 @@
                   component_separators = ' ',
                 }
               }
-              END
-            '';
-          }
-          {
-            plugin = pkgs.vimUtils.buildVimPluginFrom2Nix {
-              name = "auto-dark-mode";
-              src = pkgs.fetchFromGitHub {
-                owner = "f-person";
-                repo = "auto-dark-mode.nvim";
-                rev = "7d15094";
-                sha256 = "f3AJukU9osmHFAWxmSEAw5/GsQyBXDVPdW3eUJJSNpM=";
-              };
-            };
-            config = ''
-              lua << END
-              local auto_dark_mode = require('auto-dark-mode')
-              auto_dark_mode.setup {
-                set_dark_mode = function()
-                  vim.api.nvim_set_option('background', 'dark')
-                  vim.cmd('colorscheme github_dark')
-                end,
-                set_light_mode = function()
-                  vim.api.nvim_set_option('background', 'light')
-                  vim.cmd('colorscheme github_light')
-                end,
-              }
-              auto_dark_mode.init()
               END
             '';
           }
@@ -260,7 +233,7 @@
       };
     };
 
-    exa = {
+    eza = {
       enable = true;
       enableAliases = true;
     };
