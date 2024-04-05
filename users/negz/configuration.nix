@@ -32,6 +32,7 @@
       pkgs.gopls
       pkgs.go-outline
       pkgs.golangci-lint
+      pkgs.unstable.zig
 
       # Tools I find handy to have around.
       pkgs.file
@@ -240,7 +241,7 @@
 
     go = {
       enable = true;
-      package = pkgs.unstable.go_1_21;
+      package = pkgs.unstable.go_1_22;
       goPath = "control/go";
       goBin = "control/go/bin";
       goPrivate = [ "github.com/upbound" ];
