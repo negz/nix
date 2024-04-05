@@ -38,6 +38,9 @@
       };
       efi.canTouchEfiVariables = true;
     };
+
+    # To get the latest prltools package we need to the latest kernel.
+    kernelPackages = pkgs.unstable.linuxPackages_latest;
   };
 
 
