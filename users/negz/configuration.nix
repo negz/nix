@@ -6,7 +6,7 @@
 
     sessionVariables = {
       EDITOR = "nvim";
-      TMPDIR = "/tmp";  # Prevent nix-shell from using $XDG_RUNTIME_DIR.
+      TMPDIR = "/tmp"; # Prevent nix-shell from using $XDG_RUNTIME_DIR.
     };
 
     shellAliases = {
@@ -20,19 +20,26 @@
     };
 
     packages = [
-      # Development tools. Ideally we'd just use a shell.nix for these, but it's
-      # tough to get VSCode to respect that.
+      # Language servers
+      pkgs.nil
+      pkgs.gopls
+
+      # Go things
+      pkgs.golangci-lint
+      pkgs.go-outline
+      pkgs.gcc # Gor cgo
+
+      # For crossplane/crossplane build
+      pkgs.unstable.earthly
+
+      # Things https://github.com/crossplane/build needs
       pkgs.gnumake
-      pkgs.gcc   # For cgo
-      pkgs.perl  # For shasum - used in https://github.com/upbound/build
-      pkgs.docker
+      pkgs.perl
+
+      # Kubernetes tools
       pkgs.kubectl
       pkgs.kubernetes-helm
       pkgs.kind
-      pkgs.gopls
-      pkgs.go-outline
-      pkgs.golangci-lint
-      pkgs.unstable.zig
 
       # Tools I find handy to have around.
       pkgs.file
