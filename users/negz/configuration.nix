@@ -63,7 +63,9 @@
       dotDir = ".config/zsh";
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       enableCompletion = true;
-      enableAutosuggestions = true;
+      autosuggestion = {
+        enable = true;
+      };
       syntaxHighlighting = {
         enable = true;
       };
@@ -243,7 +245,6 @@
 
     eza = {
       enable = true;
-      enableAliases = true;
     };
 
     go = {
