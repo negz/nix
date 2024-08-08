@@ -41,6 +41,15 @@
 
     # To get the latest prltools package we need to the latest kernel.
     kernelPackages = pkgs.unstable.linuxPackages_latest;
+
+    kernel = {
+      sysctl = {
+        # To resolve "too many open files" issues in kind pods
+        # https://kind.sigs.k8s.io/docs/user/known-issues/#pod-errors-due-to-too-many-open-files
+        "fs.inotify.max_user_watches" = "524288";
+        "fs.inotify.max_user_instances" = "512";
+      };
+    };
   };
 
 
@@ -57,7 +66,23 @@
 
   time.timeZone = "America/Los_Angeles";
 
-  security.sudo.wheelNeedsPassword = false;
+  security = {
+    sudo = {
+      wheelNeedsPassword = false;
+    };
+
+    pam = {
+      loginLimits = [
+        {
+          domain = "*";
+          type = "soft";
+          item = "nofile";
+          value = "4096";
+        }
+      ];
+    };
+
+  };
 
   users = {
     mutableUsers = false;
