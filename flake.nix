@@ -92,6 +92,19 @@
             }
           ];
         };
+        tehol = nixos.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            { nixpkgs.overlays = nixos-overlays; }
+            ./hosts/tehol/configuration.nix
+            hm-nixos.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.negz = import ./users/negz/configuration.nix;
+            }
+          ];
+        };
       };
     };
 }
