@@ -40,6 +40,20 @@
     kernelPackages = pkgs.unstable.linuxPackages_latest;
   };
 
+  hardware = {
+    nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      modesetting.enable = true;
+      nvidiaSettings = true;
+    };
+
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true;
+    };
+  };
+
   networking = {
     hostName = "tehol";
     search = [ "i.rk0n.org" ];
@@ -76,7 +90,6 @@
       wheelNeedsPassword = false;
     };
 
-    # Used by PulseAudio
     rtkit.enable = true;
   };
 
@@ -113,6 +126,8 @@
 
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
+
+      videoDrivers = ["nvidia"];
     };
   
     printing.enable = true;
@@ -125,8 +140,6 @@
       pulse.enable = true;
     };
   };
-
-  hardware.pulseaudio.enable = false;
 
   programs = {
     zsh.enable = true;
