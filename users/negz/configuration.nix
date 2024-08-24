@@ -7,6 +7,7 @@
     sessionVariables = {
       EDITOR = "nvim";
       TMPDIR = "/tmp"; # Prevent nix-shell from using $XDG_RUNTIME_DIR.
+      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
     };
 
     shellAliases = {

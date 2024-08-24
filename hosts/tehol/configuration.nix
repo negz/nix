@@ -152,8 +152,24 @@
     # Note that as of NixOS 23.05 the env vars are set magically.
     nix-ld.enable = true;
 
-    firefox.enable = true;
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true;
+      localNetworkGameTransfers.openFirewall = true;
+      gamescopeSession.enable = true;
+    };
+
+    gamemode.enable = true;
   };
+
+  environment.systemPackages = [
+    pkgs.google-chrome
+    pkgs.mangohud
+    pkgs.protonup
+    pkgs.lutris
+    pkgs.heroic
+    pkgs.bottles
+  ];
 
   system.stateVersion = "24.05";
 }
