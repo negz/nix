@@ -1,10 +1,9 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports =
-    [
+    [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (modulesPath + "/profiles/minimal.nix")
     ];
 
   nix = {
@@ -38,49 +37,47 @@
       efi.canTouchEfiVariables = true;
     };
 
-    # To get the latest prltools package we need to the latest kernel.
     kernelPackages = pkgs.unstable.linuxPackages_latest;
-
-    kernel = {
-      sysctl = {
-        # To resolve "too many open files" issues in kind pods
-        # https://kind.sigs.k8s.io/docs/user/known-issues/#pod-errors-due-to-too-many-open-files
-        "fs.inotify.max_user_watches" = "524288";
-        "fs.inotify.max_user_instances" = "512";
-      };
-    };
   };
 
-
   networking = {
-    hostName = "mael";
-    search = [ "v.rk0n.org" ];
-    useDHCP = true;
+    hostName = "tehol";
+    search = [ "i.rk0n.org" ];
 
     firewall = {
       enable = true;
       allowedTCPPorts = [ 22 ];
     };
+
+    networkmanager = {
+      enable = true;
+    };
   };
 
   time.timeZone = "America/Los_Angeles";
+
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "en_US.UTF-8";
+      LC_IDENTIFICATION = "en_US.UTF-8";
+      LC_MEASUREMENT = "en_US.UTF-8";
+      LC_MONETARY = "en_US.UTF-8";
+      LC_NAME = "en_US.UTF-8";
+      LC_NUMERIC = "en_US.UTF-8";
+      LC_PAPER = "en_US.UTF-8";
+      LC_TELEPHONE = "en_US.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
+  };
 
   security = {
     sudo = {
       wheelNeedsPassword = false;
     };
 
-    pam = {
-      loginLimits = [
-        {
-          domain = "*";
-          type = "soft";
-          item = "nofile";
-          value = "4096";
-        }
-      ];
-    };
-
+    # Used by PulseAudio
+    rtkit.enable = true;
   };
 
   users = {
@@ -91,14 +88,12 @@
       shell = pkgs.zsh;
       isNormalUser = true;
       hashedPassword = "";
-      extraGroups = [ "wheel" "docker" ];
+      extraGroups = [ "wheel" "docker" "networkmanager"];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
       ];
     };
   };
-
-  system.stateVersion = "21.11";
 
   services = {
     openssh = {
@@ -108,28 +103,41 @@
         PasswordAuthentication = false;
       };
     };
+
+    xserver = {
+      enable = true;
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
+
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
+    };
+  
+    printing.enable = true;
+
+    # Sound stuff
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
   };
+
+  hardware.pulseaudio.enable = false;
 
   programs = {
     zsh.enable = true;
     vim.defaultEditor = true;
 
-    # For vscode-server - https://nixos.wiki/wiki/Visual_Studio_Code#nix-ld
+    # Maybe useful for gaming stuff?
     # Note that as of NixOS 23.05 the env vars are set magically.
     nix-ld.enable = true;
+
+    firefox.enable = true;
   };
 
-  virtualisation = {
-    docker = {
-      enable = true;
-      package = pkgs.unstable.docker_26;
-      autoPrune = {
-        enable = true;
-      };
-    };
-  };
-
-  environment = {
-    defaultPackages = lib.mkForce [ ];
-  };
+  system.stateVersion = "24.05";
 }
