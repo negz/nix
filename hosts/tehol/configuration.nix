@@ -52,6 +52,9 @@
       driSupport = true;
       driSupport32Bit = true;
     };
+
+    # Needed by Pipewire
+    pulseaudio.enable = false;
   };
 
   networking = {
