@@ -38,7 +38,8 @@
       timeout = 0;
     };
 
-    kernelPackages = pkgs.unstable.linuxPackages_latest;
+    # Try an older Kernel...
+    # kernelPackages = pkgs.unstable.linuxPackages_latest;
 
     plymouth = {
       enable = true;
@@ -205,7 +206,27 @@
       pkgs.lutris
       pkgs.heroic
       pkgs.bottles
+
+      pkgs.gnomeExtensions.freon
+      pkgs.gnomeExtensions.blur-my-shell
+      pkgs.gnomeExtensions.night-theme-switcher
     ];
+
+    gnome = {
+      excludePackages = [
+        pkgs.gnome-tour
+        pkgs.gnome.epiphany
+        pkgs.gnome.geary
+        pkgs.gnome.gnome-music
+        pkgs.gnome.cheese
+        pkgs.gnome.tali
+        pkgs.gnome.iagno
+        pkgs.gnome.hitori
+        pkgs.gnome.atomix
+        pkgs.gnome.gnome-maps
+        pkgs.gnome.gnome-contacts
+      ];
+    };
 
     etc = {
       # TODO(negz): Make this work? Right now it'll connect but just gives
