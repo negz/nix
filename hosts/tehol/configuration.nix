@@ -63,7 +63,8 @@
 
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 ];
+      allowedTCPPorts = [ 22 3389 ];
+      allowedUDPPorts = [ 3389 ];
     };
 
     networkmanager = {
@@ -132,7 +133,7 @@
 
       videoDrivers = ["nvidia"];
     };
-  
+
     printing.enable = true;
 
     # Sound stuff
@@ -143,6 +144,7 @@
       pulse.enable = true;
     };
   };
+
 
   programs = {
     zsh.enable = true;
@@ -168,14 +170,47 @@
     };
   };
 
-  environment.systemPackages = [
-    pkgs.google-chrome
-    pkgs.mangohud
-    pkgs.protonup
-    pkgs.lutris
-    pkgs.heroic
-    pkgs.bottles
-  ];
+  environment = {
+    systemPackages = [
+      pkgs.google-chrome
+      pkgs.mangohud
+      pkgs.protonup
+      pkgs.lutris
+      pkgs.heroic
+      pkgs.bottles
+    ];
+
+    etc = {
+      # TODO(negz): Make this work? Right now it'll connect but just gives
+      # a black screen. Can't figure out why.
+      "gnome-remote-desktop/grd.conf" = {
+        user = "gnome-remote-desktop";
+        group = "gnome-remote-desktop";
+        mode = "0644";
+        text = ''
+          [RDP]
+          enabled=true
+          port=3389
+
+          # TODO(negz): Generate these with ACME?
+          # These were generated using this command from the freerdp package:
+          # winpr-makecert -silent -rdp -path ~gnome-remote-desktop rdp-tls
+          tls-key=/var/lib/gnome-remote-desktop/rdp-tls.key
+          tls-cert=/var/lib/gnome-remote-desktop/rdp-tls.crt
+        '';
+      };
+    };
+  };
+
+  systemd = {
+    services = {
+      # GNOME installs this but doesn't enable it.
+      gnome-remote-desktop = {
+        enable = true;
+        wantedBy = [ "graphical.target" ];
+      };
+    };
+  };
 
   system.stateVersion = "24.05";
 }
