@@ -38,8 +38,7 @@
       timeout = 0;
     };
 
-    # Try an older Kernel...
-    # kernelPackages = pkgs.unstable.linuxPackages_latest;
+    kernelPackages = pkgs.unstable.linuxPackages_latest;
 
     plymouth = {
       enable = true;
@@ -210,6 +209,7 @@
       pkgs.gnomeExtensions.freon
       pkgs.gnomeExtensions.blur-my-shell
       pkgs.gnomeExtensions.night-theme-switcher
+      pkgs.gnomeExtensions.just-perfection
     ];
 
     gnome = {
