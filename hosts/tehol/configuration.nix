@@ -16,8 +16,8 @@
       automatic = true;
     };
 
-    settings = {
-      auto-optimise-store = true;
+    optimise = {
+      automatic = true;
     };
   };
 
