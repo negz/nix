@@ -8,7 +8,6 @@
     ];
 
   nix = {
-    package = pkgs.nixFlakes;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
@@ -39,7 +38,7 @@
     };
 
     # To get the latest prltools package we need to the latest kernel.
-    kernelPackages = pkgs.unstable.linuxPackages_latest;
+    # kernelPackages = pkgs.unstable.linuxPackages_latest;
 
     kernel = {
       sysctl = {
@@ -112,7 +111,10 @@
 
   programs = {
     zsh.enable = true;
-    vim.defaultEditor = true;
+    vim = {
+      enable = true;
+      defaultEditor = true;
+    };
 
     # For vscode-server - https://nixos.wiki/wiki/Visual_Studio_Code#nix-ld
     # Note that as of NixOS 23.05 the env vars are set magically.
