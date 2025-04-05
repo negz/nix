@@ -135,6 +135,18 @@
       '';
     };
 
+    ghostty = {
+      enable = true;
+
+      installVimSyntax = true;
+      installBatSyntax = true;
+      enableZshIntegration = true;
+
+      settings = {
+        theme = "light:GitHub-Light-Default,dark:GitHub-Dark-Default";
+      };
+    };
+
     neovim = {
       enable = true;
       viAlias = true;
