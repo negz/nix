@@ -13,7 +13,7 @@
     shellAliases = {
       rmd = "rm -rf";
       psa = "ps aux";
-      l = "eza -F";
+      l = "eza --classify=auto";
       t = "tmux attach-session";
       view = "nvim -R"; # programs.neovim can't symlink this.
       k = "kubectl";
