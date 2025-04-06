@@ -96,6 +96,11 @@
           file = "p10k.zsh";
         }
         {
+          name = "ghostty-integration";
+          src = lib.cleanSource ./zsh;
+          file = "ghostty.zsh";
+        }
+        {
           name = "zsh-nix-shell";
           file = "nix-shell.plugin.zsh";
           src = pkgs.fetchFromGitHub {
