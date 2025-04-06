@@ -101,8 +101,8 @@
           src = pkgs.fetchFromGitHub {
             owner = "chisui";
             repo = "zsh-nix-shell";
-            rev = "v0.7.0";
-            sha256 = "0za4aiwwrlawnia4f29msk822rj9bgcygw6a8a6iikiwzjjz0g91";
+            rev = "v0.8.0";
+            sha256 = "Z6EYQdasvpl1P78poj9efnnLj7QQg13Me8x1Ryyw+dM=";
           };
         }
       ];
@@ -197,14 +197,14 @@
               src = pkgs.fetchFromGitHub {
                 owner = "projekt0n";
                 repo = "github-nvim-theme";
-                rev = "v1.0.1";
-                sha256 = "30+5q6qE1GCetNKdUC15LcJeat5e0wj9XtNwGdpRsgk=";
+                rev = "v1.1.2";
+                sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
               };
             };
             config = ''
               lua << END
               require('github-theme').setup {
-                vim.cmd('colorscheme github_light')
+                vim.cmd('colorscheme github_dark_default')
               }
               END
             '';
