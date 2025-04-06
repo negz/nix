@@ -229,6 +229,16 @@
     ssh = {
       enable = true;
       forwardAgent = true;
+
+      # ghostty uses its own terminfo, which most hosts won't have
+      matchBlocks = {
+        "ghostty-terminfo" = {
+          host = "!mael,*";
+          setEnv = {
+            TERM = "xterm-256color";
+          };
+        };
+      };
     };
 
     git = {
