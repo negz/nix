@@ -63,6 +63,8 @@
       "ghostty/config" = {
         text = ''
           theme = light:GitHub-Light-Default,dark:GitHub-Dark-Default
+          font-family = Menlo
+          font-size = 12
         '';
       };
     };
