@@ -58,6 +58,17 @@
     stateVersion = "21.11";
   };
 
+  xdg = {
+    configFile = {
+      "ghostty/config" = {
+        text = ''
+          theme = light:GitHub-Light-Default,dark:GitHub-Dark-Default
+        '';
+      };
+    };
+  };
+
+
   programs = {
     zsh = {
       enable = true;
@@ -133,18 +144,6 @@
         set-window-option -g window-status-format '#I #W '
         set -g pane-active-border-style fg=#58a6ff
       '';
-    };
-
-    ghostty = {
-      enable = true;
-
-      installVimSyntax = true;
-      installBatSyntax = true;
-      enableZshIntegration = true;
-
-      settings = {
-        theme = "light:GitHub-Light-Default,dark:GitHub-Dark-Default";
-      };
     };
 
     neovim = {
