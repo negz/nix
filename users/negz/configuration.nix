@@ -140,13 +140,12 @@
         unbind '"'
         unbind %
         set -g status-interval 1
-        set -g status-bg "#58a6ff"
-        set -g status-fg "#ffffff"
+        set -g status-style fg=default,bg=default
         set -g status-left ' '
         set -g status-left-length 0
         set -g status-right ' '
         set -g status-right-length 0
-        set-window-option -g window-status-current-style bold
+        set-window-option -g window-status-current-style 'bold bg=#cce4ff fg=#000000'
         set-window-option -g window-status-current-format '#I #W '
         set-window-option -g window-status-format '#I #W '
         set -g pane-active-border-style fg=#58a6ff
