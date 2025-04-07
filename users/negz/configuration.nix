@@ -225,14 +225,50 @@
             '';
           }
           {
+            plugin = nvim-web-devicons;
+          }
+          {
             plugin = lualine-nvim;
             config = ''
               lua << END
               require('lualine').setup {
                 options = {
-                  icons_enabled = false,
+                  icons_enabled = true,
                   section_separators = ' ',
                   component_separators = ' ',
+                  globalstatus = true,
+                },
+                sections = {
+                  lualine_c = {
+                    {
+                      'buffers',
+                      symbols = {
+                        alternate_file = ' ',
+                      },
+                    },
+                  },
+                },
+              }
+              END
+            '';
+          }
+          {
+            plugin = neo-tree-nvim;
+            config = ''
+              lua << END
+              require('neo-tree').setup {
+                vim.api.nvim_create_autocmd("UiEnter", {
+                  callback = function()
+                    vim.cmd.Neotree("toggle", "action=show")
+                  end,
+                }),
+
+                close_if_last_window = true,
+                filesystem = {
+                  hijack_netrw_behavior = "open_current",
+                  window = {
+                    position = "right",
+                  },
                 }
               }
               END
