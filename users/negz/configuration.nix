@@ -26,7 +26,7 @@
       pkgs.gopls
 
       # Go things
-      pkgs.golangci-lint
+      pkgs.unstable.golangci-lint
       pkgs.go-outline
       pkgs.gcc # Gor cgo
 
@@ -165,7 +165,11 @@
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
-      extraPackages = [ pkgs.ripgrep pkgs.fd ]; # For Telescope
+      extraPackages = [
+        pkgs.ripgrep
+        pkgs.fd
+        pkgs.golangci-lint-langserver
+      ];
       extraConfig = ''
         set hidden
         set autoindent
@@ -283,7 +287,25 @@
             plugin = nvim-lspconfig;
             config = ''
               lua << END
-              require('lspconfig').gopls.setup {}
+              local lsp = require('lspconfig')
+              lsp.gopls.setup {}
+              lsp.golangci_lint_ls.setup {
+                -- TODO(negz): Remove when the below issue is fixed.
+                -- https://github.com/nametake/golangci-lint-langserver/issues/51
+                init_options = (function()
+                    local pipe = io.popen("golangci-lint version|cut -d' ' -f4")
+                    if pipe == nil then
+                        return {}
+                    end
+                    local version = pipe:read("*a")
+                    pipe:close()
+                    local major_version = tonumber(version:match("^v?(%d+)%."))
+                    if major_version and major_version > 1 then
+                        return {command = {"golangci-lint", "run", "--output.json.path", "stdout", "--show-stats=false", "--issues-exit-code=1"}}
+                    end
+                    return {}
+                end)(),
+              }
               END
             '';
           }
