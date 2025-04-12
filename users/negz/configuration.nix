@@ -65,6 +65,8 @@
           theme = light:GitHub-Light-Default,dark:GitHub-Dark-Default
           font-family = Menlo
           font-size = 12
+          macos-option-as-alt = true
+          link-url = true
         '';
       };
     };
@@ -127,28 +129,34 @@
       escapeTime = 0;
       newSession = true;
       extraConfig = ''
-        bind-key A command-prompt 'rename-window "%%"'
         set -g renumber-windows on
         set -g visual-bell on
-        set -g mouse off
-        bind-key m run 'tmux show -g mouse | grep -q on && T=off || T=on;tmux set -g mouse $T;tmux display "Mouse $T"'
-        unbind -Tcopy-mode-vi Enter
-        bind-key -Tcopy-mode-vi 'v' send -X begin-selection
-        bind-key | split-window -h
-        bind-key \\ split-window -h 
-        bind-key - split-window -v
-        unbind '"'
-        unbind %
+        set -g mouse on
         set -g status-interval 1
+        set -g status-justify left
         set -g status-style fg=default,bg=default
         set -g status-left ' '
         set -g status-left-length 0
         set -g status-right ' '
         set -g status-right-length 0
+        set -g pane-active-border-style fg=#58a6ff
+
+        set-window-option -g aggressive-resize
         set-window-option -g window-status-current-style 'bold bg=#cce4ff fg=#000000'
         set-window-option -g window-status-current-format '#I #W '
         set-window-option -g window-status-format '#I #W '
-        set -g pane-active-border-style fg=#58a6ff
+        set-window-option -g message-style 'bold bg=#cce4ff fg=#000000'
+
+        unbind -Tcopy-mode-vi Enter
+        unbind '"'
+        unbind %
+
+        bind-key A command-prompt 'rename-window "%%"'
+        bind-key m run 'tmux show -g mouse | grep -q on && T=off || T=on;tmux set -g mouse $T;tmux display "Mouse $T"'
+        bind-key -Tcopy-mode-vi 'v' send -X begin-selection
+        bind-key | split-window -h
+        bind-key - split-window -v
+        bind-key C-a last-window
       '';
     };
 
@@ -157,19 +165,7 @@
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
-      coc = {
-        enable = true;
-        settings = {
-          languageserver = {
-            go = {
-              command = "gopls";
-              rootPatterns = [ "go.mod" ];
-              filetypes = [ "go" ];
-            };
-          };
-        };
-      };
-      extraPackages = [ pkgs.nodejs pkgs.gopls ]; # For CoC
+      extraPackages = [ pkgs.ripgrep pkgs.fd ]; # For Telescope
       extraConfig = ''
         set hidden
         set autoindent
@@ -183,10 +179,14 @@
         set showcmd
         set scrolloff=3
         set backspace=2
+        set textwidth=80
+        set formatoptions=cq
       '';
       plugins = with pkgs.vimPlugins;
         [
           vim-nix
+          vim-visual-multi
+          plenary-nvim
           {
             plugin = gitsigns-nvim;
             config = ''
@@ -235,24 +235,14 @@
                   icons_enabled = true,
                   section_separators = ' ',
                   component_separators = ' ',
-                  globalstatus = true,
-                },
-                sections = {
-                  lualine_c = {
-                    {
-                      'buffers',
-                      symbols = {
-                        alternate_file = ' ',
-                      },
-                    },
-                  },
-                },
+                  globalstatus = true
+                }
               }
               END
             '';
           }
           {
-            plugin = neo-tree-nvim;
+            plugin = pkgs.unstable.vimPlugins.neo-tree-nvim;
             config = ''
               lua << END
               require('neo-tree').setup {
@@ -264,12 +254,121 @@
 
                 close_if_last_window = true,
                 filesystem = {
-                  hijack_netrw_behavior = "open_current",
+                  filtered_items = {
+                    visible = true,
+                  },
+                  hijack_netrw_behavior = "open_default",
                   window = {
                     position = "right",
+                    width = 35,
                   },
+                  follow_current_file = {
+                    enabled = true,
+                    leave_dirs_open = true,
+                  }
                 }
               }
+              END
+            '';
+          }
+          {
+            plugin = barbar-nvim;
+            config = ''
+              lua << END
+              require('barbar').setup()
+              END
+            '';
+          }
+          {
+            plugin = nvim-lspconfig;
+            config = ''
+              lua << END
+              require('lspconfig').gopls.setup {}
+              END
+            '';
+          }
+          {
+            plugin = lspkind-nvim;
+            config = ''
+              lua << END
+              require('lspkind').setup()
+              END
+            '';
+          }
+          {
+            plugin = nvim-treesitter.withAllGrammars;
+            config = ''
+              lua << END
+              require('nvim-treesitter.configs').setup {
+                highlight = { enable = true },
+                indent = { enable = true },
+                textobjects = {
+                  select = {
+                    enable = true,
+                    lookahead = true
+                  }
+                }
+              }
+              END
+            '';
+          }
+          {
+            plugin = nvim-treesitter-context;
+            config = ''
+              lua << END
+              require('treesitter-context').setup()
+              END
+            '';
+          }
+          {
+            plugin = telescope-nvim;
+            config = ''
+              lua << END
+              local builtin = require('telescope.builtin')
+              vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+              vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+              END
+            '';
+          }
+          {
+            plugin = codewindow-nvim;
+            config = ''
+              lua << END
+              require('codewindow').setup {
+                auto_enable = true,
+                show_cursor = false,
+                window_border = 'none',
+                minimap_width = 15,
+                screen_bounds = 'background'
+              }
+              END
+            '';
+          }
+          {
+            plugin = pkgs.vimUtils.buildVimPlugin {
+              name = "guihua";
+              src = pkgs.fetchFromGitHub {
+                owner = "ray-x";
+                repo = "guihua.lua";
+                rev = "d783191eaa75215beae0c80319fcce5e6b3beeda";
+                sha256 = "XpUsbj1boDfbyE8C6SdOvZdkd97682VVC81fvQ5WA/4=";
+              };
+            };
+          }
+          {
+            plugin = go-nvim;
+            config = ''
+              lua << END
+              require('go').setup()
+
+              local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
+              vim.api.nvim_create_autocmd("BufWritePre", {
+                pattern = "*.go",
+                callback = function()
+                  require('go.format').goimports()
+                end,
+                group = format_sync_grp,
+              })
               END
             '';
           }
