@@ -168,8 +168,8 @@
       extraPackages = [
         pkgs.ripgrep
         pkgs.fd
-        pkgs.fzf
         pkgs.golangci-lint-langserver
+        pkgs.gh
       ];
       extraConfig = ''
         set hidden
@@ -290,7 +290,7 @@
             config = ''
               lua << END
               local lsp = require('lspconfig')
-              local caps = require('cmp_nvim_lsp').default_capabilities()
+              local caps = require('blink.cmp').get_lsp_capabilities()
 
               lsp.gopls.setup {
                 capabilities = caps,
@@ -380,38 +380,68 @@
               END
             '';
           }
-          fuzzy-nvim
-          cmp-nvim-lsp
-          cmp-fuzzy-buffer
-          lspkind-nvim
           {
-            plugin = nvim-cmp;
+            plugin = avante-nvim;
             config = ''
               lua << END
-              local cmp = require('cmp')
-              cmp.setup {
-                snippet = {
-                  expand = function(args)
-                    vim.snippet.expand(args.body)
-                  end,
+              require('avante_lib').load()
+              require('avante').setup {
+                claude = {
+                  model = 'claude-3-7-sonnet-20250219'
                 },
-                window = {
-                  completion = cmp.config.window.bordered(),
-                  documentation = cmp.config.window.bordered(),
+                behaviour = {
+                  enable_cursor_planning_mode = true,
+                  enable_claude_text_editor_tool_mode = true,
                 },
-                sources = cmp.config.sources {
-                  {name = 'nvim_lsp'}, {name = 'fuzzy_buffer'}
-                },
-                formatting = {
-                  format = require('lspkind').cmp_format {
-                    -- show_labelDetails = true
-                  }
-                }
+                hints = { enabled = false },
               }
-
               END
             '';
           }
+          friendly-snippets
+          pkgs.unstable.vimPlugins.blink-cmp-git
+          pkgs.unstable.vimPlugins.blink-cmp-avante
+          {
+            plugin = pkgs.unstable.vimPlugins.blink-cmp;
+            config = ''
+              lua << END
+              require('blink.cmp').setup {
+                keymap = { preset = 'super-tab' },
+                completion = {
+                    documentation = {
+                      auto_show = true,
+                      auto_show_delay_ms = 100,
+                    },
+                    list = {
+                      selection = {
+                        preselect = false,
+                      },
+                    },
+                };
+                sources = {
+                  default = { 'lsp', 'path', 'buffer', 'avante', 'git' },
+                  providers = {
+                    avante = {
+                      module = 'blink-cmp-avante',
+                      name = 'Avante',
+                    },
+                    git = {
+                      module = 'blink-cmp-git',
+                      name = 'Git',
+                    },
+                  },
+                },
+                fuzzy = { implementation = "rust" }
+              }
+              END
+            '';
+          }
+          # TODO(negz): Get these working
+          # https://github.com/Kaiser-Yang/blink-cmp-avante
+          # https://github.com/kylechui/nvim-surround
+          # https://github.com/nvim-treesitter/nvim-treesitter-refactor/
+          # And some kind of 'show documentation at cursor' thing?
+          # https://cmp.saghen.dev/configuration/reference#signature
         ];
     };
 
