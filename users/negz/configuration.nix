@@ -168,6 +168,7 @@
       extraPackages = [
         pkgs.ripgrep
         pkgs.fd
+        pkgs.fzf
         pkgs.golangci-lint-langserver
       ];
       extraConfig = ''
@@ -191,6 +192,7 @@
           vim-nix
           vim-visual-multi
           plenary-nvim
+          telescope-nvim
           {
             plugin = gitsigns-nvim;
             config = ''
@@ -288,8 +290,14 @@
             config = ''
               lua << END
               local lsp = require('lspconfig')
-              lsp.gopls.setup {}
+              local caps = require('cmp_nvim_lsp').default_capabilities()
+
+              lsp.gopls.setup {
+                capabilities = caps,
+              }
               lsp.golangci_lint_ls.setup {
+                capabilities = caps,
+
                 -- TODO(negz): Remove when the below issue is fixed.
                 -- https://github.com/nametake/golangci-lint-langserver/issues/51
                 init_options = (function()
@@ -306,14 +314,24 @@
                     return {}
                 end)(),
               }
-              END
-            '';
-          }
-          {
-            plugin = lspkind-nvim;
-            config = ''
-              lua << END
-              require('lspkind').setup()
+
+              vim.api.nvim_create_autocmd("BufWritePre", {
+                pattern = "*.go",
+                callback = function()
+                  local params = vim.lsp.util.make_range_params()
+                  params.context = {only = {"source.organizeImports"}}
+                  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+                  for cid, res in pairs(result or {}) do
+                    for _, r in pairs(res.result or {}) do
+                      if r.edit then
+                        local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+                        vim.lsp.util.apply_workspace_edit(r.edit, enc)
+                      end
+                    end
+                  end
+                  vim.lsp.buf.format({async = false})
+                end
+              })
               END
             '';
           }
@@ -322,7 +340,10 @@
             config = ''
               lua << END
               require('nvim-treesitter.configs').setup {
-                highlight = { enable = true },
+                highlight = {
+                  enable = true,
+                  additional_vim_regex_highlighting = true
+                },
                 indent = { enable = true },
                 textobjects = {
                   select = {
@@ -338,17 +359,10 @@
             plugin = nvim-treesitter-context;
             config = ''
               lua << END
-              require('treesitter-context').setup()
-              END
-            '';
-          }
-          {
-            plugin = telescope-nvim;
-            config = ''
-              lua << END
-              local builtin = require('telescope.builtin')
-              vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
-              vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+              require('treesitter-context').setup {
+                mode = 'topline',
+                max_lines = 3,
+              }
               END
             '';
           }
@@ -366,31 +380,35 @@
               END
             '';
           }
+          fuzzy-nvim
+          cmp-nvim-lsp
+          cmp-fuzzy-buffer
+          lspkind-nvim
           {
-            plugin = pkgs.vimUtils.buildVimPlugin {
-              name = "guihua";
-              src = pkgs.fetchFromGitHub {
-                owner = "ray-x";
-                repo = "guihua.lua";
-                rev = "d783191eaa75215beae0c80319fcce5e6b3beeda";
-                sha256 = "XpUsbj1boDfbyE8C6SdOvZdkd97682VVC81fvQ5WA/4=";
-              };
-            };
-          }
-          {
-            plugin = go-nvim;
+            plugin = nvim-cmp;
             config = ''
               lua << END
-              require('go').setup()
+              local cmp = require('cmp')
+              cmp.setup {
+                snippet = {
+                  expand = function(args)
+                    vim.snippet.expand(args.body)
+                  end,
+                },
+                window = {
+                  completion = cmp.config.window.bordered(),
+                  documentation = cmp.config.window.bordered(),
+                },
+                sources = cmp.config.sources {
+                  {name = 'nvim_lsp'}, {name = 'fuzzy_buffer'}
+                },
+                formatting = {
+                  format = require('lspkind').cmp_format {
+                    -- show_labelDetails = true
+                  }
+                }
+              }
 
-              local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
-              vim.api.nvim_create_autocmd("BufWritePre", {
-                pattern = "*.go",
-                callback = function()
-                  require('go.format').goimports()
-                end,
-                group = format_sync_grp,
-              })
               END
             '';
           }
