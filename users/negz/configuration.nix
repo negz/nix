@@ -168,8 +168,11 @@
       extraPackages = [
         pkgs.ripgrep
         pkgs.fd
-        pkgs.golangci-lint-langserver
         pkgs.gh
+
+        # Language servers
+        pkgs.golangci-lint-langserver
+        pkgs.lua-language-server
       ];
       extraConfig = ''
         set hidden
@@ -187,20 +190,15 @@
         set textwidth=80
         set formatoptions=cq
       '';
-      plugins = with pkgs.vimPlugins;
-        [
-          vim-nix
-          vim-visual-multi
-          plenary-nvim
-          telescope-nvim
-          {
-            plugin = gitsigns-nvim;
-            config = ''
-              lua << END
-              require('gitsigns').setup()
-              END
-            '';
-          }
+      plugins = [
+          pkgs.vimPlugins.vim-nix
+          pkgs.vimPlugins.vim-visual-multi
+          pkgs.vimPlugins.plenary-nvim
+          pkgs.vimPlugins.telescope-nvim
+          pkgs.vimPlugins.nvim-web-devicons
+          pkgs.vimPlugins.friendly-snippets
+          pkgs.unstable.vimPlugins.blink-cmp-git
+          pkgs.unstable.vimPlugins.blink-cmp-avante
           {
             plugin = pkgs.vimUtils.buildVimPlugin {
               name = "github-nvim-theme";
@@ -211,230 +209,58 @@
                 sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
               };
             };
-            config = ''
-              lua << END
-              require('github-theme').setup {
-                vim.api.nvim_create_autocmd("OptionSet", {
-                  pattern = "background",
-                  callback = function()
-                    if vim.o.background == "light" then
-                      vim.cmd.colorscheme("github_light_default")
-                    end
-                    if vim.o.background == "dark" then
-                      vim.cmd.colorscheme("github_dark_default")
-                    end
-                  end,
-                })
-              }
-              END
-            '';
+            type = "lua";
+            config = builtins.readFile ./nvim/github-theme.lua;
           }
           {
-            plugin = nvim-web-devicons;
+            plugin = pkgs.vimPlugins.gitsigns-nvim;
+            type = "lua";
+            config = builtins.readFile ./nvim/gitsigns.lua;
           }
           {
-            plugin = lualine-nvim;
-            config = ''
-              lua << END
-              require('lualine').setup {
-                options = {
-                  icons_enabled = true,
-                  section_separators = ' ',
-                  component_separators = ' ',
-                  globalstatus = true
-                }
-              }
-              END
-            '';
+            plugin = pkgs.vimPlugins.lualine-nvim;
+            type = "lua";
+            config = builtins.readFile ./nvim/lualine.lua;
           }
           {
             plugin = pkgs.unstable.vimPlugins.neo-tree-nvim;
-            config = ''
-              lua << END
-              require('neo-tree').setup {
-                vim.api.nvim_create_autocmd("UiEnter", {
-                  callback = function()
-                    vim.cmd.Neotree("toggle", "action=show")
-                  end,
-                }),
-
-                close_if_last_window = true,
-                filesystem = {
-                  filtered_items = {
-                    visible = true,
-                  },
-                  hijack_netrw_behavior = "open_default",
-                  window = {
-                    position = "right",
-                    width = 35,
-                  },
-                  follow_current_file = {
-                    enabled = true,
-                    leave_dirs_open = true,
-                  }
-                }
-              }
-              END
-            '';
+            type = "lua";
+            config = builtins.readFile ./nvim/neo-tree.lua;
           }
           {
-            plugin = barbar-nvim;
-            config = ''
-              lua << END
-              require('barbar').setup()
-              END
-            '';
+            plugin = pkgs.vimPlugins.barbar-nvim;
+            type = "lua";
+            config = builtins.readFile ./nvim/barbar.lua;
           }
           {
-            plugin = nvim-lspconfig;
-            config = ''
-              lua << END
-              local lsp = require('lspconfig')
-              local caps = require('blink.cmp').get_lsp_capabilities()
-
-              lsp.gopls.setup {
-                capabilities = caps,
-              }
-              lsp.golangci_lint_ls.setup {
-                capabilities = caps,
-
-                -- TODO(negz): Remove when the below issue is fixed.
-                -- https://github.com/nametake/golangci-lint-langserver/issues/51
-                init_options = (function()
-                    local pipe = io.popen("golangci-lint version|cut -d' ' -f4")
-                    if pipe == nil then
-                        return {}
-                    end
-                    local version = pipe:read("*a")
-                    pipe:close()
-                    local major_version = tonumber(version:match("^v?(%d+)%."))
-                    if major_version and major_version > 1 then
-                        return {command = {"golangci-lint", "run", "--output.json.path", "stdout", "--show-stats=false", "--issues-exit-code=1"}}
-                    end
-                    return {}
-                end)(),
-              }
-
-              vim.api.nvim_create_autocmd("BufWritePre", {
-                pattern = "*.go",
-                callback = function()
-                  local params = vim.lsp.util.make_range_params()
-                  params.context = {only = {"source.organizeImports"}}
-                  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
-                  for cid, res in pairs(result or {}) do
-                    for _, r in pairs(res.result or {}) do
-                      if r.edit then
-                        local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
-                        vim.lsp.util.apply_workspace_edit(r.edit, enc)
-                      end
-                    end
-                  end
-                  vim.lsp.buf.format({async = false})
-                end
-              })
-              END
-            '';
+            plugin = pkgs.vimPlugins.nvim-lspconfig;
+            type = "lua";
+            config = builtins.readFile ./nvim/lspconfig.lua;
           }
           {
-            plugin = nvim-treesitter.withAllGrammars;
-            config = ''
-              lua << END
-              require('nvim-treesitter.configs').setup {
-                highlight = {
-                  enable = true,
-                  additional_vim_regex_highlighting = true
-                },
-                indent = { enable = true },
-                textobjects = {
-                  select = {
-                    enable = true,
-                    lookahead = true
-                  }
-                }
-              }
-              END
-            '';
+            plugin = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
+            type = "lua";
+            config = builtins.readFile ./nvim/treesitter.lua;
           }
           {
-            plugin = nvim-treesitter-context;
-            config = ''
-              lua << END
-              require('treesitter-context').setup {
-                mode = 'topline',
-                max_lines = 3,
-              }
-              END
-            '';
+            plugin = pkgs.vimPlugins.nvim-treesitter-context;
+            type = "lua";
+            config = builtins.readFile ./nvim/treesitter-context.lua;
           }
           {
-            plugin = codewindow-nvim;
-            config = ''
-              lua << END
-              require('codewindow').setup {
-                auto_enable = true,
-                show_cursor = false,
-                window_border = 'none',
-                minimap_width = 15,
-                screen_bounds = 'background'
-              }
-              END
-            '';
+            plugin = pkgs.vimPlugins.codewindow-nvim;
+            type = "lua";
+            config = builtins.readFile ./nvim/codewindow.lua;
           }
           {
-            plugin = avante-nvim;
-            config = ''
-              lua << END
-              require('avante_lib').load()
-              require('avante').setup {
-                claude = {
-                  model = 'claude-3-7-sonnet-20250219'
-                },
-                behaviour = {
-                  enable_cursor_planning_mode = true,
-                  enable_claude_text_editor_tool_mode = true,
-                },
-                hints = { enabled = false },
-              }
-              END
-            '';
+            plugin = pkgs.vimPlugins.avante-nvim;
+            type = "lua";
+            config = builtins.readFile ./nvim/avante.lua;
           }
-          friendly-snippets
-          pkgs.unstable.vimPlugins.blink-cmp-git
-          pkgs.unstable.vimPlugins.blink-cmp-avante
           {
             plugin = pkgs.unstable.vimPlugins.blink-cmp;
-            config = ''
-              lua << END
-              require('blink.cmp').setup {
-                keymap = { preset = 'super-tab' },
-                completion = {
-                    documentation = {
-                      auto_show = true,
-                      auto_show_delay_ms = 100,
-                    },
-                    list = {
-                      selection = {
-                        preselect = false,
-                      },
-                    },
-                };
-                sources = {
-                  default = { 'lsp', 'path', 'buffer', 'avante', 'git' },
-                  providers = {
-                    avante = {
-                      module = 'blink-cmp-avante',
-                      name = 'Avante',
-                    },
-                    git = {
-                      module = 'blink-cmp-git',
-                      name = 'Git',
-                    },
-                  },
-                },
-                fuzzy = { implementation = "rust" }
-              }
-              END
-            '';
+            type = "lua";
+            config = builtins.readFile ./nvim/blink-cmp.lua;
           }
           # TODO(negz): Get these working
           # https://github.com/Kaiser-Yang/blink-cmp-avante
