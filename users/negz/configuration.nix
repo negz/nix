@@ -193,6 +193,7 @@
       plugins = [
           pkgs.vimPlugins.vim-nix
           pkgs.vimPlugins.vim-visual-multi
+          pkgs.vimPlugins.vim-illuminate
           pkgs.vimPlugins.plenary-nvim
           pkgs.vimPlugins.telescope-nvim
           pkgs.vimPlugins.nvim-web-devicons
@@ -265,7 +266,6 @@
           # TODO(negz): Get these working
           # https://github.com/Kaiser-Yang/blink-cmp-avante
           # https://github.com/kylechui/nvim-surround
-          # https://github.com/nvim-treesitter/nvim-treesitter-refactor/
           # And some kind of 'show documentation at cursor' thing?
           # https://cmp.saghen.dev/configuration/reference#signature
         ];
