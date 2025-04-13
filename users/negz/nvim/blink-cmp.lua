@@ -24,5 +24,11 @@ require('blink.cmp').setup {
       },
     },
   },
-  fuzzy = { implementation = "rust" }
+  fuzzy = { implementation = "rust" },
+  signature = { 
+    enabled = true,
+    window = {
+      show_documentation = true
+    }
+  }
 }
