@@ -184,6 +184,7 @@
       ];
       extraConfig = ''
         set hidden
+        set cursorline
         set autoindent
         set smartindent
         set showmatch
