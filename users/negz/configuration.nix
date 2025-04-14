@@ -206,6 +206,7 @@
         pkgs.vimPlugins.vim-visual-multi
         pkgs.vimPlugins.plenary-nvim
         pkgs.vimPlugins.telescope-nvim
+        pkgs.vimPlugins.which-key-nvim
         pkgs.unstable.vimPlugins.blink-cmp-git
         pkgs.unstable.vimPlugins.blink-cmp-avante
         {
