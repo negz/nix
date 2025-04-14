@@ -202,7 +202,6 @@
       plugins = [
         pkgs.vimPlugins.vim-nix
         pkgs.vimPlugins.vim-visual-multi
-        pkgs.vimPlugins.vim-illuminate
         pkgs.vimPlugins.plenary-nvim
         pkgs.vimPlugins.telescope-nvim
         pkgs.vimPlugins.nvim-web-devicons
@@ -265,6 +264,11 @@
           plugin = pkgs.vimPlugins.codewindow-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/codewindow.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.vim-illuminate;
+          type = "lua";
+          config = builtins.readFile ./nvim/illuminate.lua;
         }
         {
           plugin = pkgs.vimPlugins.avante-nvim;
