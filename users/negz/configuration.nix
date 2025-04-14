@@ -232,11 +232,6 @@
           config = builtins.readFile ./nvim/neo-tree.lua;
         }
         {
-          plugin = pkgs.vimPlugins.barbar-nvim;
-          type = "lua";
-          config = builtins.readFile ./nvim/barbar.lua;
-        }
-        {
           plugin = pkgs.vimPlugins.nvim-lspconfig;
           type = "lua";
           config = builtins.readFile ./nvim/lspconfig.lua;
