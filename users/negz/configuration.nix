@@ -284,19 +284,6 @@
         }
         {
           plugin = pkgs.vimUtils.buildVimPlugin {
-            name = "bgwinch";
-            src = pkgs.fetchFromGitHub {
-              owner = "will";
-              repo = "bgwinch.nvim";
-              rev = "cafe0e1f2fb55bdd4ae515a3eca34d72e2dd5e99";
-              sha256 = "XDMMgtLM8bQqBJzkwRcD2t0IPMJ9Be2gfte7vUJiYsY=";
-            };
-          };
-          type = "lua";
-          config = builtins.readFile ./nvim/bgwinch.lua;
-        }
-        {
-          plugin = pkgs.vimUtils.buildVimPlugin {
             name = "colorful-menu";
             src = pkgs.fetchFromGitHub {
               owner = "xzbdmw";
