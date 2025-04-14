@@ -1,6 +1,16 @@
 local lsp = require('lspconfig')
 local caps = require('blink.cmp').get_lsp_capabilities()
 
+-- Nix
+lsp.nil_ls.setup {
+  capabilities = caps,
+  settings = {
+    Nil = {
+      formatting = { command = "nixfmt" }
+    }
+  }
+}
+
 -- Lua, for configuring NeoVim
 
 lsp.lua_ls.setup {

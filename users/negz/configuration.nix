@@ -21,14 +21,10 @@
     };
 
     packages = [
-      # Language servers
-      pkgs.nil
-      pkgs.gopls
-
       # Go things
       pkgs.unstable.golangci-lint
       pkgs.go-outline
-      pkgs.gcc # Gor cgo
+      pkgs.gcc # For cgo
 
       # For crossplane/crossplane build
       pkgs.unstable.earthly
@@ -75,7 +71,7 @@
 
   programs = {
     zsh = {
-      enable = true;
+    enable = true;
       dotDir = ".config/zsh";
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       enableCompletion = true;
@@ -169,10 +165,12 @@
         pkgs.ripgrep
         pkgs.fd
         pkgs.gh
+        pkgs.nixfmt-rfc-style
 
         # Language servers
-        pkgs.golangci-lint-langserver
+        pkgs.nil
         pkgs.lua-language-server
+        pkgs.golangci-lint-langserver
       ];
       extraConfig = ''
         set hidden
