@@ -1,10 +1,4 @@
 require('neo-tree').setup {
-	vim.api.nvim_create_autocmd("UiEnter", {
-		callback = function()
-			vim.cmd.Neotree("toggle", "action=show")
-		end,
-	}),
-
 	close_if_last_window = true,
 	filesystem = {
 		filtered_items = {
@@ -21,3 +15,9 @@ require('neo-tree').setup {
 		}
 	}
 }
+
+vim.api.nvim_create_autocmd("UiEnter", {
+	callback = function()
+		vim.cmd.Neotree("toggle", "action=show")
+	end,
+})
