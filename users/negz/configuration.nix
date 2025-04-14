@@ -210,19 +210,6 @@
         pkgs.unstable.vimPlugins.blink-cmp-git
         pkgs.unstable.vimPlugins.blink-cmp-avante
         {
-          plugin = pkgs.vimUtils.buildVimPlugin {
-            name = "github-nvim-theme";
-            src = pkgs.fetchFromGitHub {
-              owner = "projekt0n";
-              repo = "github-nvim-theme";
-              rev = "v1.1.2";
-              sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
-            };
-          };
-          type = "lua";
-          config = builtins.readFile ./nvim/github-theme.lua;
-        }
-        {
           plugin = pkgs.vimPlugins.mini-icons;
           type = "lua";
           config = builtins.readFile ./nvim/mini-icons.lua;
@@ -286,6 +273,32 @@
           plugin = pkgs.unstable.vimPlugins.blink-cmp;
           type = "lua";
           config = builtins.readFile ./nvim/blink-cmp.lua;
+        }
+        {
+          plugin = pkgs.vimUtils.buildVimPlugin {
+            name = "github-nvim-theme";
+            src = pkgs.fetchFromGitHub {
+              owner = "projekt0n";
+              repo = "github-nvim-theme";
+              rev = "v1.1.2";
+              sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
+            };
+          };
+          type = "lua";
+          config = builtins.readFile ./nvim/github-theme.lua;
+        }
+        {
+          plugin = pkgs.vimUtils.buildVimPlugin {
+            name = "colorful-menu";
+            src = pkgs.fetchFromGitHub {
+              owner = "xzbdmw";
+              repo = "colorful-menu.nvim";
+              rev = "f80feb8a6706f965321aff24d0ed3849f02a7f77";
+              sha256 = "nLrxL/eVELFfqmoT+2qj1yJb4S6DjtCg9b5B9o73RuY=";
+            };
+          };
+          type = "lua";
+          config = builtins.readFile ./nvim/colorful-menu.lua;
         }
       ];
     };
