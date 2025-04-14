@@ -197,7 +197,6 @@
         set backspace=2
         set textwidth=80
         set formatoptions=cq
-        set tabstop=2
       '';
       plugins = [
         pkgs.vimPlugins.vim-nix
