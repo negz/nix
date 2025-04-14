@@ -26,15 +26,11 @@ require('blink.cmp').setup {
 		}
 	},
 	sources = {
-		default = { 'lsp', 'path', 'avante', 'git' },
+		default = { 'lsp', 'path', 'avante' },
 		providers = {
 			avante = {
 				module = 'blink-cmp-avante',
 				name = 'Avante',
-			},
-			git = {
-				module = 'blink-cmp-git',
-				name = 'Git',
 			},
 		},
 	},

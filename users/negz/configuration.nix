@@ -175,7 +175,6 @@
       extraPackages = [
         pkgs.ripgrep
         pkgs.fd
-        pkgs.gh
         pkgs.nixfmt-rfc-style
 
         # Language servers
@@ -210,7 +209,6 @@
         pkgs.vimPlugins.plenary-nvim
         pkgs.vimPlugins.telescope-nvim
         pkgs.vimPlugins.which-key-nvim
-        pkgs.unstable.vimPlugins.blink-cmp-git
         pkgs.unstable.vimPlugins.blink-cmp-avante
         {
           plugin = pkgs.vimPlugins.mini-icons;
