@@ -206,7 +206,6 @@
         pkgs.vimPlugins.plenary-nvim
         pkgs.vimPlugins.telescope-nvim
         pkgs.vimPlugins.nvim-web-devicons
-        pkgs.vimPlugins.friendly-snippets
         pkgs.unstable.vimPlugins.blink-cmp-git
         pkgs.unstable.vimPlugins.blink-cmp-avante
         {
