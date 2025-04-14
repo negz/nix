@@ -281,11 +281,6 @@
           type = "lua";
           config = builtins.readFile ./nvim/blink-cmp.lua;
         }
-        # TODO(negz): Get these working
-        # https://github.com/Kaiser-Yang/blink-cmp-avante
-        # https://github.com/kylechui/nvim-surround
-        # And some kind of 'show documentation at cursor' thing?
-        # https://cmp.saghen.dev/configuration/reference#signature
       ];
     };
 
