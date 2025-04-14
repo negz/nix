@@ -204,7 +204,6 @@
       '';
       plugins = [
         pkgs.vimPlugins.vim-nix
-        pkgs.vimPlugins.vim-visual-multi
         pkgs.vimPlugins.vim-illuminate
         pkgs.vimPlugins.plenary-nvim
         pkgs.vimPlugins.telescope-nvim
