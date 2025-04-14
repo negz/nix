@@ -10,8 +10,8 @@ lsp.nil_ls.setup {
 	on_attach = on_attach,
 	settings = {
 		['nil'] = {
-			formatting = { command = {"nixfmt"} }
-		}
+			formatting = { command = { "nixfmt" } }
+		},
 	}
 }
 

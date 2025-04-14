@@ -197,6 +197,8 @@
         set backspace=2
         set textwidth=80
         set formatoptions=cq
+
+        filetype indent on
       '';
       plugins = [
         pkgs.vimPlugins.vim-nix
