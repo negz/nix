@@ -206,7 +206,6 @@
         pkgs.vimPlugins.vim-visual-multi
         pkgs.vimPlugins.plenary-nvim
         pkgs.vimPlugins.telescope-nvim
-        pkgs.vimPlugins.nvim-web-devicons
         pkgs.unstable.vimPlugins.blink-cmp-git
         pkgs.unstable.vimPlugins.blink-cmp-avante
         {
@@ -221,6 +220,11 @@
           };
           type = "lua";
           config = builtins.readFile ./nvim/github-theme.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.mini-icons;
+          type = "lua";
+          config = builtins.readFile ./nvim/mini-icons.lua;
         }
         {
           plugin = pkgs.vimPlugins.gitsigns-nvim;
