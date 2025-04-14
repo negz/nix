@@ -185,6 +185,7 @@
       extraConfig = ''
         set hidden
         set cursorline
+        set guicursor=i:blinkon100-ver10
         set autoindent
         set smartindent
         set showmatch
