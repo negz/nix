@@ -1,5 +1,3 @@
-# Copied from https://github.com/NixOS/nixpkgs/blob/32bb18de3/pkgs/by-name/tm/tmux/package.nix
-
 {
   lib,
   stdenv,
@@ -31,9 +29,12 @@ let
 
 in
 
+# This is the below file, updated to build from master...
+# https://github.com/NixOS/nixpkgs/blob/32bb18de3/pkgs/by-name/tm/tmux/package.nix
+
 stdenv.mkDerivation (finalAttrs: {
   pname = "tmux";
-  version = "3.5a";
+  version = "f0a85d04695bcdc84d6dfbf5f9d3f9757a148365";
 
   outputs = [
     "out"
@@ -44,7 +45,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "tmux";
     repo = "tmux";
     rev = finalAttrs.version;
-    hash = "sha256-Z9XHpyh4Y6iBI4+SfFBCGA8huFJpRFZy9nEB7+WQVJE=";
+    hash = "sha256-rzZwWD1GgYv7vb4SLMp7nk8+Xtz0gw0g1MgigMaGUqY=";
   };
 
   nativeBuildInputs = [
@@ -52,6 +53,7 @@ stdenv.mkDerivation (finalAttrs: {
     autoreconfHook
     bison
   ];
+  # Copied from https://github.com/NixOS/nixpkgs/blob/32bb18de3/pkgs/by-name/tm/tmux/package.nix
 
   buildInputs =
     [
