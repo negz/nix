@@ -1,10 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   nix = {
     extraOptions = ''
@@ -89,7 +94,10 @@
 
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 3389 ];
+      allowedTCPPorts = [
+        22
+        3389
+      ];
       allowedUDPPorts = [ 3389 ];
     };
 
@@ -131,7 +139,11 @@
       shell = pkgs.zsh;
       isNormalUser = true;
       hashedPassword = "";
-      extraGroups = [ "wheel" "docker" "networkmanager"];
+      extraGroups = [
+        "wheel"
+        "docker"
+        "networkmanager"
+      ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
       ];
@@ -157,7 +169,7 @@
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
 
-      videoDrivers = ["nvidia"];
+      videoDrivers = [ "nvidia" ];
     };
 
     printing.enable = true;
@@ -170,7 +182,6 @@
       pulse.enable = true;
     };
   };
-
 
   programs = {
     zsh.enable = true;

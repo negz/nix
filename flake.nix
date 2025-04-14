@@ -28,7 +28,17 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, darwin, hm-darwin, nixos, nixos-unstable, hm-nixos }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      darwin,
+      hm-darwin,
+      nixos,
+      nixos-unstable,
+      hm-nixos,
+    }:
     let
       darwin-overlays = [
         # Allow configurations to use pkgs.unstable.<package-name>.

@@ -1,11 +1,16 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}:
 
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-      (modulesPath + "/profiles/minimal.nix")
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    (modulesPath + "/profiles/minimal.nix")
+  ];
 
   nix = {
     extraOptions = ''
@@ -50,7 +55,6 @@
     };
   };
 
-
   networking = {
     hostName = "mael";
     search = [ "v.rk0n.org" ];
@@ -90,7 +94,10 @@
       shell = pkgs.zsh;
       isNormalUser = true;
       hashedPassword = "";
-      extraGroups = [ "wheel" "docker" ];
+      extraGroups = [
+        "wheel"
+        "docker"
+      ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
       ];

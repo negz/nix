@@ -1,11 +1,16 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}:
 
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-      (modulesPath + "/profiles/minimal.nix")
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    (modulesPath + "/profiles/minimal.nix")
+  ];
 
   nix = {
     extraOptions = ''
@@ -35,7 +40,6 @@
     };
   };
 
-
   networking = {
     hostName = "roach";
     search = [ "i.rk0n.org" ];
@@ -59,7 +63,10 @@
       shell = pkgs.zsh;
       isNormalUser = true;
       hashedPassword = "";
-      extraGroups = [ "wheel" "docker" ];
+      extraGroups = [
+        "wheel"
+        "docker"
+      ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
       ];
@@ -110,7 +117,7 @@
         where = "/media";
         what = "/dev/disk/by-uuid/62DE-3E98";
         type = "exfat";
-        options = "nofail,uid=193,gid=193";  # Plex Media Server runs as uid 193 https://github.com/NixOS/nixpkgs/blob/release-22.05/nixos/modules/misc/ids.nix#L228
+        options = "nofail,uid=193,gid=193"; # Plex Media Server runs as uid 193 https://github.com/NixOS/nixpkgs/blob/release-22.05/nixos/modules/misc/ids.nix#L228
         wantedBy = [ "multi-user.target" ];
         mountConfig = {
           TimeoutSec = "10s";

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   home = {
@@ -49,7 +54,10 @@
       };
     };
 
-    sessionPath = [ "$HOME/bin" "$HOME/control/go/bin" ];
+    sessionPath = [
+      "$HOME/bin"
+      "$HOME/control/go/bin"
+    ];
 
     stateVersion = "21.11";
   };
@@ -68,10 +76,9 @@
     };
   };
 
-
   programs = {
     zsh = {
-    enable = true;
+      enable = true;
       dotDir = ".config/zsh";
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       enableCompletion = true;
@@ -110,7 +117,10 @@
         }
       ];
       localVariables = {
-        ZSH_AUTOSUGGEST_STRATEGY = [ "history" "completion" ];
+        ZSH_AUTOSUGGEST_STRATEGY = [
+          "history"
+          "completion"
+        ];
       };
       initExtraBeforeCompInit = ''
         P10KP="$XDG_CACHE_HOME/p10k-instant-prompt-''${(%):-%n}.zsh"; [[ ! -r "$P10KP" ]] || source "$P10KP"
@@ -187,86 +197,92 @@
         set backspace=2
         set textwidth=80
         set formatoptions=cq
+        set tabstop=2
       '';
       plugins = [
-          pkgs.vimPlugins.vim-nix
-          pkgs.vimPlugins.vim-visual-multi
-          pkgs.vimPlugins.vim-illuminate
-          pkgs.vimPlugins.plenary-nvim
-          pkgs.vimPlugins.telescope-nvim
-          pkgs.vimPlugins.nvim-web-devicons
-          pkgs.vimPlugins.friendly-snippets
-          pkgs.unstable.vimPlugins.blink-cmp-git
-          pkgs.unstable.vimPlugins.blink-cmp-avante
-          {
-            plugin = pkgs.vimUtils.buildVimPlugin {
-              name = "github-nvim-theme";
-              src = pkgs.fetchFromGitHub {
-                owner = "projekt0n";
-                repo = "github-nvim-theme";
-                rev = "v1.1.2";
-                sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
-              };
+        pkgs.vimPlugins.vim-nix
+        pkgs.vimPlugins.vim-visual-multi
+        pkgs.vimPlugins.vim-illuminate
+        pkgs.vimPlugins.plenary-nvim
+        pkgs.vimPlugins.telescope-nvim
+        pkgs.vimPlugins.nvim-web-devicons
+        pkgs.vimPlugins.friendly-snippets
+        pkgs.unstable.vimPlugins.blink-cmp-git
+        pkgs.unstable.vimPlugins.blink-cmp-avante
+        {
+          plugin = pkgs.vimUtils.buildVimPlugin {
+            name = "github-nvim-theme";
+            src = pkgs.fetchFromGitHub {
+              owner = "projekt0n";
+              repo = "github-nvim-theme";
+              rev = "v1.1.2";
+              sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
             };
-            type = "lua";
-            config = builtins.readFile ./nvim/github-theme.lua;
-          }
-          {
-            plugin = pkgs.vimPlugins.gitsigns-nvim;
-            type = "lua";
-            config = builtins.readFile ./nvim/gitsigns.lua;
-          }
-          {
-            plugin = pkgs.vimPlugins.lualine-nvim;
-            type = "lua";
-            config = builtins.readFile ./nvim/lualine.lua;
-          }
-          {
-            plugin = pkgs.unstable.vimPlugins.neo-tree-nvim;
-            type = "lua";
-            config = builtins.readFile ./nvim/neo-tree.lua;
-          }
-          {
-            plugin = pkgs.vimPlugins.barbar-nvim;
-            type = "lua";
-            config = builtins.readFile ./nvim/barbar.lua;
-          }
-          {
-            plugin = pkgs.vimPlugins.nvim-lspconfig;
-            type = "lua";
-            config = builtins.readFile ./nvim/lspconfig.lua;
-          }
-          {
-            plugin = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
-            type = "lua";
-            config = builtins.readFile ./nvim/treesitter.lua;
-          }
-          {
-            plugin = pkgs.vimPlugins.nvim-treesitter-context;
-            type = "lua";
-            config = builtins.readFile ./nvim/treesitter-context.lua;
-          }
-          {
-            plugin = pkgs.vimPlugins.codewindow-nvim;
-            type = "lua";
-            config = builtins.readFile ./nvim/codewindow.lua;
-          }
-          {
-            plugin = pkgs.vimPlugins.avante-nvim;
-            type = "lua";
-            config = builtins.readFile ./nvim/avante.lua;
-          }
-          {
-            plugin = pkgs.unstable.vimPlugins.blink-cmp;
-            type = "lua";
-            config = builtins.readFile ./nvim/blink-cmp.lua;
-          }
-          # TODO(negz): Get these working
-          # https://github.com/Kaiser-Yang/blink-cmp-avante
-          # https://github.com/kylechui/nvim-surround
-          # And some kind of 'show documentation at cursor' thing?
-          # https://cmp.saghen.dev/configuration/reference#signature
-        ];
+          };
+          type = "lua";
+          config = builtins.readFile ./nvim/github-theme.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.gitsigns-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/gitsigns.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.lualine-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/lualine.lua;
+        }
+        {
+          plugin = pkgs.unstable.vimPlugins.neo-tree-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/neo-tree.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.barbar-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/barbar.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.nvim-lspconfig;
+          type = "lua";
+          config = builtins.readFile ./nvim/lspconfig.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.lsp-format-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/lspformat.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
+          type = "lua";
+          config = builtins.readFile ./nvim/treesitter.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.nvim-treesitter-context;
+          type = "lua";
+          config = builtins.readFile ./nvim/treesitter-context.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.codewindow-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/codewindow.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.avante-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/avante.lua;
+        }
+        {
+          plugin = pkgs.unstable.vimPlugins.blink-cmp;
+          type = "lua";
+          config = builtins.readFile ./nvim/blink-cmp.lua;
+        }
+        # TODO(negz): Get these working
+        # https://github.com/Kaiser-Yang/blink-cmp-avante
+        # https://github.com/kylechui/nvim-surround
+        # And some kind of 'show documentation at cursor' thing?
+        # https://cmp.saghen.dev/configuration/reference#signature
+      ];
     };
 
     ssh = {
@@ -305,7 +321,9 @@
           default = "current";
         };
         url = {
-          "git@github.com:" = { insteadOf = "https://github.com/"; };
+          "git@github.com:" = {
+            insteadOf = "https://github.com/";
+          };
         };
       };
     };
