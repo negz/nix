@@ -9,7 +9,7 @@ require('blink.cmp').setup {
 			},
 		},
 		menu = {
-			border = 'single',
+			border = 'rounded',
 			draw = {
 				columns = { { "kind_icon" }, { "label", gap = 1 } },
 				components = {
@@ -39,7 +39,7 @@ require('blink.cmp').setup {
 		enabled = true,
 		window = {
 			show_documentation = true,
-			border = 'single',
+			border = 'rounded',
 			direction_priority = { 's', 'n' }
 		},
 	}
