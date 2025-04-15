@@ -222,7 +222,8 @@
         pkgs.vimPlugins.vim-nix
         pkgs.vimPlugins.vim-illuminate
         pkgs.vimPlugins.plenary-nvim
-        pkgs.vimPlugins.telescope-nvim
+        pkgs.vimPlugins.telescope-fzf-native-nvim
+        pkgs.vimPlugins.telescope-ui-select-nvim
         pkgs.vimPlugins.which-key-nvim
         pkgs.unstable.vimPlugins.blink-cmp-avante
         {
@@ -264,6 +265,11 @@
           plugin = pkgs.vimPlugins.nvim-treesitter-context;
           type = "lua";
           config = builtins.readFile ./nvim/treesitter-context.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.telescope-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/telescope.lua;
         }
         {
           plugin = pkgs.vimPlugins.codewindow-nvim;
