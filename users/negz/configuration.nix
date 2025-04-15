@@ -205,6 +205,20 @@
         filetype indent on
       '';
       plugins = [
+        # Intentionally loaded first, to make sure it applies to other plugins.
+        {
+          plugin = pkgs.vimUtils.buildVimPlugin {
+            name = "github-nvim-theme";
+            src = pkgs.fetchFromGitHub {
+              owner = "projekt0n";
+              repo = "github-nvim-theme";
+              rev = "v1.1.2";
+              sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
+            };
+          };
+          type = "lua";
+          config = builtins.readFile ./nvim/github-theme.lua;
+        }
         pkgs.vimPlugins.vim-nix
         pkgs.vimPlugins.vim-illuminate
         pkgs.vimPlugins.plenary-nvim
@@ -232,12 +246,12 @@
           config = builtins.readFile ./nvim/neo-tree.lua;
         }
         {
-          plugin = pkgs.vimPlugins.nvim-lspconfig;
+          plugin = pkgs.unstable.vimPlugins.nvim-lspconfig;
           type = "lua";
           config = builtins.readFile ./nvim/lspconfig.lua;
         }
         {
-          plugin = pkgs.vimPlugins.lsp-format-nvim;
+          plugin = pkgs.unstable.vimPlugins.lsp-format-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/lspformat.lua;
         }
@@ -265,19 +279,6 @@
           plugin = pkgs.unstable.vimPlugins.blink-cmp;
           type = "lua";
           config = builtins.readFile ./nvim/blink-cmp.lua;
-        }
-        {
-          plugin = pkgs.vimUtils.buildVimPlugin {
-            name = "github-nvim-theme";
-            src = pkgs.fetchFromGitHub {
-              owner = "projekt0n";
-              repo = "github-nvim-theme";
-              rev = "v1.1.2";
-              sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
-            };
-          };
-          type = "lua";
-          config = builtins.readFile ./nvim/github-theme.lua;
         }
         {
           plugin = pkgs.vimUtils.buildVimPlugin {
