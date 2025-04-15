@@ -185,6 +185,8 @@
         pkgs.golangci-lint-langserver
       ];
       extraConfig = ''
+        let mapleader = "\<Space>"
+
         set hidden
         set cursorline
         set guicursor=i:blinkon100-ver10
