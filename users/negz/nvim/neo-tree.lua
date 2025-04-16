@@ -1,4 +1,7 @@
-require('neo-tree').setup {
+local tree = require('neo-tree')
+local command = require('neo-tree.command')
+
+tree.setup {
 	close_if_last_window = true,
 	filesystem = {
 		window = {
@@ -29,14 +32,17 @@ require('neo-tree').setup {
 	}
 }
 
+local tcb = function(config)
+	return function()
+		command.execute(config)
+	end
+end
+
 vim.api.nvim_create_autocmd("UiEnter", {
-	callback = function()
-		vim.cmd.Neotree("toggle", "action=show")
-	end,
+	callback = tcb({ action = "show", source = "filesystem" })
 })
 
-local command = require('neo-tree.command')
-vim.keymap.set('n', '<leader>nf', '<Cmd>Neotree filesystem<Cr>', { desc = 'Neotree filesystem' })
-vim.keymap.set('n', '<leader>nb', '<Cmd>Neotree buffers<Cr>', { desc = 'Neotree buffers' })
-vim.keymap.set('n', '<leader>ng', '<Cmd>Neotree git_status<Cr>', { desc = 'Neotree git status' })
-vim.keymap.set('n', '<leader>nc', '<Cmd>Neotree action=close<Cr>', { desc = 'Close Neotree' })
+vim.keymap.set('n', '<leader>nf', tcb({ action = "focus", source = "filesystem" }), { desc = 'Neotree filesystem' })
+vim.keymap.set('n', '<leader>nb', tcb({ action = "focus", source = "buffers" }), { desc = 'Neotree buffers' })
+vim.keymap.set('n', '<leader>ng', tcb({ action = "focus", source = "git_status" }), { desc = 'Neotree git status' })
+vim.keymap.set('n', '<leader>nc', tcb({ action = "close" }), { desc = 'Close Neotree' })
