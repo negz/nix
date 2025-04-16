@@ -1,4 +1,4 @@
-colorful = require('colorful-menu')
+local colorful = require('colorful-menu')
 
 require('blink.cmp').setup {
 	keymap = { preset = 'super-tab' },
