@@ -189,7 +189,7 @@
 
         set hidden
         set cursorline
-        set guicursor=i:blinkon100-ver10
+        set guicursor=i:blinkon100-blinkoff100-blinkwait100-ver10
         set autoindent
         set smartindent
         set showmatch
