@@ -71,6 +71,7 @@
           font-size = 12
           macos-option-as-alt = true
           link-url = true
+          adjust-cursor-thickness = 100%
         '';
       };
     };
