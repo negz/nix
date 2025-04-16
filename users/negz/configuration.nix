@@ -302,6 +302,11 @@
           config = builtins.readFile ./nvim/which-key.lua;
         }
         {
+          plugin = pkgs.vimPlugins.nvim-notify;
+          type = "lua";
+          config = builtins.readFile ./nvim/notify.lua;
+        }
+        {
           plugin = pkgs.vimUtils.buildVimPlugin {
             name = "colorful-menu";
             src = pkgs.fetchFromGitHub {
