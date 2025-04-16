@@ -15,6 +15,10 @@
     optimise = {
       automatic = true;
     };
+
+    settings = {
+      trusted-users = [ "negz" ];
+    };
   };
 
   nixpkgs = {
