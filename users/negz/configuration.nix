@@ -203,8 +203,12 @@
         set backspace=2
         set textwidth=80
         set formatoptions=cq
+        set clipboard+=unnamedplus
 
         filetype indent on
+
+        aunmenu PopUp.-2-
+        aunmenu PopUp.How-to\ disable\ mouse
       '';
       plugins = [
         # Intentionally loaded first, to make sure it applies to other plugins.
