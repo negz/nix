@@ -226,7 +226,6 @@
         pkgs.vimPlugins.plenary-nvim
         pkgs.vimPlugins.telescope-fzf-native-nvim
         pkgs.vimPlugins.telescope-ui-select-nvim
-        pkgs.vimPlugins.which-key-nvim
         pkgs.unstable.vimPlugins.blink-cmp-avante
         {
           plugin = pkgs.vimPlugins.mini-icons;
@@ -292,6 +291,11 @@
           plugin = pkgs.unstable.vimPlugins.trouble-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/trouble.lua;
+        }
+        {
+          plugin = pkgs.vimPlugins.which-key-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/which-key.lua;
         }
         {
           plugin = pkgs.vimUtils.buildVimPlugin {
