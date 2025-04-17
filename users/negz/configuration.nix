@@ -229,15 +229,13 @@
         pkgs.vimPlugins.vim-nix
         pkgs.unstable.vimPlugins.vim-illuminate
         pkgs.vimPlugins.plenary-nvim
-        pkgs.unstable.vimPlugins.telescope-fzf-native-nvim
-        pkgs.unstable.vimPlugins.telescope-ui-select-nvim
         {
           plugin = pkgs.vimPlugins.mini-icons;
           type = "lua";
           config = builtins.readFile ./nvim/mini-icons.lua;
         }
         {
-          plugin = pkgs.vimPlugins.snacks-nvim;
+          plugin = pkgs.unstable.vimPlugins.snacks-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/snacks.lua;
         }
@@ -275,11 +273,6 @@
           plugin = pkgs.vimPlugins.nvim-treesitter-context;
           type = "lua";
           config = builtins.readFile ./nvim/treesitter-context.lua;
-        }
-        {
-          plugin = pkgs.unstable.vimPlugins.telescope-nvim;
-          type = "lua";
-          config = builtins.readFile ./nvim/telescope.lua;
         }
         {
           plugin = pkgs.vimPlugins.codewindow-nvim;
