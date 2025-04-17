@@ -230,7 +230,6 @@
         pkgs.vimPlugins.plenary-nvim
         pkgs.unstable.vimPlugins.telescope-fzf-native-nvim
         pkgs.unstable.vimPlugins.telescope-ui-select-nvim
-        pkgs.unstable.vimPlugins.blink-cmp-avante
         {
           plugin = pkgs.vimPlugins.mini-icons;
           type = "lua";
