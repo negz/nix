@@ -82,3 +82,6 @@ vim.diagnostic.config({
 		source = "always",
 	},
 })
+
+vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Language server rename" })
+vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Language server definition" })

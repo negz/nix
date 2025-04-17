@@ -236,6 +236,11 @@
           config = builtins.readFile ./nvim/mini-icons.lua;
         }
         {
+          plugin = pkgs.vimPlugins.snacks-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/snacks.lua;
+        }
+        {
           plugin = pkgs.vimPlugins.gitsigns-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/gitsigns.lua;
@@ -299,11 +304,6 @@
           plugin = pkgs.vimPlugins.which-key-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/which-key.lua;
-        }
-        {
-          plugin = pkgs.vimPlugins.nvim-notify;
-          type = "lua";
-          config = builtins.readFile ./nvim/notify.lua;
         }
         {
           plugin = pkgs.vimUtils.buildVimPlugin {

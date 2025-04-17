@@ -7,4 +7,5 @@ wk.add({
 	{ "<leader>d", group = "Diagnostics" },
 	{ "<leader>a", group = "AI" },
 	{ "<leader>g", group = "Git" },
+	{ "<leader>l", group = "Language server" },
 })
