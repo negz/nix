@@ -41,8 +41,3 @@ end
 vim.api.nvim_create_autocmd("UiEnter", {
 	callback = tcb({ action = "show", source = "filesystem" })
 })
-
-vim.keymap.set('n', '<leader>nf', tcb({ action = "focus", source = "filesystem" }), { desc = 'Neotree filesystem' })
-vim.keymap.set('n', '<leader>nb', tcb({ action = "focus", source = "buffers" }), { desc = 'Neotree buffers' })
-vim.keymap.set('n', '<leader>ng', tcb({ action = "focus", source = "git_status" }), { desc = 'Neotree git status' })
-vim.keymap.set('n', '<leader>nc', tcb({ action = "close" }), { desc = 'Close Neotree' })

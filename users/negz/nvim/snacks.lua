@@ -1,6 +1,4 @@
-local snacks = require('snacks')
-
-snacks.setup {
+require('snacks').setup {
 	bufdelete = { enabled = true },
 	input = { enabled = true },
 	notifier = { enabled = true },
@@ -27,6 +25,7 @@ snacks.setup {
 	quickfile = { enabled = true },
 }
 
+local snacks = require('snacks')
 local recent = function()
 	snacks.picker.recent({ filter = { paths = { [vim.fn.getcwd()] = true } } })
 end

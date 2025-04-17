@@ -24,9 +24,6 @@ vim.diagnostic.config({
 	},
 })
 
-vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Language server rename" })
-vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Language server definition" })
-
 -- Nix
 lsp.nil_ls.setup {
 	capabilities = caps,
