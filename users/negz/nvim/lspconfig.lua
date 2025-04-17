@@ -4,6 +4,29 @@ local on_attach = function(client, bufnr)
 	require('lsp-format').on_attach(client, bufnr)
 end
 
+vim.diagnostic.config({
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = ' ',
+			[vim.diagnostic.severity.WARN] = ' ',
+			[vim.diagnostic.severity.HINT] = '󰌶 ',
+			[vim.diagnostic.severity.INFO] = ' '
+		},
+	},
+	virtual_lines = true,
+	update_in_insert = false,
+	underline = true,
+	severity_sort = true,
+	float = {
+		focusable = true,
+		border = "rounded",
+		source = "always",
+	},
+})
+
+vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Language server rename" })
+vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Language server definition" })
+
 -- Nix
 lsp.nil_ls.setup {
 	capabilities = caps,
@@ -59,29 +82,25 @@ lsp.golangci_lint_ls.setup {
 		if major_version and major_version > 1 then
 			return { command = { "golangci-lint", "run", "--output.json.path", "stdout", "--show-stats=false", "--issues-exit-code=1" } }
 		end
-		return { command = { "golangci-lint", "run", "--out-format", "json", "--show-stats=false","--issues-exit-code=1" } }
+		return { command = { "golangci-lint", "run", "--out-format", "json", "--show-stats=false", "--issues-exit-code=1" } }
 	end)(),
 }
 
-vim.diagnostic.config({
-	signs = {
-		text = {
-			[vim.diagnostic.severity.ERROR] = ' ',
-			[vim.diagnostic.severity.WARN] = ' ',
-			[vim.diagnostic.severity.HINT] = '󰌶 ',
-			[vim.diagnostic.severity.INFO] = ' '
-		},
-	},
-	virtual_lines = true,
-	update_in_insert = false,
-	underline = true,
-	severity_sort = true,
-	float = {
-		focusable = true,
-		border = "rounded",
-		source = "always",
-	},
-})
+-- Python
 
-vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Language server rename" })
-vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Language server definition" })
+lsp.basedpyright.setup {
+	capabilities = caps,
+	on_attach = on_attach,
+	settings = {
+		-- Let Ruff handle all linting, formatting, and imports.
+		basedpyright = {
+			analysis = { ignore = { '*' } },
+			disableOrganizeImports = true
+		}
+	}
+}
+
+lsp.ruff.setup {
+	capabilities = caps,
+	on_attach = on_attach,
+}

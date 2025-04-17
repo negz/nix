@@ -175,15 +175,22 @@
       vimAlias = true;
       vimdiffAlias = true;
       extraPackages = [
-        pkgs.ripgrep
-        pkgs.fd
+        # Nix
+        pkgs.nil
         pkgs.nixfmt-rfc-style
 
-        # Language servers
-        pkgs.nil
-        pkgs.gopls
+        # Lua / NeoVim
         pkgs.lua-language-server
+        pkgs.ripgrep
+        pkgs.fd
+
+        # Go
+        pkgs.gopls
         pkgs.golangci-lint-langserver
+
+        # Python
+        pkgs.unstable.basedpyright
+        pkgs.unstable.ruff
       ];
       extraConfig = ''
         let mapleader = "\<Space>"
