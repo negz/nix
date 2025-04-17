@@ -59,7 +59,7 @@ lsp.golangci_lint_ls.setup {
 		if major_version and major_version > 1 then
 			return { command = { "golangci-lint", "run", "--output.json.path", "stdout", "--show-stats=false", "--issues-exit-code=1" } }
 		end
-		return {}
+		return { command = { "golangci-lint", "run", "--out-format", "json", "--show-stats=false","--issues-exit-code=1" } }
 	end)(),
 }
 

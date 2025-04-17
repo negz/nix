@@ -27,7 +27,7 @@
 
     packages = [
       # Go things
-      pkgs.unstable.golangci-lint
+      pkgs.golangci-lint
       pkgs.go-outline
       pkgs.gcc # For cgo
 
@@ -181,6 +181,7 @@
 
         # Language servers
         pkgs.nil
+        pkgs.gopls
         pkgs.lua-language-server
         pkgs.golangci-lint-langserver
       ];
@@ -370,7 +371,7 @@
 
     go = {
       enable = true;
-      package = pkgs.unstable.go_1_24;
+      package = pkgs.unstable.go_1_23;
       goPath = "control/go";
       goBin = "control/go/bin";
       goPrivate = [ "github.com/upbound" ];
