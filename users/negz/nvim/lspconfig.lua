@@ -72,9 +72,7 @@ vim.diagnostic.config({
 			[vim.diagnostic.severity.INFO] = ' '
 		},
 	},
-	virtual_text = {
-		prefix = "",
-	},
+	virtual_lines = true,
 	update_in_insert = false,
 	underline = true,
 	severity_sort = true,
