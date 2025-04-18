@@ -28,6 +28,13 @@ vim.diagnostic.config({
 lsp.harper_ls.setup {
 	capabilities = caps,
 	on_attach = on_attach,
+	settings = {
+		["harper-ls"] = {
+			linters = {
+				ToDoHyphen = false
+			}
+		}
+	}
 }
 
 -- Nix
@@ -46,7 +53,7 @@ lsp.nil_ls.setup {
 	}
 }
 
--- Lua, for configuring NeoVim
+-- Lua, for configuring Neovim
 
 lsp.lua_ls.setup {
 	capabilities = caps,
