@@ -5,12 +5,12 @@ local gitsigns = require('gitsigns')
 local snacks = require('snacks')
 local preview = require('actions-preview')
 
-
 wk.add({
 	{ '<leader>a', group = 'AI' },
 	{ '<leader>c', group = 'Code' },
 	{ '<leader>f', group = 'Find' },
 	{ '<leader>g', group = 'Git' },
+	{ '<leader>t', group = 'Test' },
 	{ '<leader>w', group = 'Window' },
 })
 
@@ -29,7 +29,7 @@ vim.keymap.set('n', '<leader>cd', snacks.picker.lsp_definitions, { desc = 'Go to
 vim.keymap.set('n', '<leader>ci', snacks.picker.diagnostics_buffer, { desc = 'Show buffer diagnostics' })
 vim.keymap.set('n', '<leader>cn', vim.lsp.buf.rename, { desc = 'Rename symbol' })
 vim.keymap.set('n', '<leader>cr', snacks.picker.lsp_references, { desc = 'Show references' })
-vim.keymap.set('n', '<leader>cs', snacks.picker.lsp_symbols, { desc = 'Show buffer symbols' }) -- TODO(negz): Fix weird sort.
+vim.keymap.set('n', '<leader>cs', snacks.picker.lsp_symbols, { desc = 'Show buffer symbols' })
 
 -- Find
 vim.keymap.set('n', '<leader>fb', snacks.picker.buffers, { desc = 'Find buffers' })
@@ -51,3 +51,7 @@ vim.keymap.set('n', '<leader>wm', codewindow.toggle_minimap, { desc = 'Toggle mi
 vim.keymap.set('n', '<leader>wv', '<Cmd>vsplit<Cr>', { desc = 'Vertical split' })
 vim.keymap.set('n', '<leader>w<Left>', '<C-W><Left>', { desc = 'Move left' })
 vim.keymap.set('n', '<leader>w<Right>', '<C-W><Right>', { desc = 'Move right' })
+
+-- Test
+-- TODO(negz): Test bindings are all in neotest.lua. For some reason you can't
+-- require the neotest module more than once.
