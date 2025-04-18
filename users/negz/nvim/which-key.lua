@@ -2,7 +2,6 @@ local wk = require('which-key')
 
 wk.add({
 	{ "<leader>p", group = "Pick" },
-	{ "<leader>n", group = "Neotree" },
 	{ "<leader>m", group = "Minimap" },
 	{ "<leader>d", group = "Diagnostics" },
 	{ "<leader>a", group = "AI" },
@@ -27,33 +26,21 @@ vim.keymap.set('n', '<leader>gB', gitsigns.blame, { desc = 'Git blame file' })
 vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Language server rename" })
 vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Language server definition" })
 
--- Neotree
-local neotree = require('neo-tree.command')
-
-local tcb = function(config)
-	return function()
-		neotree.execute(config)
-	end
-end
-
-vim.keymap.set('n', '<leader>nf', tcb({ action = "focus", source = "filesystem" }), { desc = 'Neotree filesystem' })
-vim.keymap.set('n', '<leader>nb', tcb({ action = "focus", source = "buffers" }), { desc = 'Neotree buffers' })
-vim.keymap.set('n', '<leader>ng', tcb({ action = "focus", source = "git_status" }), { desc = 'Neotree git status' })
-vim.keymap.set('n', '<leader>nc', tcb({ action = "close" }), { desc = 'Close Neotree' })
-
 -- Snacks picker
 local picker = require('snacks').picker
 local recent = function()
 	picker.recent({ filter = { paths = { [vim.fn.getcwd()] = true } } })
 end
 
-vim.keymap.set('n', '<leader>pf', picker.files, { desc = 'Pick files' })
+vim.keymap.set('n', '<leader>pf', picker.smart, { desc = 'Pick files' })
 vim.keymap.set('n', '<leader>pr', recent, { desc = 'Pick recent files' })
 vim.keymap.set('n', '<leader>pg', picker.grep, { desc = 'Pick grep' })
 vim.keymap.set('n', '<leader>pb', picker.buffers, { desc = 'Pick buffers' })
 vim.keymap.set('n', '<leader>ps', picker.git_status, { desc = 'Pick git status' })
 vim.keymap.set('n', '<leader>pf', picker.lsp_references, { desc = 'Pick LSP references' })
 vim.keymap.set('n', '<leader>pp', picker.pickers, { desc = 'Pick pickers' })
+
+-- TODO(negz): Focus explorer: https://github.com/folke/snacks.nvim/discussions/1273
 
 -- Trouble diagnostics
 local trouble = require('trouble')

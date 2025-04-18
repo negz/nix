@@ -257,11 +257,6 @@
           config = builtins.readFile ./nvim/lualine.lua;
         }
         {
-          plugin = pkgs.unstable.vimPlugins.neo-tree-nvim;
-          type = "lua";
-          config = builtins.readFile ./nvim/neo-tree.lua;
-        }
-        {
           plugin = pkgs.unstable.vimPlugins.nvim-lspconfig;
           type = "lua";
           config = builtins.readFile ./nvim/lspconfig.lua;
