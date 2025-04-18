@@ -318,6 +318,11 @@
           config = builtins.readFile ./nvim/actions-preview.lua;
         }
         {
+          plugin = pkgs.unstable.vimPlugins.nvim-bqf;
+          type = "lua";
+          config = builtins.readFile ./nvim/bqf.lua;
+        }
+        {
           plugin = pkgs.vimUtils.buildVimPlugin {
             name = "colorful-menu";
             src = pkgs.fetchFromGitHub {
