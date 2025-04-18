@@ -212,11 +212,9 @@
         set textwidth=80
         set formatoptions=cq
         set clipboard+=unnamedplus
+        set mousemodel=extend
 
         filetype indent on
-
-        aunmenu PopUp.-2-
-        aunmenu PopUp.How-to\ disable\ mouse
       '';
       plugins = [
         # Intentionally loaded first, to make sure it applies to other plugins.
