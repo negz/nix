@@ -1,56 +1,51 @@
 local wk = require('which-key')
 
+local codewindow = require('codewindow')
+local gitsigns = require('gitsigns')
+local snacks = require('snacks')
+
+
 wk.add({
-	{ "<leader>p", group = "Pick" },
-	{ "<leader>m", group = "Minimap" },
-	{ "<leader>d", group = "Diagnostics" },
-	{ "<leader>a", group = "AI" },
-	{ "<leader>g", group = "Git" },
-	{ "<leader>l", group = "Language server" },
+	{ '<leader>a', group = 'AI' },
+	{ '<leader>c', group = 'Code' },
+	{ '<leader>f', group = 'Find' },
+	{ '<leader>g', group = 'Git' },
+	{ '<leader>w', group = 'Window' },
 })
 
--- Codewindow minimap.
-local codewindow = require('codewindow')
-
-vim.keymap.set('n', '<leader>mt', codewindow.toggle_minimap, { desc = 'Toggle minimap' })
-
--- Gitsigns
-local gitsigns = require('gitsigns')
-
-vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk, { desc = 'Git reset hunk' })
-vim.keymap.set('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'Git reset buffer' })
-vim.keymap.set('n', '<leader>gb', gitsigns.blame_line, { desc = 'Git blame line' })
-vim.keymap.set('n', '<leader>gB', gitsigns.blame, { desc = 'Git blame file' })
-
--- Native LSP
-vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Language server rename" })
-vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Language server definition" })
-
--- Snacks picker
-local picker = require('snacks').picker
-local recent = function()
-	picker.recent({ filter = { paths = { [vim.fn.getcwd()] = true } } })
-end
-
-vim.keymap.set('n', '<leader>pf', picker.smart, { desc = 'Pick files' })
-vim.keymap.set('n', '<leader>pr', recent, { desc = 'Pick recent files' })
-vim.keymap.set('n', '<leader>pg', picker.grep, { desc = 'Pick grep' })
-vim.keymap.set('n', '<leader>pb', picker.buffers, { desc = 'Pick buffers' })
-vim.keymap.set('n', '<leader>ps', picker.git_status, { desc = 'Pick git status' })
-vim.keymap.set('n', '<leader>pf', picker.lsp_references, { desc = 'Pick LSP references' })
-vim.keymap.set('n', '<leader>pp', picker.pickers, { desc = 'Pick pickers' })
-
--- TODO(negz): Focus explorer: https://github.com/folke/snacks.nvim/discussions/1273
-
--- Trouble diagnostics
-local trouble = require('trouble')
-
-local toggle = function(config)
+local in_cwd = function(picker)
 	return function()
-		trouble.toggle(config)
+		return picker({ filter = { paths = { [vim.fn.getcwd()] = true } } })
 	end
 end
 
-vim.keymap.set('n', '<leader>dd', toggle({ mode = "diagnostics" }), { desc = 'Toggle Trouble diagnostics' })
-vim.keymap.set('n', '<leader>ds', toggle({ mode = "symbols" }), { desc = 'Toggle Trouble symbols' })
-vim.keymap.set('n', '<leader>df', toggle({ mode = "quickfix" }), { desc = 'Toggle Trouble quickfix' })
+-- AI
+-- Avante adds a bunch of AI stuff under 'a'.
+
+-- Code
+vim.keymap.set('n', '<leader>cd', snacks.picker.lsp_definitions, { desc = 'Go to definition' })
+vim.keymap.set('n', '<leader>ci', snacks.picker.diagnostics_buffer, { desc = 'Show buffer diagnostics' })
+vim.keymap.set('n', '<leader>cn', vim.lsp.buf.rename, { desc = 'Rename symbol' })
+vim.keymap.set('n', '<leader>cr', snacks.picker.lsp_references, { desc = 'Show references' })
+vim.keymap.set('n', '<leader>cs', snacks.picker.lsp_symbols, { desc = 'Show buffer symbols' }) -- TODO(negz): Fix weird sort.
+
+-- Find
+vim.keymap.set('n', '<leader>fb', snacks.picker.buffers, { desc = 'Find buffers' })
+vim.keymap.set('n', '<leader>ff', snacks.picker.files, { desc = 'Find files' })
+vim.keymap.set('n', '<leader>fg', snacks.picker.grep, { desc = 'Find strings' })
+vim.keymap.set('n', '<leader>fp', snacks.picker.pickers, { desc = 'Find pickers' })
+vim.keymap.set('n', '<leader>fr', in_cwd(snacks.picker.recent), { desc = 'Find recent files' })
+
+--- Git
+vim.keymap.set('n', '<leader>gb', snacks.picker.git_log_line, { desc = 'Git log line' })
+vim.keymap.set('n', '<leader>gl', snacks.picker.git_log, { desc = 'Git log' })
+vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk, { desc = 'Git reset hunk' })
+vim.keymap.set('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'Git reset buffer' })
+vim.keymap.set('n', '<leader>gs', snacks.picker.git_status, { desc = 'Git status' })
+
+-- Window
+vim.keymap.set('n', '<leader>we', snacks.picker.explorer, { desc = 'Toggle explorer' })
+vim.keymap.set('n', '<leader>wm', codewindow.toggle_minimap, { desc = 'Toggle minimap' })
+vim.keymap.set('n', '<leader>wv', '<Cmd>vsplit<Cr>', { desc = 'Vertical split' })
+vim.keymap.set('n', '<leader>w<Left>', '<C-W><Left>', { desc = 'Move left' })
+vim.keymap.set('n', '<leader>w<Right>', '<C-W><Right>', { desc = 'Move right' })
