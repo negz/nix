@@ -186,6 +186,9 @@
         pkgs.ripgrep
         pkgs.fd
 
+        # Spelling and grammar
+        pkgs.unstable.harper
+
         # Go
         pkgs.gopls
         pkgs.golangci-lint-langserver
@@ -198,6 +201,9 @@
         pkgs.imagemagick
         pkgs.ghostscript_headless
         pkgs.mermaid-cli
+
+        # Diffs
+        pkgs.delta
       ];
       extraConfig = ''
         let mapleader = "\<Space>"
@@ -305,6 +311,11 @@
           plugin = pkgs.unstable.vimPlugins.render-markdown-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/render-markdown.lua;
+        }
+        {
+          plugin = pkgs.unstable.vimPlugins.actions-preview-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/actions-preview.lua;
         }
         {
           plugin = pkgs.vimUtils.buildVimPlugin {

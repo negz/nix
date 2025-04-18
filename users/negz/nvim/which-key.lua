@@ -3,6 +3,7 @@ local wk = require('which-key')
 local codewindow = require('codewindow')
 local gitsigns = require('gitsigns')
 local snacks = require('snacks')
+local preview = require('actions-preview')
 
 
 wk.add({
@@ -23,6 +24,7 @@ end
 -- Avante adds a bunch of AI stuff under 'a'.
 
 -- Code
+vim.keymap.set('n', '<leader>ca', preview.code_actions, { desc = 'Code actions' })
 vim.keymap.set('n', '<leader>cd', snacks.picker.lsp_definitions, { desc = 'Go to definition' })
 vim.keymap.set('n', '<leader>ci', snacks.picker.diagnostics_buffer, { desc = 'Show buffer diagnostics' })
 vim.keymap.set('n', '<leader>cn', vim.lsp.buf.rename, { desc = 'Rename symbol' })

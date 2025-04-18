@@ -24,6 +24,12 @@ vim.diagnostic.config({
 	},
 })
 
+-- Spelling and grammar
+lsp.harper_ls.setup {
+	capabilities = caps,
+	on_attach = on_attach,
+}
+
 -- Nix
 lsp.nil_ls.setup {
 	capabilities = caps,
