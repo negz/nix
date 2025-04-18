@@ -292,11 +292,6 @@
           config = builtins.readFile ./nvim/blink-cmp.lua;
         }
         {
-          plugin = pkgs.unstable.vimPlugins.trouble-nvim;
-          type = "lua";
-          config = builtins.readFile ./nvim/trouble.lua;
-        }
-        {
           plugin = pkgs.vimPlugins.which-key-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/which-key.lua;

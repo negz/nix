@@ -15,5 +15,5 @@ require('lualine').setup {
 		section_separators = ' ',
 		component_separators = ' ',
 	},
-	extensions = { 'trouble', snacks_explorer }
+	extensions = { snacks_explorer }
 }
