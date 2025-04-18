@@ -302,6 +302,11 @@
           config = builtins.readFile ./nvim/which-key.lua;
         }
         {
+          plugin = pkgs.unstable.vimPlugins.render-markdown-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/render-markdown.lua;
+        }
+        {
           plugin = pkgs.vimUtils.buildVimPlugin {
             name = "colorful-menu";
             src = pkgs.fetchFromGitHub {
