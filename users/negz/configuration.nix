@@ -252,7 +252,7 @@
           config = builtins.readFile ./nvim/gitsigns.lua;
         }
         {
-          plugin = pkgs.vimPlugins.lualine-nvim;
+          plugin = pkgs.unstable.vimPlugins.lualine-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/lualine.lua;
         }

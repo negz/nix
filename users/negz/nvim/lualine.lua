@@ -15,5 +15,8 @@ require('lualine').setup {
 		section_separators = ' ',
 		component_separators = ' ',
 	},
+	sections = {
+		lualine_b = { 'branch', 'diff', 'lsp_status', 'diagnostics' },
+	},
 	extensions = { snacks_explorer }
 }
