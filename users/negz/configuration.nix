@@ -148,6 +148,7 @@
         set -g status-right ' '
         set -g status-right-length 0
         set -g pane-active-border-style fg=#58a6ff
+        set -g allow-passthrough on
 
         set-window-option -g aggressive-resize
         set-window-option -g window-status-current-style 'bold bg=#cce4ff fg=#000000'
@@ -158,6 +159,7 @@
         unbind -Tcopy-mode-vi Enter
         unbind '"'
         unbind %
+        unbind -n MouseDown3Pane
 
         bind-key A command-prompt 'rename-window "%%"'
         bind-key m run 'tmux show -g mouse | grep -q on && T=off || T=on;tmux set -g mouse $T;tmux display "Mouse $T"'
@@ -191,6 +193,11 @@
         # Python
         pkgs.unstable.basedpyright
         pkgs.unstable.ruff
+
+        # Images
+        pkgs.imagemagick
+        pkgs.ghostscript_headless
+        pkgs.mermaid-cli
       ];
       extraConfig = ''
         let mapleader = "\<Space>"
