@@ -4,20 +4,27 @@ local codewindow = require('codewindow')
 local gitsigns = require('gitsigns')
 local snacks = require('snacks')
 local preview = require('actions-preview')
+local coverage = require('coverage')
 
 wk.add({
-	{ '<leader>a', group = 'AI' },
-	{ '<leader>c', group = 'Code' },
-	{ '<leader>f', group = 'Find' },
-	{ '<leader>g', group = 'Git' },
-	{ '<leader>t', group = 'Test' },
-	{ '<leader>w', group = 'Window' },
+	{ '<leader>a',  group = 'AI' },
+	{ '<leader>c',  group = 'Code' },
+	{ '<leader>f',  group = 'Find' },
+	{ '<leader>g',  group = 'Git' },
+	{ '<leader>t',  group = 'Test' },
+	{ '<leader>tc', group = 'Test Coverage' },
+	{ '<leader>w',  group = 'Window' },
 })
 
 local in_cwd = function(picker)
 	return function()
 		return picker({ filter = { paths = { [vim.fn.getcwd()] = true } } })
 	end
+end
+
+local cov_show = function()
+	coverage.load()
+	coverage.show()
 end
 
 -- AI
@@ -53,5 +60,11 @@ vim.keymap.set('n', '<leader>w<Left>', '<C-W><Left>', { desc = 'Move left' })
 vim.keymap.set('n', '<leader>w<Right>', '<C-W><Right>', { desc = 'Move right' })
 
 -- Test
--- TODO(negz): Test bindings are all in neotest.lua. For some reason you can't
--- require the neotest module more than once.
+-- Neotest seems to require a require for each keymap. I tried using a local
+-- variable and things broke in strange ways.
+vim.keymap.set('n', '<leader>ta', function() require('neotest').run.attach() end, { desc = 'Attach to test' })
+vim.keymap.set('n', '<leader>tcs', cov_show, { desc = 'Show test coverage' })
+vim.keymap.set('n', '<leader>tch', coverage.hide, { desc = 'Hide test coverage' })
+vim.keymap.set('n', '<leader>tf', function() require('neotest').run.run(vim.fn.expand("%")) end, { desc = 'Test file' })
+vim.keymap.set('n', '<leader>to', function() require('neotest').output.open() end, { desc = 'Show test output' })
+vim.keymap.set('n', '<leader>tt', function() require('neotest').run.run() end, { desc = 'Test nearest' })

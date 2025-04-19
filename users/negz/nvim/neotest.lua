@@ -1,22 +1,40 @@
-local neotest = require('neotest')
 local golang = require('neotest-golang')
 local python = require('neotest-python')
 
-neotest.setup {
+require('neotest').setup {
 	adapters = {
-		golang { runner = "gotestsum" },
+		golang {
+			runner = "gotestsum",
+			go_test_args = {
+				"-v",
+				"-race",
+				"-coverprofile=/tmp/coverage.out",
+			},
+		},
 		python,
+	},
+	output = { open_on_run = true },
+	output_panel = { enabled = false },
+	summary = { enabled = false },
+	watch = { enabled = false },
+	consumers = {
+		notify = function(client)
+			client.listeners.results = function(_, results, partial)
+				if partial then
+					return
+				end
+
+				local total = 0
+				local passed = 0
+				for _, r in pairs(results) do
+					total = total + 1
+					if r.status == "passed" then
+						passed = passed + 1
+					end
+				end
+
+				vim.notify(passed .. "/" .. total .. " tests passed.")
+			end
+		end,
 	}
 }
-
-local run_test = function(args)
-	return function()
-		neotest.run.run(args)
-	end
-end
-
-
-vim.keymap.set('n', '<leader>ta', neotest.run.attach, { desc = 'Attach to test' })
-vim.keymap.set('n', '<leader>tf', run_test(vim.fn.expand('%')), { desc = 'Test file' })
-vim.keymap.set('n', '<leader>to', neotest.output.open, { desc = 'Show test output' })
-vim.keymap.set('n', '<leader>tt', run_test(), { desc = 'Test nearest' })

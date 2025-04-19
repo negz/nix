@@ -324,12 +324,17 @@
           config = builtins.readFile ./nvim/bqf.lua;
         }
         {
-          plugin = pkgs.unstable.vimPlugins.neotest;
+          plugin = pkgs.vimPlugins.neotest;
           type = "lua";
           config = builtins.readFile ./nvim/neotest.lua;
         }
         pkgs.unstable.vimPlugins.neotest-golang
         pkgs.unstable.vimPlugins.neotest-python
+        {
+          plugin = pkgs.unstable.vimPlugins.nvim-coverage;
+          type = "lua";
+          config = builtins.readFile ./nvim/coverage.lua;
+        }
         {
           plugin = pkgs.vimUtils.buildVimPlugin {
             name = "colorful-menu";
