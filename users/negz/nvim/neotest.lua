@@ -1,5 +1,10 @@
 local golang = require('neotest-golang')
 local python = require('neotest-python')
+local coverage = require('coverage')
+
+local coverfile = function(name)
+	return vim.fn.stdpath("cache") .. "/" .. name .. "-" .. tostring(vim.fn.getpid())
+end
 
 require('neotest').setup {
 	adapters = {
@@ -8,7 +13,7 @@ require('neotest').setup {
 			go_test_args = {
 				"-v",
 				"-race",
-				"-coverprofile=/tmp/coverage.out",
+				"-coverprofile=" .. coverfile("coverage-go"),
 			},
 		},
 		python,
@@ -32,6 +37,8 @@ require('neotest').setup {
 						passed = passed + 1
 					end
 				end
+
+				coverage.load()
 
 				vim.notify(passed .. "/" .. total .. " tests passed.")
 			end
