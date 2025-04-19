@@ -29,6 +29,9 @@ end
 -- AI
 -- Avante adds a bunch of AI stuff under 'a'.
 
+-- Buffers
+vim.keymap.set('n', '<leader>b', snacks.picker.buffers, { desc = 'Buffers' })
+
 -- Code
 vim.keymap.set('n', '<leader>ca', preview.code_actions, { desc = 'Code actions' })
 vim.keymap.set('n', '<leader>cds', snacks.picker.diagnostics_buffer, { desc = 'Show buffer diagnostics' })
@@ -39,7 +42,6 @@ vim.keymap.set('n', '<leader>cr', snacks.picker.lsp_references, { desc = 'Show r
 vim.keymap.set('n', '<leader>cs', snacks.picker.lsp_symbols, { desc = 'Show buffer symbols' })
 
 -- Find
-vim.keymap.set('n', '<leader>fb', snacks.picker.buffers, { desc = 'Find buffers' })
 vim.keymap.set('n', '<leader>ff', snacks.picker.files, { desc = 'Find files' })
 vim.keymap.set('n', '<leader>fg', snacks.picker.grep, { desc = 'Find strings' })
 vim.keymap.set('n', '<leader>fp', snacks.picker.pickers, { desc = 'Find pickers' })
