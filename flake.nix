@@ -2,19 +2,19 @@
   description = "A NixOS configuration for https://github.com/negz's machines";
 
   inputs = {
-    nixpkgs = {
-      url = "github:nixos/nixpkgs/release-24.11";
+    nixpkgs-darwin = {
+      url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
     };
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";
     };
     darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     hm-darwin = {
       url = "github:nix-community/home-manager/release-24.11";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nixos = {
       url = "github:nixos/nixpkgs/nixos-24.11";
@@ -40,7 +40,7 @@
   outputs =
     {
       self,
-      nixpkgs,
+      nixpkgs-darwin,
       nixpkgs-unstable,
       darwin,
       hm-darwin,
