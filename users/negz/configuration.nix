@@ -148,6 +148,7 @@
         set -g status-right ' '
         set -g status-right-length 0
         set -g pane-active-border-style fg=#58a6ff
+        set -g mode-style "fg=default,bg=default,reverse"
         set -g allow-passthrough on
 
         set-window-option -g aggressive-resize
