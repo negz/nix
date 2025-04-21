@@ -198,6 +198,7 @@
 
         # Spelling and grammar
         pkgs.unstable.harper
+        pkgs.unstable.typos-lsp
 
         # Go
         pkgs.gopls

@@ -32,11 +32,29 @@ lsp.harper_ls.setup {
 	settings = {
 		["harper-ls"] = {
 			linters = {
-				ToDoHyphen = false
+				-- Gets mad about TODO(negz) markers.
+				ToDoHyphen = false,
+
+				-- Too many false positives, e.g. for private
+				-- godoc and Go comment markers.
+				SentenceCapitalization = false,
+
+				-- Too sensitive to code and technical terms in
+				-- comments. Prefer the typos spellchecker.
+				SpellCheck = false,
 			}
 		}
 	}
 }
+
+lsp.typos_lsp.setup {
+	capabilities = caps,
+	on_attach = on_attach,
+	init_options = {
+		diagnosticSeverity = "Info"
+	}
+}
+
 
 -- Nix
 lsp.nil_ls.setup {
