@@ -140,6 +140,8 @@
         set -g renumber-windows on
         set -g visual-bell on
         set -g mouse on
+        set -g allow-passthrough on
+
         set -g status-interval 1
         set -g status-justify left
         set -g status-style fg=default,bg=default
@@ -147,12 +149,16 @@
         set -g status-left-length 0
         set -g status-right ' '
         set -g status-right-length 0
-        set -g pane-active-border-style fg=#58a6ff
+
+        set -g pane-border-status bottom
+        set -g pane-active-border-style fg=default
+        set -g pane-border-style fg=#58a6ff
+        set -g pane-border-format ' #{?pane_active,#[bold],} #T #[fg=nobold] '
         set -g mode-style "fg=default,bg=default,reverse"
-        set -g allow-passthrough on
 
         set-window-option -g aggressive-resize
-        set-window-option -g window-status-current-style 'bold bg=#cce4ff fg=#000000'
+        set-window-option -g window-status-current-style 'bold bg=default fg=default'
+        set-window-option -g window-status-style 'fg=#58a6ff'
         set-window-option -g window-status-current-format '#I #W '
         set-window-option -g window-status-format '#I #W '
         set-window-option -g message-style 'bold bg=#cce4ff fg=#000000'
