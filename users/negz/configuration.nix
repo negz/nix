@@ -257,7 +257,7 @@
           config = builtins.readFile ./nvim/github-theme.lua;
         }
         pkgs.vimPlugins.vim-nix
-        pkgs.unstable.vimPlugins.vim-illuminate
+        pkgs.vimPlugins.vim-illuminate
         pkgs.vimPlugins.plenary-nvim
         {
           plugin = pkgs.vimPlugins.mini-icons;
