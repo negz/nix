@@ -171,8 +171,8 @@
         bind-key A command-prompt 'rename-window "%%"'
         bind-key m run 'tmux show -g mouse | grep -q on && T=off || T=on;tmux set -g mouse $T;tmux display "Mouse $T"'
         bind-key -Tcopy-mode-vi 'v' send -X begin-selection
-        bind-key | split-window -h
-        bind-key - split-window -v
+        bind-key | split-window -h -c "#{pane_current_path}"
+        bind-key - split-window -v -c "#{pane_current_path}"
         bind-key C-a last-window
       '';
     };
