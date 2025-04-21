@@ -13,12 +13,13 @@ vim.diagnostic.config({
 			[vim.diagnostic.severity.INFO] = ' '
 		},
 	},
-	virtual_lines = true,
+	virtual_lines = { current_line = true },
 	update_in_insert = false,
 	underline = true,
 	severity_sort = true,
 	float = {
-		focusable = true,
+		scope = "cursor",
+		focusable = false,
 		border = "rounded",
 		source = "always",
 	},
