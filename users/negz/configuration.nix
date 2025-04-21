@@ -43,6 +43,9 @@
       pkgs.kubernetes-helm
       pkgs.kind
 
+      # AI things
+      pkgs.unstable.claude-code
+
       # Tools I find handy to have around.
       pkgs.file
     ];
