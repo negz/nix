@@ -76,25 +76,6 @@ snacks.setup {
 	quickfile = { enabled = true },
 }
 
-
-
--- Open explorer when opening vim.
-vim.api.nvim_create_autocmd("UiEnter", {
-	callback = function()
-		-- Calling snacks.picker.explorer() or snacks.explorer().open() actually
-		-- toggles the explorer. The explorer will already be open if we open a
-		-- directory due to the netrw hijack, so calling open would actually
-		-- close it. So here we only open it if it's not already open.
-		local explorer_pickers = snacks.picker.get({ source = "explorer" })
-		if #explorer_pickers > 0 then
-			return
-		end
-
-		-- TODO(negz): Don't focus if we opened a file.
-		snacks.picker.explorer({ focus = false })
-	end
-})
-
 vim.api.nvim_create_autocmd('QuitPre', {
 	callback = function()
 		-- We're quitting a floating window. Do nothing.
