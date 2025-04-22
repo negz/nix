@@ -26,6 +26,12 @@ local diagnostics_toggle = function()
 	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end
 
+local preview_opts = {
+	border = "rounded",
+	anchor_bias = "below",
+}
+
+
 -- AI
 -- Avante adds a bunch of AI stuff under 'a'.
 
@@ -37,6 +43,7 @@ vim.keymap.set('n', '<leader>ca', preview.code_actions, { desc = 'Code actions' 
 vim.keymap.set('n', '<leader>cds', snacks.picker.diagnostics_buffer, { desc = 'Show buffer diagnostics' })
 vim.keymap.set('n', '<leader>cdt', diagnostics_toggle, { desc = 'Toggle diagnostics' })
 vim.keymap.set('n', '<leader>cg', snacks.picker.lsp_definitions, { desc = 'Go to definition' })
+vim.keymap.set('n', '<leader>ch', function() vim.lsp.buf.hover(preview_opts) end, { desc = 'Hover definition' })
 vim.keymap.set('n', '<leader>cn', vim.lsp.buf.rename, { desc = 'Rename symbol' })
 vim.keymap.set('n', '<leader>cr', snacks.picker.lsp_references, { desc = 'Show references' })
 vim.keymap.set('n', '<leader>cs', snacks.picker.lsp_symbols, { desc = 'Show buffer symbols' })
