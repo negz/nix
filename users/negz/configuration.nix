@@ -66,6 +66,8 @@
   };
 
   xdg = {
+    enable = true;
+
     configFile = {
       "ghostty/config" = {
         text = ''
@@ -76,6 +78,13 @@
           link-url = true
           adjust-cursor-thickness = 100%
         '';
+      };
+    };
+
+    # For Neovim's dashboard - see nvim/snacks.lua.
+    dataFile = {
+      "nvim/neovim-mark.png" = {
+        source = ./nvim/neovim-mark.png;
       };
     };
   };
@@ -213,6 +222,7 @@
         pkgs.imagemagick
         pkgs.ghostscript_headless
         pkgs.mermaid-cli
+        pkgs.chafa
 
         # Diffs
         pkgs.delta

@@ -16,12 +16,6 @@ wk.add({
 	{ '<leader>w',  group = 'Window' },
 })
 
-local in_cwd = function(picker)
-	return function()
-		return picker({ filter = { paths = { [vim.fn.getcwd()] = true } } })
-	end
-end
-
 local diagnostics_toggle = function()
 	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end
@@ -52,7 +46,7 @@ vim.keymap.set('n', '<leader>cs', snacks.picker.lsp_symbols, { desc = 'Show buff
 vim.keymap.set('n', '<leader>ff', snacks.picker.files, { desc = 'Find files' })
 vim.keymap.set('n', '<leader>fg', snacks.picker.grep, { desc = 'Find strings' })
 vim.keymap.set('n', '<leader>fp', snacks.picker.pickers, { desc = 'Find pickers' })
-vim.keymap.set('n', '<leader>fr', in_cwd(snacks.picker.recent), { desc = 'Find recent files' })
+vim.keymap.set('n', '<leader>fr', snacks.picker.recent, { desc = 'Find recent files' })
 
 --- Git
 vim.keymap.set('n', '<leader>gb', snacks.picker.git_log_line, { desc = 'Git log line' })

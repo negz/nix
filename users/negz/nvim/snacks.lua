@@ -1,6 +1,28 @@
 local snacks = require('snacks')
 
 snacks.setup {
+	dashboard = {
+		enabled = true,
+		preset = {
+			keys = {
+				{ icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+				{ icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+				{ icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+				{ icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+				{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
+			},
+		},
+		sections = {
+			{ 
+				section = "terminal",
+				cmd = "chafa --size 50x20 --align center ${XDG_DATA_HOME}/nvim/neovim-mark.png; sleep .1",
+				height = 25,
+				padding = 1,
+			},
+			{ section = "keys",  gap = 1, padding = 1 },
+		},
+
+	},
 	bufdelete = { enabled = true },
 	input = { enabled = true },
 	notifier = { enabled = true },
@@ -54,6 +76,9 @@ snacks.setup {
 					list = { keys = { ["<Esc>"] = false } },
 				},
 
+			},
+			recent = {
+				filter = { paths = { [vim.fn.getcwd()] = true } }
 			},
 		},
 		icons = {
