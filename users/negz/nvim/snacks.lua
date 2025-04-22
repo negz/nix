@@ -15,7 +15,7 @@ snacks.setup {
 		sections = {
 			{ 
 				section = "terminal",
-				cmd = "chafa --size 50x20 --align center ${XDG_DATA_HOME}/nvim/neovim-mark.png; sleep .1",
+				cmd = "chafa --format symbols --size 50x20 --align center ${XDG_DATA_HOME}/nvim/neovim-mark.png; sleep .1",
 				height = 25,
 				padding = 1,
 			},
