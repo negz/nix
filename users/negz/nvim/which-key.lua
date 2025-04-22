@@ -76,3 +76,15 @@ vim.keymap.set('n', '<leader>tc', coverage.toggle, { desc = 'Toggle test coverag
 vim.keymap.set('n', '<leader>tf', function() require('neotest').run.run(vim.fn.expand("%")) end, { desc = 'Test file' })
 vim.keymap.set('n', '<leader>to', function() require('neotest').output.open() end, { desc = 'Show test output' })
 vim.keymap.set('n', '<leader>tt', function() require('neotest').run.run() end, { desc = 'Test nearest' })
+
+
+-- Utils
+local close_floats = function()
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		if vim.api.nvim_win_get_config(win).relative == "win" then
+			vim.api.nvim_win_close(win, false)
+		end
+	end
+end
+
+vim.keymap.set("n", "<Esc>", close_floats, { desc = "Close all floats" })
