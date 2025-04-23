@@ -13,13 +13,13 @@ snacks.setup {
 			},
 		},
 		sections = {
-			{ 
+			{
 				section = "terminal",
 				cmd = "chafa --format symbols --size 50x20 --align center ${XDG_DATA_HOME}/nvim/neovim-mark.png; sleep .1",
 				height = 25,
 				padding = 1,
 			},
-			{ section = "keys",  gap = 1, padding = 1 },
+			{ section = "keys", gap = 1, padding = 1 },
 		},
 
 	},
@@ -79,6 +79,10 @@ snacks.setup {
 			},
 			recent = {
 				filter = { paths = { [vim.fn.getcwd()] = true } }
+			},
+			grep = {
+				-- Don't OOM me plz.
+				limit = 100
 			},
 		},
 		icons = {

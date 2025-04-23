@@ -295,12 +295,12 @@
           config = builtins.readFile ./nvim/lspconfig.lua;
         }
         {
-          plugin = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
+          plugin = pkgs.unstable.vimPlugins.nvim-treesitter.withAllGrammars;
           type = "lua";
           config = builtins.readFile ./nvim/treesitter.lua;
         }
         {
-          plugin = pkgs.vimPlugins.nvim-treesitter-context;
+          plugin = pkgs.unstable.vimPlugins.nvim-treesitter-context;
           type = "lua";
           config = builtins.readFile ./nvim/treesitter-context.lua;
         }
