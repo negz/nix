@@ -77,9 +77,19 @@ vim.keymap.set('n', '<leader>tt', function() require('neotest').run.run() end, {
 
 -- Utils
 local close_floats = function()
-	for _, win in ipairs(vim.api.nvim_list_wins()) do
-		if vim.api.nvim_win_get_config(win).relative == "win" then
-			vim.api.nvim_win_close(win, false)
+	for _, w in ipairs(vim.api.nvim_list_wins()) do
+		if vim.api.nvim_win_get_config(w).relative ~= "" then
+			local filetype = vim.api.nvim_get_option_value('filetype', { buf = vim.api.nvim_win_get_buf(w) })
+
+			-- Most likely an LSP definition hover.
+			if filetype:match('markdown') ~= nil then
+				vim.api.nvim_win_close(w, false)
+			end
+
+			-- Neotest output or attach.
+			if filetype:match('neotest-') ~= nil then
+				vim.api.nvim_win_close(w, false)
+			end
 		end
 	end
 end

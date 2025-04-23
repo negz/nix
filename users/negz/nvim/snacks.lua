@@ -49,10 +49,6 @@ snacks.setup {
 		sources = {
 			explorer = {
 				layout = { layout = { position = "right" } },
-				win = {
-					input = { keys = { ["<Esc>"] = false } },
-					list = { keys = { ["<Esc>"] = false } },
-				},
 			},
 			recent = {
 				filter = { paths = { [vim.fn.getcwd()] = true } }
