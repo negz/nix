@@ -295,11 +295,6 @@
           config = builtins.readFile ./nvim/lspconfig.lua;
         }
         {
-          plugin = pkgs.unstable.vimPlugins.lsp-format-nvim;
-          type = "lua";
-          config = builtins.readFile ./nvim/lspformat.lua;
-        }
-        {
           plugin = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
           type = "lua";
           config = builtins.readFile ./nvim/treesitter.lua;

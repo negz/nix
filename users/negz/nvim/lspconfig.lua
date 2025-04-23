@@ -1,8 +1,5 @@
 local lsp = require('lspconfig')
 local caps = require('blink.cmp').get_lsp_capabilities()
-local on_attach = function(client, bufnr)
-	require('lsp-format').on_attach(client, bufnr)
-end
 
 vim.diagnostic.config({
 	signs = {
@@ -28,7 +25,6 @@ vim.diagnostic.config({
 -- Spelling and grammar
 lsp.harper_ls.setup {
 	capabilities = caps,
-	on_attach = on_attach,
 	settings = {
 		["harper-ls"] = {
 			linters = {
@@ -49,7 +45,6 @@ lsp.harper_ls.setup {
 
 lsp.typos_lsp.setup {
 	capabilities = caps,
-	on_attach = on_attach,
 	init_options = {
 		diagnosticSeverity = "Info"
 	}
@@ -59,7 +54,6 @@ lsp.typos_lsp.setup {
 -- Nix
 lsp.nil_ls.setup {
 	capabilities = caps,
-	on_attach = on_attach,
 	settings = {
 		['nil'] = {
 			formatting = { command = { "nixfmt" } },
@@ -76,7 +70,6 @@ lsp.nil_ls.setup {
 
 lsp.lua_ls.setup {
 	capabilities = caps,
-	on_attach = on_attach,
 	settings = {
 		Lua = {
 			diagnostics = { globals = { "vim" } },
@@ -91,12 +84,10 @@ lsp.lua_ls.setup {
 
 lsp.gopls.setup {
 	capabilities = caps,
-	on_attach = on_attach,
 }
 
 lsp.golangci_lint_ls.setup {
 	capabilities = caps,
-	on_attach = on_attach,
 
 	-- TODO(negz): Remove when the below issue is fixed.
 	-- https://github.com/nametake/golangci-lint-langserver/issues/51
@@ -119,7 +110,6 @@ lsp.golangci_lint_ls.setup {
 
 lsp.basedpyright.setup {
 	capabilities = caps,
-	on_attach = on_attach,
 	settings = {
 		-- Let Ruff handle all linting, formatting, and imports.
 		basedpyright = {
@@ -131,5 +121,10 @@ lsp.basedpyright.setup {
 
 lsp.ruff.setup {
 	capabilities = caps,
-	on_attach = on_attach,
 }
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+	callback = function()
+		vim.lsp.buf.format()
+	end
+})
