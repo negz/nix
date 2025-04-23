@@ -16,6 +16,14 @@ wk.add({
 	{ '<leader>w',  group = 'Window' },
 })
 
+
+-- AI
+-- Avante adds a bunch of AI stuff under 'a'.
+
+-- Buffers
+vim.keymap.set('n', '<leader>b', snacks.picker.buffers, { desc = 'Buffers' })
+
+-- Code
 local diagnostics_toggle = function()
 	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end
@@ -25,14 +33,6 @@ local preview_opts = {
 	anchor_bias = "below",
 }
 
-
--- AI
--- Avante adds a bunch of AI stuff under 'a'.
-
--- Buffers
-vim.keymap.set('n', '<leader>b', snacks.picker.buffers, { desc = 'Buffers' })
-
--- Code
 vim.keymap.set('n', '<leader>ca', preview.code_actions, { desc = 'Code actions' })
 vim.keymap.set('n', '<leader>cds', snacks.picker.diagnostics_buffer, { desc = 'Show buffer diagnostics' })
 vim.keymap.set('n', '<leader>cdt', diagnostics_toggle, { desc = 'Toggle diagnostics' })
@@ -54,6 +54,9 @@ vim.keymap.set('n', '<leader>gl', snacks.picker.git_log, { desc = 'Git log' })
 vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk, { desc = 'Git reset hunk' })
 vim.keymap.set('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'Git reset buffer' })
 vim.keymap.set('n', '<leader>gs', snacks.picker.git_status, { desc = 'Git status' })
+
+-- Keymaps
+vim.keymap.set('n', '<leader>k', wk.show, { desc = 'Which key?' })
 
 -- Window
 vim.keymap.set('n', '<leader>we', snacks.picker.explorer, { desc = 'Toggle explorer' })
