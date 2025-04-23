@@ -40,7 +40,6 @@ snacks.setup {
 	},
 	picker = {
 		enabled = true,
-		layout = { preset = "telescope" },
 		ui_select = true,
 		matcher = {
 			cwd_bonus = true,
@@ -48,34 +47,12 @@ snacks.setup {
 			history_bonus = true,
 		},
 		sources = {
-			-- This is a tree, so it works best unflipped.
-			lsp_symbols = { layout = "default" },
 			explorer = {
-				layout = {
-					preview = false,
-					layout = {
-						position = "right",
-						backdrop = false,
-						width = 35,
-						min_width = 35,
-						height = 0,
-						border = "none",
-						box = "vertical",
-						{ win = "list", border = "none" },
-						{
-							win = "input",
-							height = 1,
-							border = "rounded",
-							title = "{title} {live} {flags}",
-							title_pos = "center",
-						},
-					},
-				},
+				layout = { layout = { position = "right" } },
 				win = {
 					input = { keys = { ["<Esc>"] = false } },
 					list = { keys = { ["<Esc>"] = false } },
 				},
-
 			},
 			recent = {
 				filter = { paths = { [vim.fn.getcwd()] = true } }
