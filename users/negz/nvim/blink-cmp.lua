@@ -1,11 +1,15 @@
 local colorful = require('colorful-menu')
 
 require('blink.cmp').setup {
-	keymap = { preset = 'super-tab' },
+	keymap = {
+		preset = 'super-tab',
+		['<CR>'] = { 'accept', 'fallback' },
+	},
 	completion = {
 		list = {
 			selection = {
 				preselect = false,
+				auto_insert = false,
 			},
 		},
 		menu = {
@@ -24,9 +28,16 @@ require('blink.cmp').setup {
 				},
 			},
 		},
+		documentation = {
+			auto_show = true,
+			auto_show_delay_ms = 0,
+		},
+		ghost_text = {
+			enabled = true,
+		},
 	},
 	sources = {
-		default = { 'lsp', 'path' },
+		default = { 'lsp', 'omni', 'path' },
 	},
 	fuzzy = { implementation = "rust" },
 	signature = {
@@ -34,7 +45,7 @@ require('blink.cmp').setup {
 		window = {
 			show_documentation = true,
 			border = 'rounded',
-			direction_priority = { 's', 'n' }
+			scrollbar = true,
 		},
-	}
+	},
 }
