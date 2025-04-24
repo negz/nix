@@ -123,8 +123,16 @@ lsp.ruff.setup {
 	capabilities = caps,
 }
 
+-- Format code on write.
 vim.api.nvim_create_autocmd("BufWritePre", {
 	callback = function()
 		vim.lsp.buf.format()
+	end
+})
+
+-- Show definition on cursor hold (for updatetime).
+vim.api.nvim_create_autocmd("CursorHold", {
+	callback = function()
+		vim.lsp.buf.hover({ border = "rounded", silent = true })
 	end
 })

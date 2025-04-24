@@ -230,6 +230,7 @@
       extraConfig = ''
         let mapleader = "\<Space>"
 
+        set updatetime=1000
         set hidden
         set cursorline
         set guicursor=i:blinkon100-blinkoff100-blinkwait100-ver10
