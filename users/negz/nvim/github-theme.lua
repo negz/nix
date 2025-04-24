@@ -1,4 +1,21 @@
-require('github-theme').setup {}
+require('github-theme').setup {
+	groups = {
+		github_light_default = {
+			LspSignatureActiveParameter = {
+				fg = "red",
+				style = "bold",
+				bg = "NONE",
+			},
+		},
+		github_dark_default = {
+			LspSignatureActiveParameter = {
+				fg = "red",
+				style = "bold",
+				bg = "NONE",
+			},
+		},
+	}
+}
 
 local toggle = function()
 	if vim.o.background == "light" then
