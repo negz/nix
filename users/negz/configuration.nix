@@ -327,6 +327,11 @@
           config = builtins.readFile ./nvim/which-key.lua;
         }
         {
+          plugin = pkgs.vimPlugins.flash-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/flash.lua;
+        }
+        {
           plugin = pkgs.unstable.vimPlugins.render-markdown-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/render-markdown.lua;
