@@ -6,6 +6,19 @@ require('github-theme').setup {
 				style = "bold",
 				bg = "NONE",
 			},
+			-- Symbols highlighted by snacks.nvim words plugin.
+			LspReferenceRead = {
+				style = "underline",
+				bg = "NONE",
+			},
+			LspReferenceWrite = {
+				style = "underline",
+				bg = "NONE",
+			},
+			LspReferenceText = {
+				style = "underline",
+				bg = "NONE",
+			}
 		},
 		github_dark_default = {
 			LspSignatureActiveParameter = {
@@ -13,6 +26,19 @@ require('github-theme').setup {
 				style = "bold",
 				bg = "NONE",
 			},
+			-- Symbols highlighted by snacks.nvim words plugin.
+			LspReferenceRead = {
+				style = "underline",
+				bg = "NONE",
+			},
+			LspReferenceWrite = {
+				style = "underline",
+				bg = "NONE",
+			},
+			LspReferenceText = {
+				style = "underline",
+				bg = "NONE",
+			}
 		},
 	}
 }

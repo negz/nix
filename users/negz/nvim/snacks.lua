@@ -76,6 +76,7 @@ snacks.setup {
 		replace_netrw = true
 	},
 	quickfile = { enabled = true },
+	words = { enabled = true }
 }
 
 vim.api.nvim_create_autocmd('QuitPre', {
