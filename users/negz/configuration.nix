@@ -211,8 +211,8 @@
         pkgs.unstable.typos-lsp
 
         # Go
-        pkgs.gopls
-        pkgs.golangci-lint-langserver
+        pkgs.unstable.gopls
+        pkgs.unstable.golangci-lint-langserver
         pkgs.gotestsum
 
         # Python
