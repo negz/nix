@@ -56,7 +56,8 @@ vim.keymap.set('n', '<leader>k', wk.show, { desc = 'Which key?' })
 -- Window
 vim.keymap.set('n', '<leader>we', snacks.picker.explorer, { desc = 'Toggle explorer' })
 vim.keymap.set('n', '<leader>wm', codewindow.toggle_minimap, { desc = 'Toggle minimap' })
-vim.keymap.set('n', '<leader>wv', '<Cmd>vsplit<Cr>', { desc = 'Vertical split' })
+vim.keymap.set('n', '<leader>w-', '<Cmd>split<Cr>', { desc = 'Horizontal split' })
+vim.keymap.set('n', '<leader>w|', '<Cmd>vsplit<Cr>', { desc = 'Vertical split' })
 vim.keymap.set('n', '<leader>w<Left>', '<C-W><Left>', { desc = 'Move left' })
 vim.keymap.set('n', '<leader>w<Right>', '<C-W><Right>', { desc = 'Move right' })
 
