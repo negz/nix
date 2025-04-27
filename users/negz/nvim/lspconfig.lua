@@ -84,6 +84,11 @@ lsp.lua_ls.setup {
 
 lsp.gopls.setup {
 	capabilities = caps,
+	settings = {
+		gopls = {
+			gofumpt = true,
+		},
+	},
 }
 
 lsp.golangci_lint_ls.setup {
