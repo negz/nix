@@ -219,6 +219,9 @@
         pkgs.unstable.basedpyright
         pkgs.unstable.ruff
 
+        # Protobuf
+        pkgs.unstable.buf
+
         # Images
         pkgs.imagemagick
         pkgs.ghostscript_headless

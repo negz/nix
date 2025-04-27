@@ -123,6 +123,12 @@ lsp.ruff.setup {
 	capabilities = caps,
 }
 
+-- Protobuf
+
+lsp.buf_ls.setup {
+	capabilities = caps,
+}
+
 -- Format code on write.
 vim.api.nvim_create_autocmd("BufWritePre", {
 	callback = function()
