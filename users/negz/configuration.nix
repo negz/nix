@@ -359,15 +359,7 @@
           config = builtins.readFile ./nvim/coverage.lua;
         }
         {
-          plugin = pkgs.vimUtils.buildVimPlugin {
-            name = "colorful-menu";
-            src = pkgs.fetchFromGitHub {
-              owner = "xzbdmw";
-              repo = "colorful-menu.nvim";
-              rev = "f80feb8a6706f965321aff24d0ed3849f02a7f77";
-              sha256 = "nLrxL/eVELFfqmoT+2qj1yJb4S6DjtCg9b5B9o73RuY=";
-            };
-          };
+          plugin = pkgs.unstable.vimPlugins.colorful-menu-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/colorful-menu.lua;
         }
