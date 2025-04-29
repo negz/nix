@@ -307,11 +307,6 @@
           config = builtins.readFile ./nvim/treesitter-context.lua;
         }
         {
-          plugin = pkgs.vimPlugins.codewindow-nvim;
-          type = "lua";
-          config = builtins.readFile ./nvim/codewindow.lua;
-        }
-        {
           plugin = pkgs.vimPlugins.avante-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/avante.lua;
