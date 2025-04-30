@@ -4,6 +4,7 @@ local gitsigns = require('gitsigns')
 local snacks = require('snacks')
 local preview = require('actions-preview')
 local coverage = require('coverage')
+local neominimap = require('neominimap.api')
 
 wk.add({
 	{ '<leader>a',  group = 'AI' },
@@ -54,6 +55,7 @@ vim.keymap.set('n', '<leader>k', wk.show, { desc = 'Which key?' })
 
 -- Window
 vim.keymap.set('n', '<leader>we', snacks.picker.explorer, { desc = 'Toggle explorer' })
+vim.keymap.set('n', '<leader>wm', neominimap.toggle, { desc = 'Toggle minimap' })
 vim.keymap.set('n', '<leader>w-', '<Cmd>split<Cr>', { desc = 'Horizontal split' })
 vim.keymap.set('n', '<leader>w|', '<Cmd>vsplit<Cr>', { desc = 'Vertical split' })
 vim.keymap.set('n', '<leader>w<Left>', '<C-W><Left>', { desc = 'Move left' })

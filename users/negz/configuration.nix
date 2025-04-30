@@ -250,6 +250,7 @@
         set nowrap
         set showcmd
         set scrolloff=3
+        set sidescroll=3
         set backspace=2
         set textwidth=80
         set formatoptions=cq
@@ -272,6 +273,19 @@
           };
           type = "lua";
           config = builtins.readFile ./nvim/github-theme.lua;
+        }
+        {
+          plugin = pkgs.vimUtils.buildVimPlugin {
+            name = "neominimap";
+            src = pkgs.fetchFromGitHub {
+              owner = "Isrothy";
+              repo = "neominimap.nvim";
+              rev = "v3.14.0";
+              sha256 = "zQQwRB3un7o1/qrpaqWl25i6r5728BjzNUA0CkUF7qA=";
+            };
+          };
+          type = "lua";
+          config = builtins.readFile ./nvim/neominimap.lua;
         }
         pkgs.vimPlugins.plenary-nvim
         {
