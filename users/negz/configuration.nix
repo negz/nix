@@ -94,9 +94,12 @@
       enable = true;
       dotDir = ".config/zsh";
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
-      enableCompletion = true;
       autosuggestion = {
         enable = true;
+        strategy = [
+          "history"
+          "completion"
+        ];
       };
       syntaxHighlighting = {
         enable = true;
@@ -129,15 +132,15 @@
           };
         }
       ];
-      localVariables = {
-        ZSH_AUTOSUGGEST_STRATEGY = [
-          "history"
-          "completion"
-        ];
-      };
       initExtraBeforeCompInit = ''
         P10KP="$XDG_CACHE_HOME/p10k-instant-prompt-''${(%):-%n}.zsh"; [[ ! -r "$P10KP" ]] || source "$P10KP"
       '';
+    };
+
+    carapace = {
+      enable = true;
+      enableZshIntegration = true;
+      package = pkgs.unstable.carapace;
     };
 
     tmux = {
