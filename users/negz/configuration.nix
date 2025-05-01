@@ -48,6 +48,7 @@
 
       # Tools I find handy to have around.
       pkgs.file
+      pkgs.bottom
     ];
 
     file = {
