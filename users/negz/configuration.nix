@@ -133,7 +133,7 @@
           };
         }
       ];
-      initExtraBeforeCompInit = ''
+      initContent = lib.mkOrder 550 ''
         P10KP="$XDG_CACHE_HOME/p10k-instant-prompt-''${(%):-%n}.zsh"; [[ ! -r "$P10KP" ]] || source "$P10KP"
       '';
     };
