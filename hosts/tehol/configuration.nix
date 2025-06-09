@@ -69,6 +69,7 @@
 
   hardware = {
     nvidia = {
+      open = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
       nvidiaSettings = true;
@@ -80,7 +81,6 @@
 
     opengl = {
       enable = true;
-      driSupport = true;
       driSupport32Bit = true;
     };
 
@@ -225,16 +225,16 @@
     gnome = {
       excludePackages = [
         pkgs.gnome-tour
-        pkgs.gnome.epiphany
-        pkgs.gnome.geary
-        pkgs.gnome.gnome-music
-        pkgs.gnome.cheese
-        pkgs.gnome.tali
-        pkgs.gnome.iagno
-        pkgs.gnome.hitori
-        pkgs.gnome.atomix
-        pkgs.gnome.gnome-maps
-        pkgs.gnome.gnome-contacts
+        pkgs.epiphany
+        pkgs.geary
+        pkgs.gnome-music
+        pkgs.cheese
+        pkgs.tali
+        pkgs.iagno
+        pkgs.hitori
+        pkgs.atomix
+        pkgs.gnome-maps
+        pkgs.gnome-contacts
       ];
     };
 
