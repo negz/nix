@@ -79,13 +79,10 @@
       enable = true;
     };
 
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport32Bit = true;
+      enable32Bit = true;
     };
-
-    # Needed by Pipewire
-    pulseaudio.enable = false;
   };
 
   networking = {
@@ -181,11 +178,13 @@
       alsa.support32Bit = true;
       pulse.enable = true;
     };
+
+    # Needed by Pipewire
+    pulseaudio.enable = false;
   };
 
   programs = {
     zsh.enable = true;
-    vim.defaultEditor = true;
 
     # Maybe useful for gaming stuff?
     # Note that as of NixOS 23.05 the env vars are set magically.
