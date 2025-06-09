@@ -207,8 +207,9 @@
     };
   };
 
-  environment = {
     systemPackages = [
+      pkgs.ghostty.terminfo
+
       pkgs.google-chrome
       pkgs.mangohud
       pkgs.protonup
