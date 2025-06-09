@@ -262,6 +262,13 @@
   };
 
   systemd = {
+    targets = {
+      sleep.enable = false;
+      suspend.enable = false;
+      hibernate.enable = false;
+      hybrid-sleep.enable = false;
+    };
+
     services = {
       # GNOME installs this but doesn't enable it.
       gnome-remote-desktop = {
