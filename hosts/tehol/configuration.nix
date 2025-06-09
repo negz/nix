@@ -206,6 +206,7 @@
     };
   };
 
+  environment = {
     systemPackages = [
       pkgs.ghostty.terminfo
 
