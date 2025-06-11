@@ -29,6 +29,7 @@
     config = {
       allowUnfree = true;
       allowUnsupportedSystem = true;
+      cudaSupport = true;
     };
   };
 
@@ -50,6 +51,7 @@
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
       nvidiaSettings = false;
+      nvidiaPersistenced = true;
     };
 
     graphics = {
@@ -123,6 +125,11 @@
         PermitRootLogin = "no";
         PasswordAuthentication = false;
       };
+    };
+
+    # Required to load drivers even when not using X.
+    xserver = {
+      videoDrivers = [ "nvidia" ];
     };
   };
 
