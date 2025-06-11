@@ -106,7 +106,6 @@
       home = "/home/negz";
       shell = pkgs.zsh;
       isNormalUser = true;
-      hashedPassword = "";
       extraGroups = [
         "wheel"
         "networkmanager"
