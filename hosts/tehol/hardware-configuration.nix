@@ -14,34 +14,88 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = [
-    "nvme"
-    "xhci_pci"
-    "ahci"
-    "usbhid"
-    "usb_storage"
-    "sd_mod"
-  ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
+  boot = {
+    initrd = {
+      availableKernelModules = [
+        "nvme"
+        "xhci_pci"
+        "ahci"
+        "usbhid"
+        "usb_storage"
+        "sd_mod"
+        "ccm"
+        "ctr"
+        "iwlmvm"
+        "iwlwifi"
+      ];
+      kernelModules = [
+        "dm-snapshot"
+        "cryptd"
+      ];
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/2aeefe9c-d1aa-4261-8cfc-54989738e860";
-    fsType = "ext4";
+      systemd = {
+        enable = true;
+
+        packages = [ pkgs.wpa_supplicant ];
+        initrdBin = [ pkgs.wpa_supplicant ];
+
+        targets.initrd.wants = [ "wpa_supplicant@wlp6s0.service" ];
+        services."wpa_supplicant@".unitConfig.DefaultDependencies = false;
+
+        network = {
+          enable = true;
+          networks = {
+            "10-wlan" = {
+              matchConfig.Name = "wlp6s0";
+              networkConfig.DHCP = "yes";
+            };
+          };
+        };
+
+        users.root.shell = "/bin/systemd-tty-ask-password-agent";
+      };
+
+      # Generated with wpa_passphrase <ssid> "<password>" > wpa_supplicant.conf
+      secrets."/etc/wpa_supplicant/wpa_supplicant-wlp6s0.conf" = /root/secret/wpa_supplicant.conf;
+
+      network = {
+        enable = true;
+        ssh = {
+          enable = true;
+          port = 22;
+          hostKeys = [ "/etc/ssh/ssh_host_ed25519_key" ];
+          authorizedKeys = [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
+          ];
+        };
+      };
+
+      luks.devices."cryptroot".device = "/dev/disk/by-label/encrypted";
+    };
+
+    kernelModules = [ "kvm-amd" ];
   };
 
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/78EE-9D6D";
-    fsType = "vfat";
-    options = [
-      "fmask=0077"
-      "dmask=0077"
-    ];
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-label/nixos";
+      fsType = "ext4";
+    };
+
+    "/boot" = {
+      device = "/dev/disk/by-label/boot";
+      fsType = "vfat";
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
+    };
   };
 
   swapDevices = [
-    { device = "/dev/disk/by-uuid/d8c57f23-1e14-43e4-a8cd-d4f1387ede6d"; }
+    {
+      device = "/dev/disk/by-label/swap";
+    }
   ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
