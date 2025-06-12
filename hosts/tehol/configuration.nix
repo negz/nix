@@ -73,6 +73,10 @@
       allowedTCPPorts = [
         22
       ];
+      allowedUDPPorts = [
+        config.services.tailscale.port
+      ];
+      trustedInterfaces = [ "tailscale0" ];
     };
 
     networkmanager = {
@@ -129,6 +133,10 @@
         PermitRootLogin = "no";
         PasswordAuthentication = false;
       };
+    };
+
+    tailscale = {
+      enable = true;
     };
 
     # Required to load drivers even when not using X.
