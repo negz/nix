@@ -19,6 +19,9 @@
     };
   };
 
+  # nix-darwin says do thing.
+  ids.gids.nixbld = 350;
+
   nixpkgs = {
     config.allowUnfree = true;
     config.allowUnsupportedSystem = true;
