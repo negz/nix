@@ -208,7 +208,6 @@
         pkgs.lua-language-server
         pkgs.ripgrep
         pkgs.fd
-        pkgs.inotify-tools
 
         # Spelling and grammar
         pkgs.unstable.harper
