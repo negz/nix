@@ -83,6 +83,19 @@
             }
           ];
         };
+        rake = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          modules = [
+            { nixpkgs.overlays = darwin-overlays; }
+            ./hosts/rake/configuration.nix
+            hm-darwin.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.negz = import ./users/negz/configuration.nix;
+            }
+          ];
+        };
       };
       nixosConfigurations = {
         mael = nixos.lib.nixosSystem {
@@ -90,6 +103,19 @@
           modules = [
             { nixpkgs.overlays = nixos-overlays; }
             ./hosts/mael/configuration.nix
+            hm-nixos.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.negz = import ./users/negz/configuration.nix;
+            }
+          ];
+        };
+        dragnipur = nixos.lib.nixosSystem {
+          system = "aarch64-linux";
+          modules = [
+            { nixpkgs.overlays = nixos-overlays; }
+            ./hosts/dragnipur/configuration.nix
             hm-nixos.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
