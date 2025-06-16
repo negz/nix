@@ -60,7 +60,7 @@
   };
 
   networking = {
-    hostName = "mael";
+    hostName = "dragnipur";
     search = [ "v.rk0n.org" ];
     useDHCP = true;
 
@@ -107,7 +107,7 @@
     };
   };
 
-  system.stateVersion = "21.11";
+  system.stateVersion = "25.05";
 
   services = {
     openssh = {

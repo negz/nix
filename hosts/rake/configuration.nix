@@ -29,8 +29,8 @@
   programs.zsh.enable = true;
 
   networking = {
-    computerName = "bugg";
-    hostName = "bugg";
+    computerName = "rake";
+    hostName = "rake";
   };
 
   users = {
