@@ -427,7 +427,7 @@
 
     go = {
       enable = true;
-      package = pkgs.unstable.go_1_23;
+      package = pkgs.unstable.go_1_24;
       goPath = "control/go";
       goBin = "control/go/bin";
       goPrivate = [ "github.com/upbound" ];
