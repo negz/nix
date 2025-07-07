@@ -134,7 +134,6 @@
   virtualisation = {
     docker = {
       enable = true;
-      package = pkgs.unstable.docker_26;
       autoPrune = {
         enable = true;
       };
