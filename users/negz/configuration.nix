@@ -27,7 +27,6 @@
 
     packages = [
       # Go things
-      pkgs.golangci-lint
       pkgs.go-outline
       pkgs.gcc # For cgo
 
@@ -215,6 +214,7 @@
 
         # Go
         pkgs.unstable.gopls
+        pkgs.unstable.golangci-lint
         pkgs.unstable.golangci-lint-langserver
         pkgs.gotestsum
 
