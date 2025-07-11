@@ -7,7 +7,6 @@ local coverage = require('coverage')
 local neominimap = require('neominimap.api')
 
 wk.add({
-	{ '<leader>a',  group = 'AI' },
 	{ '<leader>c',  group = 'Code' },
 	{ '<leader>cd', group = 'Diagnostics' },
 	{ '<leader>f',  group = 'Find' },
@@ -16,9 +15,6 @@ wk.add({
 	{ '<leader>w',  group = 'Window' },
 })
 
-
--- AI
--- Avante adds a bunch of AI stuff under 'a'.
 
 -- Buffers
 vim.keymap.set('n', '<leader>b', snacks.picker.buffers, { desc = 'Buffers' })

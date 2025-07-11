@@ -324,11 +324,6 @@
           config = builtins.readFile ./nvim/treesitter-context.lua;
         }
         {
-          plugin = pkgs.vimPlugins.avante-nvim;
-          type = "lua";
-          config = builtins.readFile ./nvim/avante.lua;
-        }
-        {
           plugin = pkgs.unstable.vimPlugins.blink-cmp;
           type = "lua";
           config = builtins.readFile ./nvim/blink-cmp.lua;
