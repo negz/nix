@@ -26,6 +26,10 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixos";
     };
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixos";
+    };
   };
 
   nixConfig = {
@@ -47,6 +51,7 @@
       nixos,
       nixos-unstable,
       hm-nixos,
+      nur,
     }:
     let
       darwin-overlays = [
@@ -115,6 +120,7 @@
           system = "aarch64-linux";
           modules = [
             { nixpkgs.overlays = nixos-overlays; }
+            nur.modules.nixos.default
             ./hosts/dragnipur/configuration.nix
             hm-nixos.nixosModules.home-manager
             {

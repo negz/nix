@@ -44,10 +44,18 @@
 
       # AI things
       pkgs.unstable.claude-code
+      pkgs.unstable.nil
+
+      # Useful dependencies for AI tools
+      pkgs.gh
+      pkgs.ripgrep
+      pkgs.unstable.gopls
+      pkgs.nur.repos.charmbracelet.crush
 
       # Tools I find handy to have around.
       pkgs.file
       pkgs.bottom
+
     ];
 
     file = {
