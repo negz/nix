@@ -50,6 +50,7 @@
       pkgs.gh
       pkgs.ripgrep
       pkgs.unstable.gopls
+      pkgs.master.opencode
       pkgs.nur.repos.charmbracelet.crush
 
       # Tools I find handy to have around.
@@ -430,7 +431,7 @@
 
     go = {
       enable = true;
-      package = pkgs.unstable.go_1_24;
+      package = pkgs.unstable.go_1_25;
       goPath = "control/go";
       goBin = "control/go/bin";
       goPrivate = [ "github.com/upbound" ];

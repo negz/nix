@@ -2,6 +2,9 @@
   description = "A NixOS configuration for https://github.com/negz's machines";
 
   inputs = {
+    nixpkgs-master = {
+      url = "github:nixos/nixpkgs/master";
+    };
     nixpkgs-darwin = {
       url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     };
@@ -44,6 +47,7 @@
   outputs =
     {
       self,
+      nixpkgs-master,
       nixpkgs-darwin,
       nixpkgs-unstable,
       darwin,
@@ -61,12 +65,23 @@
             system = prev.system;
             config.allowUnfree = true;
           };
+          master = import nixpkgs-master {
+            system = prev.system;
+            config.allowUnfree = true;
+          };
+          nur = import nur {
+            pkgs = prev;
+          };
         })
       ];
       nixos-overlays = [
         # Allow configurations to use pkgs.unstable.<package-name>.
         (final: prev: {
           unstable = import nixos-unstable {
+            system = prev.system;
+            config.allowUnfree = true;
+          };
+          master = import nixpkgs-master {
             system = prev.system;
             config.allowUnfree = true;
           };
