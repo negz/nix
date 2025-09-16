@@ -51,6 +51,8 @@
       pkgs.ripgrep
       pkgs.unstable.nil
       pkgs.unstable.gopls
+      pkgs.unstable.golangci-lint
+      pkgs.unstable.golangci-lint-langserver
 
       # Tools I find handy to have around.
       pkgs.file
