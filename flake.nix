@@ -5,6 +5,8 @@
     nixpkgs-master = {
       url = "github:nixos/nixpkgs/master";
     };
+
+    # MacOS
     nixpkgs-darwin = {
       url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     };
@@ -19,6 +21,12 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
+    nur-darwin = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+
+    # NixOS
     nixos = {
       url = "github:nixos/nixpkgs/nixos-25.05";
     };
@@ -29,7 +37,7 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixos";
     };
-    nur = {
+    nur-nixos = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixos";
     };
@@ -48,14 +56,17 @@
     {
       self,
       nixpkgs-master,
+
       nixpkgs-darwin,
       nixpkgs-unstable,
       darwin,
       hm-darwin,
+      nur-darwin,
+
       nixos,
       nixos-unstable,
       hm-nixos,
-      nur,
+      nur-nixos,
     }:
     let
       darwin-overlays = [
@@ -65,14 +76,13 @@
             system = prev.system;
             config.allowUnfree = true;
           };
+          # Allow configurations to use pkgs.master.<package-name>.
           master = import nixpkgs-master {
             system = prev.system;
             config.allowUnfree = true;
           };
-          nur = import nur {
-            pkgs = prev;
-          };
         })
+        nur-darwin.overlays.default
       ];
       nixos-overlays = [
         # Allow configurations to use pkgs.unstable.<package-name>.
@@ -81,11 +91,13 @@
             system = prev.system;
             config.allowUnfree = true;
           };
+          # Allow configurations to use pkgs.master.<package-name>.
           master = import nixpkgs-master {
             system = prev.system;
             config.allowUnfree = true;
           };
         })
+        nur-nixos.overlays.default
       ];
     in
     {
@@ -135,7 +147,6 @@
           system = "aarch64-linux";
           modules = [
             { nixpkgs.overlays = nixos-overlays; }
-            nur.modules.nixos.default
             ./hosts/dragnipur/configuration.nix
             hm-nixos.nixosModules.home-manager
             {
