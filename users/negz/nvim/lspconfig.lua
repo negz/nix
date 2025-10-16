@@ -1,4 +1,3 @@
-local lsp = require('lspconfig')
 local caps = require('blink.cmp').get_lsp_capabilities()
 
 vim.diagnostic.config({
@@ -23,7 +22,10 @@ vim.diagnostic.config({
 })
 
 -- Spelling and grammar
-lsp.harper_ls.setup {
+vim.lsp.config('harper_ls', {
+	cmd = { 'harper-ls', '--stdio' },
+	filetypes = { 'markdown', 'text', 'gitcommit' },
+	root_markers = { '.git' },
 	capabilities = caps,
 	settings = {
 		["harper-ls"] = {
@@ -41,18 +43,24 @@ lsp.harper_ls.setup {
 			}
 		}
 	}
-}
+})
 
-lsp.typos_lsp.setup {
+vim.lsp.config('typos_lsp', {
+	cmd = { 'typos-lsp' },
+	filetypes = { '*' },
+	root_markers = { '.git' },
 	capabilities = caps,
 	init_options = {
 		diagnosticSeverity = "Info"
 	}
-}
+})
 
 
 -- Nix
-lsp.nil_ls.setup {
+vim.lsp.config('nil_ls', {
+	cmd = { 'nil' },
+	filetypes = { 'nix' },
+	root_markers = { 'flake.nix', 'flake.lock', '.git' },
 	capabilities = caps,
 	settings = {
 		['nil'] = {
@@ -64,11 +72,14 @@ lsp.nil_ls.setup {
 			}
 		}
 	}
-}
+})
 
 -- Lua, for configuring Neovim
 
-lsp.lua_ls.setup {
+vim.lsp.config('lua_ls', {
+	cmd = { 'lua-language-server' },
+	filetypes = { 'lua' },
+	root_markers = { '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' },
 	capabilities = caps,
 	settings = {
 		Lua = {
@@ -78,20 +89,26 @@ lsp.lua_ls.setup {
 			}
 		}
 	}
-}
+})
 
 -- Go
 
-lsp.gopls.setup {
+vim.lsp.config('gopls', {
+	cmd = { 'gopls' },
+	filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+	root_markers = { 'go.work', 'go.mod', '.git' },
 	capabilities = caps,
 	settings = {
 		gopls = {
 			gofumpt = true,
 		},
 	},
-}
+})
 
-lsp.golangci_lint_ls.setup {
+vim.lsp.config('golangci_lint_ls', {
+	cmd = { 'golangci-lint-langserver' },
+	filetypes = { 'go', 'gomod' },
+	root_markers = { '.golangci.yml', '.golangci.yaml', '.golangci.toml', '.golangci.json', 'go.work', 'go.mod', '.git' },
 	capabilities = caps,
 
 	-- TODO(negz): Remove when the below issue is fixed.
@@ -109,11 +126,14 @@ lsp.golangci_lint_ls.setup {
 		end
 		return { command = { "golangci-lint", "run", "--out-format", "json", "--show-stats=false", "--issues-exit-code=1" } }
 	end)(),
-}
+})
 
 -- Python
 
-lsp.basedpyright.setup {
+vim.lsp.config('basedpyright', {
+	cmd = { 'basedpyright-langserver', '--stdio' },
+	filetypes = { 'python' },
+	root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' },
 	capabilities = caps,
 	settings = {
 		-- Let Ruff handle all linting, formatting, and imports.
@@ -122,17 +142,36 @@ lsp.basedpyright.setup {
 			disableOrganizeImports = true
 		}
 	}
-}
+})
 
-lsp.ruff.setup {
+vim.lsp.config('ruff', {
+	cmd = { 'ruff', 'server' },
+	filetypes = { 'python' },
+	root_markers = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
 	capabilities = caps,
-}
+})
 
 -- Protobuf
 
-lsp.buf_ls.setup {
+vim.lsp.config('buf_ls', {
+	cmd = { 'buf', 'beta', 'lsp' },
+	filetypes = { 'proto' },
+	root_markers = { 'buf.work.yaml', 'buf.yaml', '.git' },
 	capabilities = caps,
-}
+})
+
+-- Enable all configured LSP servers
+vim.lsp.enable({
+	'harper_ls',
+	'typos_lsp',
+	'nil_ls',
+	'lua_ls',
+	'gopls',
+	'golangci_lint_ls',
+	'basedpyright',
+	'ruff',
+	'buf_ls',
+})
 
 -- Format code on write.
 vim.api.nvim_create_autocmd("BufWritePre", {

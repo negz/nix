@@ -269,6 +269,7 @@
 
         filetype indent on
       '';
+      extraLuaConfig = builtins.readFile ./nvim/lspconfig.lua;
       plugins = [
         # Intentionally loaded first, to make sure it applies to other plugins.
         {
@@ -317,11 +318,6 @@
           plugin = pkgs.unstable.vimPlugins.lualine-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/lualine.lua;
-        }
-        {
-          plugin = pkgs.unstable.vimPlugins.nvim-lspconfig;
-          type = "lua";
-          config = builtins.readFile ./nvim/lspconfig.lua;
         }
         {
           plugin = pkgs.unstable.vimPlugins.nvim-treesitter.withAllGrammars;
