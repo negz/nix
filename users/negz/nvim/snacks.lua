@@ -15,9 +15,10 @@ snacks.setup {
 		sections = {
 			{
 				section = "terminal",
-				cmd = "chafa --probe off --format symbols --symbols block --colors full --polite on --passthrough tmux --size 50x20 --align center ${XDG_DATA_HOME}/nvim/neovim-mark.png; sleep .1",
-				height = 25,
-				padding = 1,
+				cmd = "chafa --probe off --format symbols --symbols block --colors full --polite on --passthrough tmux --size 50 ${XDG_DATA_HOME}/nvim/neovim-mark.png; sleep .1",
+				height = 35,
+				padding = 0,
+				indent = 5,
 			},
 			{ section = "keys", gap = 1, padding = 1 },
 		},
