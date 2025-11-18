@@ -41,7 +41,9 @@ vim.keymap.set('n', '<leader>fr', snacks.picker.recent, { desc = 'Find recent fi
 
 --- Git
 vim.keymap.set('n', '<leader>gb', snacks.picker.git_log_line, { desc = 'Git log line' })
+vim.keymap.set('n', '<leader>gi', function() snacks.picker.gh_issue() end, { desc = 'GitHub issues' })
 vim.keymap.set('n', '<leader>gl', snacks.picker.git_log, { desc = 'Git log' })
+vim.keymap.set('n', '<leader>gp', function() snacks.picker.gh_pr() end, { desc = 'GitHub PRs' })
 vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk, { desc = 'Git reset hunk' })
 vim.keymap.set('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'Git reset buffer' })
 vim.keymap.set('n', '<leader>gs', snacks.picker.git_status, { desc = 'Git status' })

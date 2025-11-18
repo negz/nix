@@ -76,6 +76,9 @@ snacks.setup {
 	explorer = {
 		replace_netrw = true
 	},
+	gh = {
+		enabled = true
+	},
 	quickfile = { enabled = true },
 	words = { enabled = true }
 }
