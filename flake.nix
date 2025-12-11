@@ -73,12 +73,12 @@
         # Allow configurations to use pkgs.unstable.<package-name>.
         (final: prev: {
           unstable = import nixpkgs-unstable {
-            system = prev.system;
+            system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
           # Allow configurations to use pkgs.master.<package-name>.
           master = import nixpkgs-master {
-            system = prev.system;
+            system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
         })
@@ -88,12 +88,12 @@
         # Allow configurations to use pkgs.unstable.<package-name>.
         (final: prev: {
           unstable = import nixos-unstable {
-            system = prev.system;
+            system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
           # Allow configurations to use pkgs.master.<package-name>.
           master = import nixpkgs-master {
-            system = prev.system;
+            system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
         })
