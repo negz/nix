@@ -21,9 +21,8 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
-    nur-darwin = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
     };
 
     # NixOS
@@ -37,18 +36,16 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixos";
     };
-    nur-nixos = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixos";
-    };
   };
 
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org"
+      "https://numtide.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
     ];
   };
 
@@ -61,12 +58,11 @@
       nixpkgs-unstable,
       darwin,
       hm-darwin,
-      nur-darwin,
+      llm-agents,
 
       nixos,
       nixos-unstable,
       hm-nixos,
-      nur-nixos,
     }:
     let
       darwin-overlays = [
@@ -81,8 +77,9 @@
             system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
+          # Allow configurations to use pkgs.llm-agents.<package-name>.
+          llm-agents = llm-agents.packages.${prev.stdenv.hostPlatform.system};
         })
-        nur-darwin.overlays.default
       ];
       nixos-overlays = [
         # Allow configurations to use pkgs.unstable.<package-name>.
@@ -96,8 +93,9 @@
             system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
+          # Allow configurations to use pkgs.llm-agents.<package-name>.
+          llm-agents = llm-agents.packages.${prev.stdenv.hostPlatform.system};
         })
-        nur-nixos.overlays.default
       ];
     in
     {

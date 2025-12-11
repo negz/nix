@@ -44,7 +44,7 @@
 
       # AI things
       pkgs.unstable.claude-code
-      pkgs.nur.repos.charmbracelet.crush
+      pkgs.llm-agents.crush
 
       # Useful dependencies for AI tools
       pkgs.gh
