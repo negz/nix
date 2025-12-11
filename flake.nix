@@ -8,17 +8,17 @@
 
     # MacOS
     nixpkgs-darwin = {
-      url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
+      url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
     };
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";
     };
     darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     hm-darwin = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nur-darwin = {
@@ -28,13 +28,13 @@
 
     # NixOS
     nixos = {
-      url = "github:nixos/nixpkgs/nixos-25.05";
+      url = "github:nixos/nixpkgs/nixos-25.11";
     };
     nixos-unstable = {
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
     hm-nixos = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixos";
     };
     nur-nixos = {
