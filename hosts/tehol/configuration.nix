@@ -147,6 +147,10 @@
 
   programs = {
     zsh.enable = true;
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+    };
 
     # Note that as of NixOS 23.05 the env vars are set magically.
     nix-ld.enable = true;

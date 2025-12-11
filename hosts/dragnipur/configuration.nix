@@ -129,7 +129,7 @@
 
   programs = {
     zsh.enable = true;
-    vim = {
+    neovim = {
       enable = true;
       defaultEditor = true;
     };

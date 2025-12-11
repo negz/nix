@@ -92,7 +92,10 @@
 
   programs = {
     zsh.enable = true;
-    vim.defaultEditor = true;
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+    };
   };
 
   virtualisation = {
