@@ -102,7 +102,7 @@
   programs = {
     zsh = {
       enable = true;
-      dotDir = ".config/zsh";
+      dotDir = "${config.xdg.configHome}/zsh";
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       autosuggestion = {
         enable = true;
@@ -381,36 +381,50 @@
 
     ssh = {
       enable = true;
-      forwardAgent = true;
+      enableDefaultConfig = false;
 
-      # ghostty uses its own terminfo, which most hosts won't have
       matchBlocks = {
+        # ghostty uses its own terminfo, which most hosts won't have
         "ghostty-terminfo" = {
           host = "!mael,!tehol,*";
           setEnv = {
             TERM = "xterm-256color";
           };
         };
+        "*" = {
+          forwardAgent = true;
+          serverAliveInterval = 0;
+          serverAliveCountMax = 3;
+          compression = false;
+          addKeysToAgent = "no";
+          hashKnownHosts = false;
+          userKnownHostsFile = "~/.ssh/known_hosts";
+          controlMaster = "no";
+          controlPath = "~/.ssh/master-%r@%n:%p";
+          controlPersist = "no";
+        };
       };
     };
 
     git = {
       enable = true;
-      userName = "Nic Cope";
-      userEmail = "nicc@rk0n.org";
-      aliases = {
-        b = "branch";
-        ca = "commit -a";
-        co = "checkout";
-        d = "diff";
-        p = "status";
-        ll = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all";
-      };
       ignores = [
         ".DS_Store"
         "shell.nix"
       ];
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Nic Cope";
+          email = "nicc@rk0n.org";
+        };
+        alias = {
+          b = "branch";
+          ca = "commit -a";
+          co = "checkout";
+          d = "diff";
+          p = "status";
+          ll = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all";
+        };
         push = {
           default = "current";
         };
@@ -429,9 +443,11 @@
     go = {
       enable = true;
       package = pkgs.unstable.go_1_25;
-      goPath = "control/go";
-      goBin = "control/go/bin";
-      goPrivate = [ "github.com/upbound" ];
+      env = {
+        GOPATH = "${config.home.homeDirectory}/control/go";
+        GOBIN = "${config.home.homeDirectory}/control/go/bin";
+        GOPRIVATE = "github.com/upbound";
+      };
     };
 
     jq = {
