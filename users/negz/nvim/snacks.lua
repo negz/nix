@@ -42,6 +42,7 @@ snacks.setup {
 	picker = {
 		enabled = true,
 		ui_select = true,
+		layout = "ivy_split",
 		matcher = {
 			cwd_bonus = true,
 			frecency = true,
