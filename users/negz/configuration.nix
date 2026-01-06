@@ -291,8 +291,8 @@
             src = pkgs.fetchFromGitHub {
               owner = "Isrothy";
               repo = "neominimap.nvim";
-              rev = "v3.14.1";
-              sha256 = "6us7ykudgnINqQoAURQwOdZ1X3T22YtWxYAme9yGkmo=";
+              rev = "v3.15.4";
+              sha256 = "MvXsuyMQhQPy8gCcZP7HqHQ+l8Hr4lc6g9yRKKUNZJE=";
             };
           };
           type = "lua";
