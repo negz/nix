@@ -58,6 +58,7 @@
         "fs.inotify.max_user_instances" = "512";
       };
     };
+
   };
 
   networking = {
@@ -147,6 +148,26 @@
       autoPrune = {
         enable = true;
       };
+    };
+  };
+
+  # TODO: boot.binfmt.emulatedSystems with preferStaticEmulators fails to build
+  # on aarch64 due to linker issues (nixpkgs#392673). Replace with native NixOS
+  # binfmt config once fixed.
+  systemd.additionalUpstreamSystemUnits = [
+    "proc-sys-fs-binfmt_misc.automount"
+    "proc-sys-fs-binfmt_misc.mount"
+  ];
+  systemd.services.docker-binfmt = {
+    description = "Install QEMU binfmt handlers via Docker";
+    after = [ "docker.service" "proc-sys-fs-binfmt_misc.mount" ];
+    requires = [ "docker.service" ];
+    wants = [ "proc-sys-fs-binfmt_misc.mount" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.docker}/bin/docker run --privileged --rm tonistiigi/binfmt --install all";
     };
   };
 
