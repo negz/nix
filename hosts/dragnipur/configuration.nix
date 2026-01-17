@@ -58,6 +58,8 @@
         "fs.inotify.max_user_instances" = "512";
       };
     };
+
+    binfmt.emulatedSystems = [ "x86_64-linux" ];
   };
 
   networking = {
