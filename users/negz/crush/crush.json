@@ -1,0 +1,63 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "models": {
+    "large": {
+      "model": "claude-opus-4-6",
+      "provider": "anthropic",
+      "max_tokens": 126000
+    },
+    "small": {
+      "model": "claude-sonnet-4-5-20250929",
+      "provider": "anthropic",
+      "max_tokens": 50000
+    }
+  },
+  "lsp": {
+    "go": {
+      "command": "gopls"
+    },
+    "go-lint": {
+      "command": "golangci-lint-langserver",
+      "filetypes": [
+        "go",
+        "gomod",
+        "gowork"
+      ],
+      "options": {
+        "command": [
+          "golangci-lint",
+          "run",
+          "--output.json.path",
+          "stdout",
+          "--show-stats=false",
+          "--issues-exit-code=1"
+        ]
+      }
+    },
+    "nix": {
+      "command": "nil",
+      "filetypes": [
+        "nix"
+      ]
+    }
+  },
+  "mcp": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    }
+  },
+  "permissions": {
+    "allowed_tools": [
+      "view",
+      "ls",
+      "grep",
+      "mcp_context7_get-library-doc"
+    ]
+  },
+  "agents": {
+    "task": {
+      "model": "small"
+    }
+  }
+}

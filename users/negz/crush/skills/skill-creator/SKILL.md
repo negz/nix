@@ -1,0 +1,241 @@
+---
+name: skill-creator
+description: Create new skills, modify and improve existing skills. Use when users want to create a skill from scratch, turn a workflow into a skill, update or optimize an existing skill, improve a skill's description for better triggering accuracy, or when they mention SKILL.md files.
+---
+
+# Skill Creator
+
+A skill for creating new skills and iteratively improving them.
+
+## The Process
+
+1. Understand what the user wants the skill to do
+2. Interview to fill gaps — edge cases, formats, dependencies
+3. Write the SKILL.md
+4. Test it with a few realistic prompts
+5. Improve based on what worked and what didn't
+6. Optimize the description for triggering accuracy
+
+Figure out where the user is in this process and help them from there. Maybe they
+want a skill from scratch. Maybe they already have a draft that needs improving.
+Maybe they just finished a workflow and want to capture it as a skill.
+
+## Capture Intent
+
+The conversation might already contain a workflow the user wants to capture. If
+so, extract what you can — tools used, sequence of steps, corrections made,
+input/output formats — and confirm before proceeding.
+
+Key questions to answer (from the conversation or by asking):
+
+1. What should this skill enable the agent to do?
+2. When should it trigger? What user phrases or contexts?
+3. What's the expected output format?
+4. Are there edge cases or failure modes to handle?
+
+## Interview and Research
+
+Ask about edge cases, input/output formats, example files, success criteria, and
+dependencies. Check the codebase for existing patterns if relevant. Come prepared
+with context to reduce burden on the user.
+
+Don't start writing until you understand the problem space well enough to
+generalize beyond the examples discussed.
+
+## Writing the SKILL.md
+
+### Anatomy
+
+```
+skill-name/
+├── SKILL.md              # Required
+├── scripts/              # Optional: deterministic/repetitive tasks
+├── references/           # Optional: docs loaded as needed
+└── assets/               # Optional: templates, icons, data files
+```
+
+### Frontmatter
+
+Required fields:
+
+- **name**: Lowercase, hyphens, 1-64 chars. Must match the directory name.
+- **description**: What the skill does AND when to use it. This is the primary
+  triggering mechanism — all "when to use" info goes here, not in the body.
+
+Optional fields:
+
+- **compatibility**: Required tools or dependencies (e.g., "Requires Nix with
+  flakes enabled", "Requires authenticated gh CLI").
+
+### Description Writing
+
+The description determines whether the agent invokes the skill. Today's agents
+tend to *undertrigger* — they don't use skills when they should. Combat this by
+making descriptions a little pushy. Include specific keywords and contexts.
+
+Bad:
+```yaml
+description: Helps with PDFs.
+```
+
+Good:
+```yaml
+description: Extract text and tables from PDF files, fill forms, and merge
+  documents. Use when working with PDF files or when the user mentions PDFs,
+  forms, or document extraction.
+```
+
+### Body Structure
+
+Keep the SKILL.md body under 500 lines. If approaching this limit, split detail
+into `references/` files with clear pointers about when to read them.
+
+Recommended sections:
+
+1. **When to Use** — disambiguate from similar skills if needed
+2. **Instructions** — the core workflow, step by step
+3. **Examples** — concrete input/output pairs
+4. **Guidelines** — principles, constraints, anti-patterns
+5. **Key Principles** — a numbered summary at the end
+
+### Progressive Disclosure
+
+Skills load in three levels:
+
+1. **Metadata** (name + description) — always in context (~100 words)
+2. **SKILL.md body** — loaded when the skill triggers (<500 lines)
+3. **Bundled resources** — loaded on demand (unlimited size)
+
+Use this to your advantage. Keep the main file focused on instructions. Move
+detailed reference material, large examples, and API docs into separate files:
+
+```
+my-skill/
+├── SKILL.md              # Core instructions (~200-400 lines)
+├── references/
+│   ├── api.md            # Full API reference (loaded when needed)
+│   └── example.md        # Worked example (loaded when needed)
+└── scripts/
+    └── validate.sh       # Can execute without loading into context
+```
+
+Reference files from SKILL.md with guidance on when to read them:
+
+```markdown
+See [references/example.md](references/example.md) for a full worked example.
+```
+
+For large reference files (>300 lines), include a table of contents.
+
+### Writing Patterns
+
+**Use imperative form** in instructions. "Run the tests" not "You should run the
+tests."
+
+**Explain the why.** Today's LLMs are smart. When given reasoning they can
+generalize beyond rote instructions. If you find yourself writing ALWAYS or NEVER
+in all caps, reframe — explain why the thing matters so the agent understands the
+intent, not just the rule.
+
+**Define output formats with templates:**
+
+```markdown
+## Report Structure
+Use this template:
+# [Title]
+## Executive summary
+## Key findings
+## Recommendations
+```
+
+**Include concrete examples:**
+
+```markdown
+## Commit Message Format
+
+**Example 1:**
+Input: Added user authentication with JWT tokens
+Output:
+feat(auth): implement JWT-based authentication
+
+Add login endpoint and token validation middleware
+```
+
+**Disambiguate from related skills** when the triggering space overlaps:
+
+```markdown
+## When to Use This (vs other-skill)
+
+Use **this skill** when creating new widgets.
+Use **other-skill** when viewing or listing existing widgets.
+```
+
+### What Makes a Good Skill
+
+- **Opinionated.** Tell the agent exactly what to do. "Use cmp.Diff for all
+  comparisons" not "You might want to consider using cmp.Diff."
+- **Generalizable.** Don't overfit to specific examples. The skill will be used
+  across many different prompts — write instructions that transfer.
+- **Lean.** Remove anything that isn't pulling its weight. If the agent already
+  knows how to do something, don't re-explain it. Focus on what it wouldn't know
+  without the skill.
+- **Honest about scope.** Include "Do Not" or "What Not to Do" sections. Knowing
+  when NOT to apply a pattern is as valuable as knowing when to apply it.
+
+### What to Avoid
+
+- **Heavy-handed MUSTs.** Explain reasoning instead of shouting.
+- **Overly narrow instructions** that only work for the examples discussed.
+  Generalize from the examples to the underlying principle.
+- **Redundant context.** Don't tell the agent things it already knows (basic
+  language syntax, common CLI flags, how to read files).
+- **Time-sensitive information.** Avoid "if before August 2025, use the old API."
+  Just document the current approach.
+
+## Testing the Skill
+
+After writing or improving a skill, test it. Come up with 2-3 realistic prompts —
+the kind of thing a real user would actually say — and try them. Focus on:
+
+- Does the skill trigger when it should?
+- Does the agent follow the instructions correctly?
+- Are the outputs what the user would expect?
+- Do edge cases break anything?
+
+Share the test prompts with the user before running them. They'll know better than
+you what realistic usage looks like.
+
+## Improving a Skill
+
+When iterating on a skill based on test results or user feedback:
+
+1. **Generalize from feedback.** A fix for one test case should improve all
+   similar cases, not just the one that failed. If you're adding a narrow
+   workaround, you're probably overfitting.
+
+2. **Keep it lean.** Read the agent's behavior during test runs. If it's wasting
+   time on unproductive steps, check whether the skill is causing that. Remove
+   instructions that aren't helping.
+
+3. **Explain the why.** Even if the user's feedback is terse, try to understand
+   the underlying issue and transmit that understanding into the instructions.
+   The agent will generalize better from reasoning than from rules.
+
+4. **Look for repeated work.** If every test run independently creates the same
+   helper script or takes the same multi-step approach, that's a signal. Bundle
+   the script in `scripts/` so future invocations don't reinvent it.
+
+5. **Don't over-engineer.** A skill that's 100 lines and works is better than
+   one that's 400 lines and covers every conceivable edge case. Start small,
+   add complexity only when testing reveals the need.
+
+## Key Principles
+
+1. The description is the triggering mechanism — make it specific and slightly pushy
+2. Keep SKILL.md under 500 lines; use progressive disclosure for detail
+3. Explain *why*, not just *what* — the agent generalizes from reasoning
+4. Be opinionated — tell the agent exactly what to do
+5. Generalize from examples — don't overfit to test cases
+6. Test with realistic prompts, improve based on what breaks
+7. Disambiguate from related skills when triggering overlaps
+8. Remove what isn't pulling its weight — lean skills trigger and execute better

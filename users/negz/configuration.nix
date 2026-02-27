@@ -89,6 +89,16 @@
           adjust-cursor-thickness = 100%
         '';
       };
+
+      # Crush configuration. API keys are not managed here - set ANTHROPIC_API_KEY
+      # and/or OPENROUTER_API_KEY environment variables instead.
+      "crush/crush.json" = {
+        source = ./crush/crush.json;
+      };
+      "crush/skills" = {
+        source = ./crush/skills;
+        recursive = true;
+      };
     };
 
     # For Neovim's dashboard - see nvim/snacks.lua.
