@@ -44,9 +44,15 @@ Avoid:
 
 Assume the reader is smart but might not have all the context. Provide enough
 background for someone joining the conversation, but don't over-explain things
-peers would know. When introducing a concept that might be surprising, frame it:
-"I found this really surprising when I first learned about CRDs, but it makes a
-lot more sense when you think about…"
+peers would know. When introducing a concept that might be surprising, share the
+surprise — tell the reader you found it counterintuitive, then explain what made
+it click.
+
+Be careful with words like "obvious", "obviously", "clearly", and "of course."
+Something obvious to a senior engineer often isn't obvious to a junior one.
+Using these words risks making the reader feel bad for not already knowing. It's
+not a hard ban — sometimes something genuinely is obvious — but default to just
+stating the thing rather than editorializing that it should be apparent.
 
 Use analogies to connect unfamiliar ideas to familiar ones. "An MRD is to an MR
 CRD as an XRD is to an XR CRD." "Think of this like AWS Lambda." "`flake.nix`
@@ -138,7 +144,8 @@ not the design.
 
 Alternatives Considered sections give each alternative a fair shake. Describe
 what the alternative is, what's good about it, and then explain specifically
-why the proposal is better. Don't set up strawmen.
+why the proposal is better. Don't set up strawmen. This applies doubly when the
+alternative is the current system — see "Respect What Came Before" below.
 
 ## Rhetorical Patterns
 
@@ -162,17 +169,27 @@ Prefer specific numbers over vague claims. "90 superfluous CRDs × 1.75 MB =
 across 10 control planes it's 1.5GB of wasted memory." "~16 reconciles per
 second — so let's say somewhere between 16 and 160 external API requests."
 
+### Respect What Came Before
+
+When proposing a replacement or improvement, assume the person who designed the
+previous system did the best they could with the information they had — and
+assume they're reading this document. Catalog concrete shortcomings ("the
+ingestion pipeline adds substantial machinery for a debugging tool") but don't
+call the old system "bad", "broken", or "poorly designed." Focus on what changed
+— new requirements, new context, new constraints — that makes the old approach
+no longer the best fit. The goal is to explain why it's time to move on, not to
+belittle what came before.
+
 ### Address Skeptics Directly
 
-Anticipate objections and address them in-line. "I think any community member
-with a critical eye could easily say 'wait, so now you think manual CRD
-filtering is a good idea, but you want to do it with this much worse UX?'"
+Anticipate objections and address them in-line. Name the likely objection in
+the reader's voice, take it seriously, then answer it. Vary how you introduce
+the objection — there's no single formula.
 
 ### Frame Decisions as Preferences, Not Absolutes
 
-"I'd prefer that providers weren't aware of the MRD type specifically." "I lean
-toward targeting Go templates rather than Helm charts, but I don't feel very
-strongly." This signals confidence in the reasoning without shutting down
+Use phrases like "I'd prefer…", "I lean toward…", "I don't feel very
+strongly" to signal confidence in the reasoning without shutting down
 discussion.
 
 ### Reference Prior Art and History
