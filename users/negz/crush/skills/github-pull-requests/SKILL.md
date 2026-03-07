@@ -106,15 +106,3 @@ When describing complex changes, include:
 3. Acknowledge complexity honestly
 4. Focus on "why", not just "what"
 5. Use precise, domain-specific terminology
-
-## Troubleshooting
-
-### SSH Socket Issues
-
-If `git push` fails with SSH authentication errors (common in tmux sessions), run:
-
-```bash
-eval $(tmux showenv -s SSH_AUTH_SOCK)
-```
-
-This refreshes the SSH agent socket path after reconnecting to a tmux session.
