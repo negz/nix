@@ -45,6 +45,7 @@
       # AI things
       pkgs.unstable.claude-code
       pkgs.llm-agents.crush
+      pkgs.gws.default # TODO(negz): Switch to nixpkgs when available.
 
       # Useful dependencies for AI tools
       pkgs.gh

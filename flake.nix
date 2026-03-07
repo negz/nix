@@ -24,6 +24,9 @@
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
     };
+    gws = {
+      url = "github:googleworkspace/cli";
+    };
 
     # NixOS
     nixos = {
@@ -59,6 +62,7 @@
       darwin,
       hm-darwin,
       llm-agents,
+      gws,
 
       nixos,
       nixos-unstable,
@@ -79,6 +83,8 @@
           };
           # Allow configurations to use pkgs.llm-agents.<package-name>.
           llm-agents = llm-agents.packages.${prev.stdenv.hostPlatform.system};
+          # Allow configurations to use pkgs.gws.<package-name>.
+          gws = gws.packages.${prev.stdenv.hostPlatform.system};
         })
       ];
       nixos-overlays = [
@@ -95,6 +101,8 @@
           };
           # Allow configurations to use pkgs.llm-agents.<package-name>.
           llm-agents = llm-agents.packages.${prev.stdenv.hostPlatform.system};
+          # Allow configurations to use pkgs.gws.<package-name>.
+          gws = gws.packages.${prev.stdenv.hostPlatform.system};
         })
       ];
     in
