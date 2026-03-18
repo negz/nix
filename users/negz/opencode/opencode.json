@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-opus-4-6",
+  "small_model": "anthropic/claude-sonnet-4-5-20250929",
+  "provider": {
+    "anthropic": {
+      "options": {
+        "apiKey": "{file:~/.local/share/opencode/anthropic-api-key}"
+      }
+    }
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    }
+  },
+  "permission": {
+    "edit": "allow",
+    "bash": {
+      "*": "allow",
+      "git push *": "ask",
+      "git commit *": "ask",
+      "rm *": "ask"
+    }
+  }
+}

@@ -6,7 +6,10 @@ local preview = require('actions-preview')
 local coverage = require('coverage')
 local neominimap = require('neominimap.api')
 
+local opencode = require('opencode')
+
 wk.add({
+	{ '<leader>a',  group = 'AI' },
 	{ '<leader>c',  group = 'Code' },
 	{ '<leader>cd', group = 'Diagnostics' },
 	{ '<leader>f',  group = 'Find' },
@@ -47,6 +50,24 @@ vim.keymap.set('n', '<leader>gp', function() snacks.picker.gh_pr() end, { desc =
 vim.keymap.set('n', '<leader>gr', gitsigns.reset_hunk, { desc = 'Git reset hunk' })
 vim.keymap.set('n', '<leader>gR', gitsigns.reset_buffer, { desc = 'Git reset buffer' })
 vim.keymap.set('n', '<leader>gs', snacks.picker.git_status, { desc = 'Git status' })
+
+-- Terminal: double-tap Esc within 200ms to exit terminal mode.
+-- First Esc passes through to the TUI immediately.
+local esc_timer = (vim.uv or vim.loop).new_timer()
+vim.keymap.set('t', '<Esc>', function()
+	if esc_timer:is_active() then
+		esc_timer:stop()
+		return '<C-\\><C-n>'
+	else
+		esc_timer:start(200, 0, function() end)
+		return '<Esc>'
+	end
+end, { expr = true, desc = 'Exit terminal mode (double-tap)' })
+
+-- AI
+vim.keymap.set({ 'n', 'x' }, '<leader>aa', function() opencode.ask('@this: ') end, { desc = 'Ask OpenCode' })
+vim.keymap.set({ 'n', 'x' }, '<leader>as', opencode.select, { desc = 'Select prompt' })
+vim.keymap.set('n', '<leader>at', opencode.toggle, { desc = 'Toggle OpenCode' })
 
 -- Keymaps
 vim.keymap.set('n', '<leader>k', wk.show, { desc = 'Which key?' })

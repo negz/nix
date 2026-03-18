@@ -45,6 +45,7 @@
       # AI things
       pkgs.unstable.claude-code
       pkgs.llm-agents.crush
+      pkgs.unstable.opencode
       pkgs.gws.default # TODO(negz): Switch to nixpkgs when available.
 
       # Useful dependencies for AI tools
@@ -97,6 +98,18 @@
         source = ./crush/crush.json;
       };
       "crush/skills" = {
+        source = ./crush/skills;
+        recursive = true;
+      };
+
+      # OpenCode configuration. Run /connect to set up API keys.
+      "opencode/opencode.json" = {
+        source = ./opencode/opencode.json;
+      };
+      "opencode/tui.json" = {
+        source = ./opencode/tui.json;
+      };
+      "opencode/skills" = {
         source = ./crush/skills;
         recursive = true;
       };
@@ -386,6 +399,11 @@
           plugin = pkgs.unstable.vimPlugins.colorful-menu-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/colorful-menu.lua;
+        }
+        {
+          plugin = pkgs.unstable.vimPlugins.opencode-nvim;
+          type = "lua";
+          config = builtins.readFile ./nvim/opencode.lua;
         }
       ];
     };
