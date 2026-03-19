@@ -1,4 +1,4 @@
-# CRUSH.md
+# AGENTS.md
 
 This file provides guidance for agentic coding tools working with this NixOS configuration repository.
 

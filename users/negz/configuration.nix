@@ -44,7 +44,6 @@
 
       # AI things
       pkgs.unstable.claude-code
-      pkgs.llm-agents.crush
       pkgs.unstable.opencode
       pkgs.gws.default # TODO(negz): Switch to nixpkgs when available.
 
@@ -92,16 +91,6 @@
         '';
       };
 
-      # Crush configuration. API keys are not managed here - set ANTHROPIC_API_KEY
-      # and/or OPENROUTER_API_KEY environment variables instead.
-      "crush/crush.json" = {
-        source = ./crush/crush.json;
-      };
-      "crush/skills" = {
-        source = ./crush/skills;
-        recursive = true;
-      };
-
       # OpenCode configuration. Run /connect to set up API keys.
       "opencode/opencode.json" = {
         source = ./opencode/opencode.json;
@@ -110,7 +99,7 @@
         source = ./opencode/tui.json;
       };
       "opencode/skills" = {
-        source = ./crush/skills;
+        source = ./opencode/skills;
         recursive = true;
       };
     };
