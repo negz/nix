@@ -176,9 +176,6 @@ if _has_condition(req, "my-gateway", "Accepted"):
     rsp.desired.resources["my-gateway"].ready = fnv1.READY_TRUE
 ```
 
-Gateway API nests route conditions under `status.parents[].conditions`, not
-top-level `status.conditions`. Use a separate helper for HTTPRoutes.
-
 Resources without conditions (ProviderConfigs, ConfigMaps) should be marked
 always-ready:
 
