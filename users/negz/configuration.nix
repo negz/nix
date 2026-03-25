@@ -168,7 +168,6 @@
 
     tmux = {
       enable = true;
-      package = (pkgs.callPackage ../../pkgs/tmux/package.nix { });
       prefix = "C-a";
       terminal = "tmux-256color";
       shell = "${pkgs.zsh}/bin/zsh";
