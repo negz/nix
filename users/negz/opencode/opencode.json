@@ -6,6 +6,16 @@
     "anthropic": {
       "options": {
         "apiKey": "{file:~/.local/share/opencode/anthropic-api-key}"
+      },
+      "models": {
+        "claude-opus-4-6": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 32000
+            }
+          }
+        }
       }
     }
   },
