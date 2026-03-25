@@ -87,18 +87,50 @@ internal packages that aren't intended for public consumption. This means:
 This mindset naturally produces code that is self-documenting, reusable, and
 composable. Most of the patterns below follow from it.
 
+### Anti-patterns
+
+The library-author test catches several common mistakes:
+
+- **Constructor does wiring.** If your constructor takes a file path, config
+  string, or DSN and constructs clients internally, the wiring belongs in
+  `main`, not in the library. The constructor should accept the constructed
+  dependencies. A `NewServer(kubeconfig string)` that internally loads config,
+  creates transports, and builds clients is untestable without real
+  infrastructure. A `NewServer(host string, transport http.RoundTripper, ...)` is
+  testable with `httptest`.
+- **Constructor returns error for assembly.** If the constructor only assigns
+  dependencies to fields, it has nothing to fail on. Remove the error return.
+  Constructors that return errors are a signal that they're doing work (I/O,
+  validation, client creation) that belongs elsewhere.
+- **Package imports infrastructure it doesn't need.** If a package imports a
+  database driver, HTTP client library, or cloud SDK only to construct a
+  dependency internally, that dependency should be injected instead. The package
+  should define an interface for what it needs, and the caller provides the
+  implementation.
+
 ## How to Apply This Skill
 
 When factoring code, read the existing codebase first. Match its conventions. The
 patterns below are guidelines — apply judgment based on context. Not every
 function needs an interface, and not every struct needs functional options.
 
-Before making changes, identify:
-1. What are the dependencies? Which are required, which are optional?
-2. What are the behavioral seams? Where might you want to swap implementations?
-3. Is the code testable? Can you inject mocks for external dependencies?
-4. Does the code read clearly? Can you understand the high-level flow without
-   reading every helper?
+### Before you write
+
+Before writing a new package, answer these questions:
+
+1. **What are this package's dependencies?** List every external thing it needs
+   (database, HTTP client, logger, other packages). For each one: is it required
+   or optional? Does it do I/O?
+2. **Which dependencies need interfaces?** Any dependency that does I/O or has
+   side effects needs an interface at the consumer — the caller will need to
+   inject a fake for testing.
+3. **What's required vs optional?** Required dependencies are positional
+   constructor parameters. Optional dependencies (logger, metrics, HTTP client)
+   get functional options with nop/default implementations.
+4. **What should be exported?** Package-level functions that accept and return
+   standard types (`http.Handler`, `http.RoundTripper`, `io.Reader`) are
+   reusable building blocks — export them. Unexport only when a function is
+   genuinely tied to internal state that shouldn't be exposed.
 
 ## Interfaces
 
@@ -147,24 +179,6 @@ pair.
 Build larger roles from small interfaces by embedding, not by defining one big
 interface.
 
-```go
-type Reader interface {
-    Read(ctx context.Context, id string) (Record, error)
-}
-
-type Writer interface {
-    Write(ctx context.Context, r Record) error
-}
-
-type ReadWriter interface {
-    Reader
-    Writer
-}
-```
-
-Or compose interfaces into an unexported sub-struct on a struct (see Struct
-Decomposition below).
-
 ## Constructors and Functional Options
 
 ### The Shape
@@ -178,10 +192,6 @@ type ProcessorOption func(*Processor)
 
 func WithLogger(l Logger) ProcessorOption {
     return func(p *Processor) { p.log = l }
-}
-
-func WithTimeout(d time.Duration) ProcessorOption {
-    return func(p *Processor) { p.timeout = d }
 }
 
 func NewProcessor(s Store, o ...ProcessorOption) *Processor {
@@ -203,14 +213,6 @@ Optional dependencies must default to a working no-op implementation, never nil.
 If a dependency is a `Logger`, default to a `NopLogger`. If it's a `Recorder`,
 default to a `NopRecorder`. This eliminates nil checks throughout the code.
 
-Define `Nop` types as zero-value structs that satisfy the relevant interface:
-
-```go
-type NopLogger struct{}
-
-func (NopLogger) Info(string, ...any) {}
-```
-
 ### When to Use Functional Options
 
 Use functional options when:
@@ -228,154 +230,44 @@ Don't use them when:
 
 When a struct has many dependencies, group related ones into unexported
 sub-structs. This avoids flat bags of 10+ fields and makes method calls read
-like prose.
+like prose: `p.in.Fetch(ctx, id)`, `p.out.Publish(ctx, r)`.
 
-```go
-type input struct {
-    Fetcher
-    Validator
-}
+### Prefer Exported Functions Over Private Methods
 
-type output struct {
-    Publisher
-    Notifier
-}
-
-type Processor struct {
-    in     input
-    out    output
-    log    Logger
-}
-```
-
-Now method calls read clearly: `p.in.Fetch(ctx, id)`, `p.out.Publish(ctx, r)`.
-
-Functional options can target into sub-structs:
-
-```go
-func WithPublisher(pub Publisher) ProcessorOption {
-    return func(p *Processor) { p.out.Publisher = pub }
-}
-```
-
-### Prefer Exported Methods and Free Functions Over Private Methods
-
-Avoid unexported methods on structs. They can't be swapped for alternative
-implementations, can't be mocked when testing the methods that call them, and
-can't be reused by other types. Instead:
+Avoid unexported methods on structs. They can't be swapped, can't be mocked, and
+can't be reused. Instead:
 
 - **Extract to an injected interface** if the logic represents a swappable step.
 - **Extract to a package-level function** if the logic is pure computation that
   doesn't need the struct's state.
 - **Leave it inline** in the main method if it's short and only used once.
 
-A well-factored struct typically has one primary exported method and zero private
-methods. The steps of the workflow are calls to injected dependencies, not calls
-to `self`.
+This applies equally to package-level functions. Default to exporting
+package-level functions that accept and return standard types (`http.Handler`,
+`http.RoundTripper`, `fs.FS`, `io.Reader`). These are reusable building blocks.
+A convenience constructor like `NewServer` can assemble them, but the pieces
+should be independently usable.
 
-```go
-// Prefer this — steps are injected, each independently testable.
-func (p *Processor) Process(ctx context.Context, id string) error {
-    r, err := p.in.Fetch(ctx, id)
-    if err != nil {
-        return fmt.Errorf("cannot fetch record: %w", err)
-    }
-    if err := p.in.Validate(r); err != nil {
-        return fmt.Errorf("cannot validate record: %w", err)
-    }
-    return p.out.Publish(ctx, r)
-}
-
-// Avoid this — private methods can't be mocked or swapped.
-func (p *Processor) Process(ctx context.Context, id string) error {
-    r, err := p.fetch(ctx, id)    // unexported method
-    if err != nil {
-        return err
-    }
-    return p.publish(ctx, r)      // unexported method
-}
-```
+Unexport a function only when you've decided it shouldn't be part of the
+package's API — not because you haven't thought about it.
 
 ## Composable Behavior
 
-### Chain Types
+Chain types and decorators enable composable behavior without modifying existing
+implementations. See [references/example.md](references/example.md) for full
+examples of both patterns.
 
-When multiple implementations of an interface should run in sequence, define a
-chain type — a slice that implements the same interface by iterating.
+**Chain types**: a slice that implements the same interface by iterating.
+`SenderChain[]` tries each sender in order for fallback delivery.
 
-```go
-type ValidatorChain []Validator
-
-func (vc ValidatorChain) Validate(r Record) error {
-    for _, v := range vc {
-        if err := v.Validate(r); err != nil {
-            return err
-        }
-    }
-    return nil
-}
-```
-
-Chain types compose cleanly: `NewProcessor(store, WithValidator(ValidatorChain{v1, v2, v3}))`.
-
-They also work for aggregation (not just short-circuit). A chain that merges
-results from multiple sources:
-
-```go
-type FetcherChain []Fetcher
-
-func (fc FetcherChain) Fetch(ctx context.Context, id string) (Record, error) {
-    var result Record
-    for _, f := range fc {
-        r, err := f.Fetch(ctx, id)
-        if err != nil {
-            return Record{}, err
-        }
-        result = merge(result, r)
-    }
-    return result, nil
-}
-```
-
-### Decorators
-
-When you need to add cross-cutting behavior (caching, logging, metrics) to an
-interface, wrap it in a decorator that implements the same interface.
-
-```go
-type LoggingFetcher struct {
-    wrapped Fetcher
-    log     Logger
-}
-
-func (f *LoggingFetcher) Fetch(ctx context.Context, id string) (Record, error) {
-    f.log.Info("fetching record", "id", id)
-    r, err := f.wrapped.Fetch(ctx, id)
-    if err != nil {
-        f.log.Info("fetch failed", "id", id, "error", err)
-    }
-    return r, err
-}
-```
-
-If decorators grow complex, put them in child packages:
-
-```
-processor/
-├── processor.go         # Core logic + interfaces
-├── cached/
-│   └── cached.go        # Caching decorator
-└── logged/
-    └── logged.go        # Logging decorator
-```
-
-Each child package imports the parent's interface and returns a struct satisfying
-it. The parent never imports the children.
+**Decorators**: a wrapper that adds cross-cutting behavior (logging, caching,
+metrics) to an interface. Put them in child packages to keep dependency direction
+clean.
 
 ## Error Wrapping
 
 Wrap errors at every return point with context about what the current function
-was trying to do. Use a consistent verb-first style.
+was trying to do. Use inline strings with a consistent verb-first style:
 
 ```go
 r, err := p.store.Get(ctx, id)
@@ -386,6 +278,12 @@ if err != nil {
 
 The "cannot X" prefix style builds readable error chains:
 `cannot process record: cannot get record: connection refused`
+
+Keep error strings inline at the call site. Don't extract them into package-level
+constants (`const errGet = "cannot get record"`). The constant adds a level of
+indirection that makes the code harder to read without adding value — the string
+is only used in one place, and the constant name just restates the string. Error
+constants were a pattern in older Crossplane code but are no longer preferred.
 
 Match the project's error wrapping convention — whether that's `fmt.Errorf` with
 `%w`, a `pkg/errors`-style library, or something else. Check existing code.
@@ -414,19 +312,27 @@ func (p *Processor) Process(...)   // p for Processor
 func (fc FetcherChain) Fetch(...)  // fc for FetcherChain
 ```
 
-### Variables
+### Variables and Parameters
 
 Short names in tight scope, descriptive names in wider scope.
 
-```go
-// Tight scope — single letter is fine.
-for i, r := range records {
-    // ...
-}
+When a parameter's type already communicates its purpose, use a short name.
+Repeating the type in the name is stuttering:
 
-// Wider scope — be descriptive.
-fetchTimeout := 30 * time.Second
+```go
+// Good — the type explains the role.
+func NewServer(host string, transport http.RoundTripper, er EndpointResolver) *Server
+func NewChatProxy(log *slog.Logger, er EndpointResolver, client *http.Client) http.Handler
+
+// Bad — the names just restate the types.
+func NewServer(kubeHost string, kubeTransport http.RoundTripper, resolver EndpointResolver) *Server
+func NewChatProxy(log *slog.Logger, endpointResolver EndpointResolver, httpClient *http.Client) http.Handler
 ```
+
+Use a descriptive name only when the type is ambiguous. A function taking two
+`string` parameters needs names to distinguish them: `host string, path string`.
+A function taking one `http.RoundTripper` does not: `transport` is already clear
+from the type.
 
 ### Named Types for Clarity
 
@@ -435,16 +341,7 @@ Use named types to prevent mixing up values of the same underlying type.
 ```go
 type UserID string
 type TeamID string
-
-// This is self-documenting and type-safe.
-type Membership struct {
-    User UserID
-    Team TeamID
-}
 ```
-
-Use named types as map keys to make the map's semantics explicit:
-`map[UserID]Record` rather than `map[string]Record`.
 
 ## Dependency Direction
 
@@ -464,9 +361,6 @@ myapp/
 └── cmd/myapp/    # Imports both, wires postgres into server
 ```
 
-`server` doesn't know about `postgres`. `postgres` doesn't know about `server`.
-`cmd/myapp` imports both and passes a `postgres.Store` to `server.New`.
-
 ## Complete Example
 
 See [references/example.md](references/example.md) for a full worked example
@@ -478,8 +372,7 @@ functional options, sub-struct grouping, a chain type, and a decorator.
 Create an interface when you need a seam — a point where you can swap in a
 different implementation. The most common reason is testability: if a dependency
 does I/O, has side effects, or is slow/expensive, you'll want to mock it when
-testing the caller. Don't wait until you write the tests to discover you need
-the seam. Write code that's testable from the start.
+testing the caller. Write code that's testable from the start.
 
 You don't need a strong idea of what other real implementations might exist.
 Sometimes there's only ever the production implementation and a mock. That's
@@ -488,6 +381,25 @@ fine — the interface is earning its keep by making the caller testable.
 Conversely, if a dependency is pure computation — data transformations,
 formatting, validation logic with no I/O — the caller can test with real inputs
 and outputs. An interface just adds indirection without value.
+
+## After You Write
+
+After finishing a package, review it against these questions:
+
+1. **Can I construct the main type without real I/O?** If the constructor needs
+   a kubeconfig, database DSN, or network address to succeed, the wiring belongs
+   in `main`. The constructor should accept pre-built dependencies.
+2. **Can I test every exported function with fakes?** If a function can only be
+   tested against real infrastructure, it's missing an interface.
+3. **Does every dependency come from a parameter?** If a function reads from a
+   package-level variable or calls a global (`http.DefaultClient`, `os.Getenv`),
+   that dependency should be injected instead.
+4. **Are unexported functions unexported by design or by default?** Every
+   unexported package-level function should be a deliberate choice. If it takes
+   and returns standard types, it's probably a reusable building block that
+   should be exported.
+5. **Do any parameter names stutter with their types?** If removing the name and
+   reading just the type signature still makes sense, the name is redundant.
 
 ## Key Principles
 
@@ -498,7 +410,7 @@ and outputs. An interface just adds indirection without value.
 5. Group related interfaces into sub-structs on the orchestrator
 6. One primary method per orchestrating struct
 7. Chain types and decorators for composable behavior
-8. Wrap errors at every return with verb-first context
-9. Prefer exported methods and free functions over private methods on structs
+8. Wrap errors inline at the call site with verb-first context
+9. Prefer exported functions — unexport by decision, not by default
 10. Dependencies flow downward — never import up or sideways
 11. Don't abstract what doesn't need abstracting
