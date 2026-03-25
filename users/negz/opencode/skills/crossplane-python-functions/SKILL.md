@@ -91,14 +91,13 @@ via digest comparison in the ConfigurationRevision's dependencies.
 
 ## Import Paths
 
-Functions import `.m.` (managed/namespaced) variants for composed resources:
+Both functions and tests use the `.m.` (managed/namespaced) variants:
 ```python
 from .model.io.upbound.m.gcp.compute.network import v1beta1 as networkv1beta1
 from .model.io.crossplane.m.helm.release import v1beta1 as helmv1beta1
 ```
 
-Tests import from the non-`.m.` variant for assertions. When in doubt, check
-what exists under `.up/python/models/`.
+When in doubt, check what exists under `.up/python/models/`.
 
 XR models have no `.m.` segment:
 ```python
