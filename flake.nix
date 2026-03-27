@@ -21,9 +21,6 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
-    gws = {
-      url = "github:googleworkspace/cli";
-    };
 
     # NixOS
     nixos = {
@@ -56,7 +53,6 @@
       nixpkgs-unstable,
       darwin,
       hm-darwin,
-      gws,
 
       nixos,
       nixos-unstable,
@@ -75,8 +71,6 @@
             system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
-          # Allow configurations to use pkgs.gws.<package-name>.
-          gws = gws.packages.${prev.stdenv.hostPlatform.system};
         })
       ];
       nixos-overlays = [
@@ -91,8 +85,6 @@
             system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
-          # Allow configurations to use pkgs.gws.<package-name>.
-          gws = gws.packages.${prev.stdenv.hostPlatform.system};
         })
       ];
     in

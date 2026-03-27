@@ -45,7 +45,6 @@
       # AI things
       pkgs.unstable.claude-code
       pkgs.unstable.opencode
-      pkgs.gws.default # TODO(negz): Switch to nixpkgs when available.
 
       # Useful dependencies for AI tools
       pkgs.gh
