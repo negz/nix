@@ -43,7 +43,6 @@
       pkgs.kind
 
       # AI things
-      pkgs.unstable.claude-code
       pkgs.unstable.opencode
 
       # Useful dependencies for AI tools
