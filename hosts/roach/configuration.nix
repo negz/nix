@@ -98,6 +98,10 @@
       secretsConfigFile = "/etc/zwave-js/secrets.json";
     };
 
+    matter-server = {
+      enable = true;
+    };
+
     caddy = {
       enable = true;
       package = pkgs.caddy.withPlugins {
