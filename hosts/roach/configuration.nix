@@ -102,6 +102,16 @@
       enable = true;
       serialPort = "/dev/serial/by-id/usb-Nabu_Casa_ZWA-2_1CDBD4AE1ABC-if00";
       secretsConfigFile = "/etc/zwave-js/secrets.json";
+      settings = {
+        rf = {
+          region = 9; # USA (Long Range)
+        };
+        logConfig = {
+          enabled = true;
+          level = "debug";
+          logToFile = false;
+        };
+      };
     };
 
     matter-server = {
