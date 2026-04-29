@@ -401,7 +401,7 @@
       matchBlocks = {
         # ghostty uses its own terminfo, which most hosts won't have
         "ghostty-terminfo" = {
-          host = "!mael,!tehol,*";
+          host = "!mael,!tehol,!dragnipur,!roach,*";
           setEnv = {
             TERM = "xterm-256color";
           };

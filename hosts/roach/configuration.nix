@@ -109,6 +109,7 @@
 
   environment = {
     defaultPackages = lib.mkForce [ ];
+    systemPackages = [ pkgs.ghostty.terminfo ];
   };
 
   systemd = {
