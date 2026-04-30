@@ -47,7 +47,7 @@
 
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 8123 ];
+      allowedTCPPorts = [ 22 443 ];
     };
   };
 
@@ -89,6 +89,22 @@
       openFirewall = true;
     };
 
+    caddy = {
+      enable = true;
+      package = pkgs.caddy.withPlugins {
+        plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
+        # Build once on roach to get the correct hash.
+        hash = lib.fakeHash;
+      };
+      virtualHosts."home.i.rk0n.org" = {
+        extraConfig = ''
+          tls {
+            dns cloudflare {env.CF_API_TOKEN}
+          }
+          reverse_proxy localhost:8123
+        '';
+      };
+    };
   };
 
   programs = {
@@ -127,6 +143,8 @@
     defaultPackages = lib.mkForce [ ];
     systemPackages = [ pkgs.ghostty.terminfo ];
   };
+
+  systemd.services.caddy.serviceConfig.EnvironmentFile = "/etc/caddy/env";
 
   systemd = {
     mounts = [
