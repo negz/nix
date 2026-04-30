@@ -47,7 +47,7 @@
 
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 ];
+      allowedTCPPorts = [ 22 8123 ];
     };
   };
 
@@ -89,47 +89,6 @@
       openFirewall = true;
     };
 
-    home-assistant = {
-      enable = true;
-      package = pkgs.unstable.home-assistant;
-      openFirewall = true;
-      extraComponents = [
-        # Required to complete the onboarding flow.
-        "analytics"
-        "google_translate"
-        "met"
-        "radio_browser"
-        "shopping_list"
-        # Recommended for fast zlib compression.
-        "isal"
-        # Integrations.
-        "cast"
-        "esphome"
-        "google_assistant"
-        "homekit"
-        "homekit_controller"
-        "hue"
-        "mobile_app"
-        "mqtt"
-        "plex"
-        "rachio"
-        "spotify"
-        "unifi"
-        "unifiprotect"
-        "yale"
-        "zwave_js"
-      ];
-      config = {
-        # Pulls in dependencies for a basic setup.
-        # https://www.home-assistant.io/integrations/default_config/
-        default_config = {};
-
-        # Let the web UI manage automations, scenes, and scripts.
-        "automation ui" = "!include automations.yaml";
-        "scene ui" = "!include scenes.yaml";
-        "script ui" = "!include scripts.yaml";
-      };
-    };
   };
 
   programs = {
@@ -147,18 +106,27 @@
         enable = true;
       };
     };
+
+    oci-containers.containers.home-assistant = {
+      image = "ghcr.io/home-assistant/home-assistant:2026.4.4";
+      volumes = [
+        "/var/lib/hass:/config"
+        "/etc/localtime:/etc/localtime:ro"
+      ];
+      environment = {
+        TZ = "America/Los_Angeles";
+      };
+      extraOptions = [
+        "--network=host"
+        "--device=/dev/serial/by-id/usb-Nabu_Casa_ZWA-2_1CDBD4AE1ABC-if00:/dev/ttyACM0"
+      ];
+    };
   };
 
   environment = {
     defaultPackages = lib.mkForce [ ];
     systemPackages = [ pkgs.ghostty.terminfo ];
   };
-
-  systemd.tmpfiles.rules = [
-    "f /var/lib/hass/automations.yaml 0644 hass hass"
-    "f /var/lib/hass/scenes.yaml 0644 hass hass"
-    "f /var/lib/hass/scripts.yaml 0644 hass hass"
-  ];
 
   systemd = {
     mounts = [
