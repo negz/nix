@@ -47,7 +47,10 @@
 
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 443 ];
+      allowedTCPPorts = [
+        22
+        443
+      ];
     };
   };
 
@@ -94,7 +97,7 @@
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
         # Build once on roach to get the correct hash.
-        hash = lib.fakeHash;
+        hash = "sha256-4WF7tIx8d6O/Bd0q9GhMch8lS3nlR5N3Zg4ApA3hrKw=";
       };
       virtualHosts."home.i.rk0n.org" = {
         extraConfig = ''
