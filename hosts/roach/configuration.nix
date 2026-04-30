@@ -88,6 +88,47 @@
       package = pkgs.unstable.plex;
       openFirewall = true;
     };
+
+    home-assistant = {
+      enable = true;
+      openFirewall = true;
+      extraComponents = [
+        # Required to complete the onboarding flow.
+        "analytics"
+        "google_translate"
+        "met"
+        "radio_browser"
+        "shopping_list"
+        # Recommended for fast zlib compression.
+        "isal"
+        # Integrations.
+        "cast"
+        "esphome"
+        "google_assistant"
+        "homekit"
+        "homekit_controller"
+        "hue"
+        "mobile_app"
+        "mqtt"
+        "plex"
+        "rachio"
+        "spotify"
+        "unifi"
+        "unifiprotect"
+        "yale"
+        "zwave_js"
+      ];
+      config = {
+        # Pulls in dependencies for a basic setup.
+        # https://www.home-assistant.io/integrations/default_config/
+        default_config = {};
+
+        # Let the web UI manage automations, scenes, and scripts.
+        "automation ui" = "!include automations.yaml";
+        "scene ui" = "!include scenes.yaml";
+        "script ui" = "!include scripts.yaml";
+      };
+    };
   };
 
   programs = {
@@ -111,6 +152,12 @@
     defaultPackages = lib.mkForce [ ];
     systemPackages = [ pkgs.ghostty.terminfo ];
   };
+
+  systemd.tmpfiles.rules = [
+    "f /var/lib/hass/automations.yaml 0644 hass hass"
+    "f /var/lib/hass/scenes.yaml 0644 hass hass"
+    "f /var/lib/hass/scripts.yaml 0644 hass hass"
+  ];
 
   systemd = {
     mounts = [
