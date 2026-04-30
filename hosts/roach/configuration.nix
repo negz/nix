@@ -91,6 +91,7 @@
 
     home-assistant = {
       enable = true;
+      package = pkgs.unstable.home-assistant;
       openFirewall = true;
       extraComponents = [
         # Required to complete the onboarding flow.
