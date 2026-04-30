@@ -33,6 +33,12 @@
     };
   };
 
+  hardware = {
+    bluetooth = {
+      enable = true;
+    };
+  };
+
   boot = {
     loader = {
       systemd-boot.enable = true;
@@ -141,12 +147,16 @@
       volumes = [
         "/var/lib/hass:/config"
         "/etc/localtime:/etc/localtime:ro"
+        "/run/dbus:/run/dbus"
       ];
       environment = {
         TZ = "America/Los_Angeles";
       };
       extraOptions = [
         "--network=host"
+        # Required for Bluetooth (BLE scanning and adapter management).
+        "--cap-add=NET_ADMIN"
+        "--cap-add=NET_RAW"
       ];
     };
   };
