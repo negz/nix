@@ -98,19 +98,11 @@
       openFirewall = true;
     };
 
-    zwave-js = {
+    zwave-js-ui = {
       enable = true;
       serialPort = "/dev/serial/by-id/usb-Nabu_Casa_ZWA-2_1CDBD4AE1ABC-if00";
-      secretsConfigFile = "/etc/zwave-js/secrets.json";
       settings = {
-        rf = {
-          region = 9; # USA (Long Range)
-        };
-        logConfig = {
-          enabled = true;
-          level = "debug";
-          logToFile = false;
-        };
+        TRUST_PROXY = "loopback";
       };
     };
 
@@ -131,6 +123,14 @@
             dns cloudflare {env.CF_API_TOKEN}
           }
           reverse_proxy localhost:8123
+        '';
+      };
+      virtualHosts."zwave.i.rk0n.org" = {
+        extraConfig = ''
+          tls {
+            dns cloudflare {env.CF_API_TOKEN}
+          }
+          reverse_proxy localhost:8091
         '';
       };
     };
