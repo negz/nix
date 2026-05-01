@@ -25,8 +25,7 @@
         "sd_mod"
         "ccm"
         "ctr"
-        "iwlmvm"
-        "iwlwifi"
+        "igc"
       ];
       kernelModules = [
         "dm-snapshot"
@@ -36,17 +35,11 @@
       systemd = {
         enable = true;
 
-        packages = [ pkgs.wpa_supplicant ];
-        initrdBin = [ pkgs.wpa_supplicant ];
-
-        targets.initrd.wants = [ "wpa_supplicant@wlp6s0.service" ];
-        services."wpa_supplicant@".unitConfig.DefaultDependencies = false;
-
         network = {
           enable = true;
           networks = {
-            "10-wlan" = {
-              matchConfig.Name = "wlp6s0";
+            "10-ethernet" = {
+              matchConfig.Name = "enp7s0";
               networkConfig.DHCP = "yes";
             };
           };
@@ -54,9 +47,6 @@
 
         users.root.shell = "/bin/systemd-tty-ask-password-agent";
       };
-
-      # Generated with wpa_passphrase <ssid> "<password>" > wpa_supplicant.conf
-      secrets."/etc/wpa_supplicant/wpa_supplicant-wlp6s0.conf" = /root/secret/wpa_supplicant.conf;
 
       network = {
         enable = true;
@@ -104,7 +94,6 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp7s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp6s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
