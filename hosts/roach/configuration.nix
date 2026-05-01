@@ -103,6 +103,8 @@
       serialPort = "/dev/serial/by-id/usb-Nabu_Casa_ZWA-2_1CDBD4AE1ABC-if00";
       settings = {
         TRUST_PROXY = "loopback";
+        ZWAVE_PORT = "/dev/serial/by-id/usb-Nabu_Casa_ZWA-2_1CDBD4AE1ABC-if00";
+        TZ = "America/Los_Angeles";
       };
     };
 
