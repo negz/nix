@@ -121,6 +121,7 @@
         extraConfig = ''
           tls {
             dns cloudflare {env.CF_API_TOKEN}
+            propagation_delay 30s
           }
           reverse_proxy localhost:8123
         '';
@@ -129,6 +130,7 @@
         extraConfig = ''
           tls {
             dns cloudflare {env.CF_API_TOKEN}
+            propagation_delay 30s
           }
           reverse_proxy localhost:8091
         '';
