@@ -137,6 +137,15 @@
           reverse_proxy localhost:8091
         '';
       };
+      virtualHosts."plex.i.rk0n.org" = {
+        extraConfig = ''
+          tls {
+            dns cloudflare {env.CF_API_TOKEN}
+            propagation_delay 30s
+          }
+          reverse_proxy localhost:32400
+        '';
+      };
     };
   };
 
