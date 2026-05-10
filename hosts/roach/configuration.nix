@@ -74,7 +74,6 @@
       extraGroups = [
         "wheel"
         "docker"
-        "dialout"
       ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
@@ -112,11 +111,6 @@
 
     matter-server = {
       enable = true;
-    };
-
-    esphome = {
-      enable = true;
-      usePing = true;
     };
 
     caddy = {
@@ -179,6 +173,21 @@
       autoPrune = {
         enable = true;
       };
+    };
+
+    oci-containers.containers.esphome = {
+      image = "ghcr.io/esphome/esphome:2026.4.5";
+      volumes = [
+        "/var/lib/esphome:/config"
+        "/etc/localtime:/etc/localtime:ro"
+      ];
+      environment = {
+        TZ = "America/Los_Angeles";
+        ESPHOME_DASHBOARD_USE_PING = "true";
+      };
+      extraOptions = [
+        "--network=host"
+      ];
     };
 
     oci-containers.containers.home-assistant = {
