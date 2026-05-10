@@ -116,7 +116,6 @@
 
     esphome = {
       enable = true;
-      package = pkgs.unstable.esphome;
       usePing = true;
     };
 
