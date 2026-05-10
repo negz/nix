@@ -152,6 +152,13 @@
           system = "x86_64-linux";
           modules = [
             { nixpkgs.overlays = nixos-overlays; }
+            # Use the unstable ESPHome module. The stable module uses
+            # DynamicUser which breaks PlatformIO's path resolution.
+            # See: https://github.com/NixOS/nixpkgs/issues/339557
+            {
+              disabledModules = [ "services/home-automation/esphome.nix" ];
+              imports = [ "${nixos-unstable}/nixos/modules/services/home-automation/esphome.nix" ];
+            }
             ./hosts/roach/configuration.nix
             hm-nixos.nixosModules.home-manager
             {
