@@ -74,6 +74,7 @@
       extraGroups = [
         "wheel"
         "docker"
+        "dialout"
       ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
@@ -113,12 +114,18 @@
       enable = true;
     };
 
+    esphome = {
+      enable = true;
+      package = pkgs.unstable.esphome;
+      usePing = true;
+    };
+
     caddy = {
       enable = true;
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
         # Build once on roach to get the correct hash.
-        hash = "sha256-4WF7tIx8d6O/Bd0q9GhMch8lS3nlR5N3Zg4ApA3hrKw=";
+        hash = "sha256-uKtStb6m1/hA5IaAdIyLGzAQdyIySjISdxXIRxehhyI=";
       };
       virtualHosts."home.i.rk0n.org" = {
         extraConfig = ''
@@ -145,6 +152,15 @@
             propagation_delay 30s
           }
           reverse_proxy localhost:32400
+        '';
+      };
+      virtualHosts."esphome.i.rk0n.org" = {
+        extraConfig = ''
+          tls {
+            dns cloudflare {env.CF_API_TOKEN}
+            propagation_delay 30s
+          }
+          reverse_proxy localhost:6052
         '';
       };
     };
@@ -191,6 +207,7 @@
   };
 
   systemd.services.caddy.serviceConfig.EnvironmentFile = "/etc/caddy/env";
+
 
   systemd = {
     mounts = [
