@@ -191,7 +191,7 @@
     };
 
     oci-containers.containers.home-assistant = {
-      image = "ghcr.io/home-assistant/home-assistant:2026.4.4";
+      image = "ghcr.io/home-assistant/home-assistant:2026.5.1";
       volumes = [
         "/var/lib/hass:/config"
         "/etc/localtime:/etc/localtime:ro"
