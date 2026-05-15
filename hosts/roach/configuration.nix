@@ -113,6 +113,18 @@
       enable = true;
     };
 
+    openthread-border-router = {
+      enable = true;
+      package = pkgs.unstable.openthread-border-router;
+      backboneInterfaces = [ "enp3s0f0" ];
+      radio = {
+        device = "/dev/serial/by-id/usb-Nabu_Casa_ZBT-2_14C19FC4D3AC-if00";
+        baudRate = 460800;
+        flowControl = false;
+      };
+      web.enable = true;
+    };
+
     caddy = {
       enable = true;
       package = pkgs.caddy.withPlugins {
@@ -154,6 +166,15 @@
             propagation_delay 30s
           }
           reverse_proxy localhost:6052
+        '';
+      };
+      virtualHosts."thread.i.rk0n.org" = {
+        extraConfig = ''
+          tls {
+            dns cloudflare {env.CF_API_TOKEN}
+            propagation_delay 30s
+          }
+          reverse_proxy localhost:8082
         '';
       };
     };

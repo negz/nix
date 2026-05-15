@@ -153,6 +153,9 @@
           modules = [
             { nixpkgs.overlays = nixos-overlays; }
             ./hosts/roach/configuration.nix
+            # services.openthread-border-router only exists in nixos-unstable
+            # as of 25.11; import the module explicitly.
+            "${nixos-unstable}/nixos/modules/services/home-automation/openthread-border-router.nix"
             hm-nixos.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
