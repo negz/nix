@@ -129,8 +129,7 @@
       enable = true;
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
-        # Build once on roach to get the correct hash.
-        hash = "sha256-uKtStb6m1/hA5IaAdIyLGzAQdyIySjISdxXIRxehhyI=";
+	hash = "sha256-vNSHU7txQLs0m0UChuszURXjEoMj4r1902+1ei0/DaI=";
       };
       virtualHosts."home.i.rk0n.org" = {
         extraConfig = ''
