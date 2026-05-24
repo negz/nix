@@ -122,7 +122,7 @@
       radio = {
         device = "/dev/serial/by-id/usb-Nabu_Casa_ZBT-2_14C19FC4D3AC-if00";
         baudRate = 460800;
-        flowControl = false;
+        flowControl = true;
       };
       web.enable = true;
     };
@@ -131,7 +131,7 @@
       enable = true;
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
-	hash = "sha256-vNSHU7txQLs0m0UChuszURXjEoMj4r1902+1ei0/DaI=";
+        hash = "sha256-vNSHU7txQLs0m0UChuszURXjEoMj4r1902+1ei0/DaI=";
       };
       virtualHosts."home.i.rk0n.org" = {
         extraConfig = ''
@@ -237,7 +237,6 @@
   };
 
   systemd.services.caddy.serviceConfig.EnvironmentFile = "/etc/caddy/env";
-
 
   systemd = {
     mounts = [
