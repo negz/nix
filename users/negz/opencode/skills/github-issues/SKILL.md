@@ -49,6 +49,34 @@ gh issue create --template <template> --title "..." --body "..."
 gh issue create --label bug --title "..." --body "..."
 ```
 
+## Formatting and the gh CLI
+
+**Do not hard-wrap the body at 80 characters.** Unlike commit messages and
+scratch docs, issue bodies render as Markdown on GitHub, which reflows text to
+the viewport. Hard wrapping inserts line breaks mid-sentence that look wrong in
+the rendered view. Write each paragraph as one continuous line and let GitHub
+handle wrapping. Use blank lines between paragraphs.
+
+**Always pass the body via `--body-file`, never `--body`.** Issue bodies are full
+of backticks (code spans like `semver.MustParse`), `$`, and apostrophes. On the
+command line inside a double-quoted `--body` string, the shell runs unescaped
+backticks and `$(...)` as command substitution and expands `$`, corrupting the
+body. Escaping and single-quoting each handle some of these but break on others.
+Writing the body to a file sidesteps all of it — use it every time:
+
+```bash
+gh issue create --title "..." --body-file /tmp/issue-body.md
+```
+
+Or pipe from stdin with a quoted `'EOF'` heredoc, which prevents the shell from
+interpreting anything in the body:
+
+```bash
+gh issue create --title "..." --body-file - <<'EOF'
+The resolver panics when it calls `semver.MustParse` on a digest reference.
+EOF
+```
+
 ## Bug Report Style
 
 Use the repo's bug template sections. Key principles:
@@ -64,14 +92,9 @@ Use the repo's bug template sections. Key principles:
 ```markdown
 ### What happened?
 
-The resolver controller panics when the installed package uses a digest 
-reference (e.g., `@sha256:...`) instead of a semver tag.
+The resolver controller panics when the installed package uses a digest reference (e.g., `@sha256:...`) instead of a semver tag.
 
-The function calls `semver.MustParse(insVer)` at 
-[`reconciler.go:629`](https://github.com/.../reconciler.go#L629), where 
-`insVer` comes from `pref.Identifier()`. When the package reference is a 
-digest, `Identifier()` returns `sha256:abc123...`, which is not a valid 
-semver string.
+The function calls `semver.MustParse(insVer)` at [`reconciler.go:629`](https://github.com/.../reconciler.go#L629), where `insVer` comes from `pref.Identifier()`. When the package reference is a digest, `Identifier()` returns `sha256:abc123...`, which is not a valid semver string.
 
 ### How can we reproduce it?
 
@@ -100,20 +123,13 @@ Use the repo's feature template sections. Key principles:
 ```markdown
 ### What problem are you facing?
 
-Crossplane packages can install other packages as dependencies. You can 
-configure a package directly - e.g. its image pull secrets, pull policy. 
-Until recently there wasn't any way to configure packages pulled in as 
-dependencies though.
+Crossplane packages can install other packages as dependencies. You can configure a package directly - e.g. its image pull secrets, pull policy. Until recently there wasn't any way to configure packages pulled in as dependencies though.
 
-We added the `ImageConfig` API to solve this. It's proven useful, so we've 
-expanded it to configure more settings. But this creates a complicated 
-mental model: when do you use ImageConfig vs package spec?
+We added the `ImageConfig` API to solve this. It's proven useful, so we've expanded it to configure more settings. But this creates a complicated mental model: when do you use ImageConfig vs package spec?
 
 ### How could Crossplane help solve your problem?
 
-I think we should make it possible to configure everything via an ImageConfig.
-If you can configure it on a Provider spec, you should be able to configure 
-it via an ImageConfig as well.
+I think we should make it possible to configure everything via an ImageConfig. If you can configure it on a Provider spec, you should be able to configure it via an ImageConfig as well.
 ```
 
 ## Key Principles

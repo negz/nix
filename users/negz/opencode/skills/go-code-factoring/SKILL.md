@@ -401,6 +401,21 @@ After finishing a package, review it against these questions:
 5. **Do any parameter names stutter with their types?** If removing the name and
    reading just the type signature still makes sense, the name is redundant.
 
+## Anti-Rationalizations
+
+The instinct to skip factoring and just make the code work is strong. Each
+excuse sounds reasonable, and each one trades a small cost now for a larger
+one later.
+
+| Rationalization | Reality |
+|---|---|
+| "I'll factor it later, let me get it working first" | Later rarely comes, and by then the code has callers depending on its shape. The cheapest time to get the structure right is before anything depends on it. |
+| "The constructor doing I/O is fine, it's convenient" | A constructor that loads config or builds clients can't be tested without real infrastructure. Convenience now buys untestable code later. Inject the built dependencies. |
+| "It's pure computation, no need for an interface" | Correct — don't abstract what doesn't need it. But if it does I/O or has side effects, the caller needs a seam to test against. Check which it actually is. |
+| "An unexported method is simpler than extracting it" | Unexported methods can't be swapped, mocked, or reused. If the logic is a swappable step, it wants an interface; if it's pure, a package-level function. |
+| "Matching this skill matters more than the codebase" | It doesn't. Consistency within a codebase beats any individual mechanism this skill recommends. Read the existing code first. |
+| "Refactoring this neighboring code while I'm here is helpful" | Scope creep. The scope of structural improvement should match the scope of the functional change. Don't go on a crusade through files you don't need to touch. |
+
 ## Key Principles
 
 1. Write every package like a library — self-contained, documented, extractable

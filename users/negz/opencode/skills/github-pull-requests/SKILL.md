@@ -33,6 +33,36 @@ gh pr view
 gh pr list
 ```
 
+## Formatting and the gh CLI
+
+**Do not hard-wrap the body at 80 characters.** Unlike commit messages and
+scratch docs, PR descriptions render as Markdown on GitHub, which reflows text to
+the viewport. Hard wrapping inserts line breaks mid-sentence that look wrong in
+the rendered view. Write each paragraph as one continuous line and let GitHub
+handle wrapping. Use blank lines between paragraphs.
+
+**Always pass the body via `--body-file`, never `--body`.** PR bodies are full of
+backticks (code spans), `$`, and apostrophes. On the command line inside a
+double-quoted `--body` string, the shell runs unescaped backticks and `$(...)` as
+command substitution and expands `$`, corrupting the body. Escaping and
+single-quoting each handle some of these but break on others. Writing the body to
+a file sidesteps all of it — use it every time:
+
+```bash
+gh pr create --title "..." --body-file /tmp/pr-body.md
+```
+
+Or pipe from stdin with a quoted `'EOF'` heredoc, which prevents the shell from
+interpreting anything in the body:
+
+```bash
+gh pr create --title "..." --body-file - <<'EOF'
+Fixes #123
+
+The `Reconcile` method returned early when `spec.forProvider` was nil.
+EOF
+```
+
 ## PR Templates
 
 If the repository has a PR template (`.github/PULL_REQUEST_TEMPLATE.md` or similar), you **must** use it. Check for templates before creating the PR body.
@@ -70,14 +100,9 @@ If the repository has a PR template (`.github/PULL_REQUEST_TEMPLATE.md` or simil
 ```
 Fixes #6719
 
-The CRD-to-MRD converter was converting all CRDs to MRDs, including provider 
-configuration types like `ProviderConfig`, `ClusterProviderConfig`, and 
-`ProviderConfigUsage`. These are not managed resources and should remain as 
-regular CRDs that get installed immediately.
+The CRD-to-MRD converter was converting all CRDs to MRDs, including provider configuration types like `ProviderConfig`, `ClusterProviderConfig`, and `ProviderConfigUsage`. These are not managed resources and should remain as regular CRDs that get installed immediately.
 
-This PR updates the converter to use `isManagedResource()` to identify which 
-CRDs represent actual managed resources. Provider configuration types are 
-excluded from conversion and remain as regular CRDs in the output.
+This PR updates the converter to use `isManagedResource()` to identify which CRDs represent actual managed resources. Provider configuration types are excluded from conversion and remain as regular CRDs in the output.
 ```
 
 ## Checklist Guidelines

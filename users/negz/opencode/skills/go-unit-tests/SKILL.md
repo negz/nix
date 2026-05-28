@@ -242,6 +242,20 @@ the code may not be testable yet — this is a factoring concern.
 Put YAML/JSON fixtures in a `testdata/` directory alongside the test file.
 Load with `os.ReadFile` or `//go:embed`.
 
+## Anti-Rationalizations
+
+The instinct to skip or shortcut testing is strong, and each excuse sounds
+reasonable in the moment. They're usually wrong.
+
+| Rationalization | Reality |
+|---|---|
+| "I'll write tests after the code works" | Tests written after the fact validate the implementation you happened to write, not the behavior you intended. Write them alongside the code. |
+| "This is too simple to need a test" | Simple code with no test becomes complex code with no test. The cost of the first test is the setup; add the case while the setup is cheap. |
+| "It's hard to test, so I'll skip it" | Hard to test is a factoring problem, not a testing problem. Extract the interface and the test becomes easy. Skipping leaves the risk in place. |
+| "The happy path passes, that's enough" | Every function returning an error needs a case that exercises the error path. The failure modes are where the bugs live. |
+| "Coverage is already high" | Coverage measures lines executed, not behaviors verified. A line can be covered by a test that asserts nothing meaningful. |
+| "I'll just eyeball it, the diff is obvious" | "Seems right" is not proof. A test that fails when the behavior breaks is the only thing that protects it from the next change. |
+
 ## Do Not
 
 These apply when writing tests in this skill's style. If the codebase uses
