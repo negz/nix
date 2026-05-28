@@ -84,6 +84,29 @@ snacks.setup {
 	words = { enabled = true }
 }
 
+-- The dashboard renders the Neovim logo via a snacks "terminal" section that
+-- runs chafa as a PTY job (see the terminal section above). On first launch
+-- (cold cache) snacks runs that job live; subsequent launches replay cached
+-- output, which is why this only happens once.
+--
+-- Neovim 0.12 renders the "[Process exited 0]" notice as virtual text (an
+-- extmark in the nvim.terminal.exitmsg namespace) on TermClose, not as a buffer
+-- line. snacks' own scrubber (Job:hide_process_exited) only searches buffer
+-- *lines*, so it never removes the virtual text and the notice lingers on the
+-- dashboard. Clear that namespace ourselves for the dashboard terminal buffer.
+local nvim_terminal_exitmsg_ns = vim.api.nvim_create_namespace('nvim.terminal.exitmsg')
+vim.api.nvim_create_autocmd('TermClose', {
+	callback = function(ev)
+		if vim.bo[ev.buf].filetype:match('^snacks_dashboard') then
+			vim.schedule(function()
+				if vim.api.nvim_buf_is_valid(ev.buf) then
+					vim.api.nvim_buf_clear_namespace(ev.buf, nvim_terminal_exitmsg_ns, 0, -1)
+				end
+			end)
+		end
+	end,
+})
+
 vim.api.nvim_create_autocmd('QuitPre', {
 	callback = function()
 		-- We're quitting a floating window. Do nothing.
