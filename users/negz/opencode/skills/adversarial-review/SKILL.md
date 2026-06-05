@@ -26,6 +26,12 @@ Do not use it for typos, doc-only changes, mechanical renames or file moves, or
 when the user explicitly says to skip review. The review has a cost; spend it
 where correctness is actually at stake.
 
+This skill checks **correctness against a contract** and deliberately ignores
+style, naming, conventions, and design alternatives (see "What the Reviewer
+Should Not Do"). For those — the craft concerns that decide whether a change is
+mergeable in a Crossplane repo — use the **negz-review** skill. For a substantial
+change, run both: this for correctness, negz-review for craft.
+
 ## Why Fresh Context Matters
 
 The agent that wrote the code is biased by its own reasoning. It has seen the

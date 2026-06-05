@@ -57,6 +57,61 @@ correct, check it: run the tests, run the build, read the diff with fresh eyes.
 The pattern in every case is the same: replace "I'm sure this is right" with
 something that proves it.
 
+## Comment the Why, Not the What
+
+The code already says what it does. A comment that restates it is noise. A
+comment earns its place by explaining what the code *can't* say: why a
+non-obvious decision was made, and especially what external constraint forced it
+— an upstream library's behaviour, a protocol quirk, an API that rejects the
+obvious approach, a bug you're working around. That context is invisible in the
+code and expensive to rediscover, so capture it at the point it matters.
+
+```go
+// SetConditions sets conditions to nil if passed no arguments. SSA interprets
+// this as null and rejects it, so we only set them when there's something to set.
+if len(cs) > 0 {
+    xr.SetConditions(cs...)
+}
+```
+
+The test: if a reader could derive the comment from the line below it, delete the
+comment. If they'd need to go read another package's source, a changelog, or an
+issue to understand why the code is shaped this way, write it down.
+
+### Describe the State, Not the Change
+
+When you change code from approach X to approach Y, do not leave a comment (or
+commit-shaped narration in the code) that says "do Y, not X". The reader sees the
+current code — Y — and almost never cares how it used to be. They want to
+understand why the code is the way it is *now*, on its own terms. "Use a map here,
+not a slice" or "Switched to SSA instead of patching" is noise: it documents your
+edit, which belongs in the commit message, not the source.
+
+```go
+// Bad — narrates the change.
+// Use errors.Is here instead of == so wrapped errors still match.
+
+// Good — describes the current state and its reason.
+// The client wraps this error, so compare with errors.Is rather than ==.
+```
+
+The change is only worth mentioning in the rare case where the *old* approach is
+a live temptation:
+
+- A reader would reasonably wonder "why not the obvious way?" — name the
+  obvious-but-wrong alternative and why it doesn't work.
+- A reader would reasonably be tempted to refactor back to the old approach,
+  which was bad for a non-obvious reason — warn them off it.
+
+Both of these are really just "comment the why": the old approach is part of the
+*current* code's rationale, not a history lesson. If it isn't, leave it out.
+
+Mark deferred work and surprising decisions with an attributed marker so the next
+reader knows who to ask and that it was deliberate — `TODO(user):` for work left
+undone, `NOTE(user):` for a decision that looks wrong until you know the reason.
+Phrase a TODO as the open question it is ("Use server-side apply instead?"), not
+a vague "fix this later".
+
 ## Structure for Testability
 
 Testability is a design property, decided when you structure the code, not
@@ -74,4 +129,5 @@ not a reason to skip the test.
 2. Design for change — keep future options open, reversing decisions is costly
 3. Don't defer the hard things — simplify the approach, never the problem
 4. Verify, don't assume — evidence over confidence
-5. Structure for testability — seams are a design decision, not an afterthought
+5. Comment the why, not the what — capture the constraint the code can't show
+6. Structure for testability — seams are a design decision, not an afterthought
