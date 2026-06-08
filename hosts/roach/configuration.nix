@@ -51,7 +51,12 @@
   networking = {
     hostName = "roach";
     search = [ "i.rk0n.org" ];
-    useDHCP = true;
+
+    # Use systemd-networkd instead of the default scripted networking (dhcpcd).
+    # dhcpcd resets net.ipv6.conf.enp3s0f0.accept_ra to 0 on every link event,
+    # breaking IPv6 RA acceptance that openthread-border-router depends on.
+    useNetworkd = true;
+    useDHCP = false;
 
     firewall = {
       enable = true;
@@ -239,6 +244,29 @@
   systemd.services.caddy.serviceConfig.EnvironmentFile = "/etc/caddy/env";
 
   systemd = {
+    network = {
+      enable = true;
+
+      networks."40-enp3s0f0" = {
+        matchConfig.Name = "enp3s0f0";
+
+        networkConfig = {
+          DHCP = "ipv4";
+
+          # Leave IPv6 RA handling to the kernel, not networkd. openthread-border-router
+          # sets net.ipv6.conf.enp3s0f0.accept_ra=2 and accept_ra_rt_info_max_plen=64 so
+          # the kernel installs the Thread mesh route (fd00:.../64) from the RAs OTBR
+          # advertises on this backbone interface. networkd's IPv6AcceptRA= runs a
+          # userspace RA client that *disables* the kernel implementation and ignores
+          # accept_ra_rt_info_max_plen, which breaks OTBR's backbone routing. Setting
+          # this false keeps the kernel RA path (and OTBR's sysctls) authoritative.
+          IPv6AcceptRA = false;
+        };
+
+        linkConfig.RequiredForOnline = "routable";
+      };
+    };
+
     mounts = [
       {
         description = "Media for Plex";
