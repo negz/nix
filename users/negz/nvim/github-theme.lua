@@ -43,6 +43,10 @@ require('github-theme').setup {
 	}
 }
 
+-- Enable 24-bit truecolor. Without this Neovim falls back to the 256-color
+-- palette, which makes the GitHub theme look washed out.
+vim.opt.termguicolors = true
+
 local toggle = function()
 	if vim.o.background == "light" then
 		vim.cmd.colorscheme("github_light_default")
@@ -56,3 +60,8 @@ vim.api.nvim_create_autocmd("OptionSet", {
 	pattern = "background",
 	callback = toggle,
 })
+
+-- Apply the colorscheme at startup. The OptionSet autocmd above only fires when
+-- 'background' changes, which may not happen on a fresh launch, so set it once
+-- here based on the current background.
+toggle()

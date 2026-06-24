@@ -6,10 +6,7 @@ local preview = require('actions-preview')
 local coverage = require('coverage')
 local neominimap = require('neominimap.api')
 
-local opencode = require('opencode')
-
 wk.add({
-	{ '<leader>a',  group = 'AI' },
 	{ '<leader>c',  group = 'Code' },
 	{ '<leader>cd', group = 'Diagnostics' },
 	{ '<leader>f',  group = 'Find' },
@@ -63,11 +60,6 @@ vim.keymap.set('t', '<Esc>', function()
 		return '<Esc>'
 	end
 end, { expr = true, desc = 'Exit terminal mode (double-tap)' })
-
--- AI
-vim.keymap.set({ 'n', 'x' }, '<leader>aa', function() opencode.ask('@this: ') end, { desc = 'Ask OpenCode' })
-vim.keymap.set({ 'n', 'x' }, '<leader>as', opencode.select, { desc = 'Select prompt' })
-vim.keymap.set('n', '<leader>at', opencode.toggle, { desc = 'Toggle OpenCode' })
 
 -- Keymaps
 vim.keymap.set('n', '<leader>k', wk.show, { desc = 'Which key?' })

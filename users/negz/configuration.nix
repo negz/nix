@@ -290,8 +290,10 @@
             src = pkgs.fetchFromGitHub {
               owner = "projekt0n";
               repo = "github-nvim-theme";
-              rev = "v1.1.2";
-              sha256 = "ur/65NtB8fY0acTUN/Xw9fT813UiL3YcP4+IwkaUzTE=";
+              # No tagged release past v1.1.2; main has treesitter/cmp highlight
+              # fixes we want, so pin to the exact commit.
+              rev = "c106c9472154d6b2c74b74565616b877ae8ed31d";
+              hash = "sha256-/A4hkKTzjzeoR1SuwwklraAyI8oMkhxrwBBV9xb59PA=";
             };
           };
           type = "lua";
@@ -387,11 +389,6 @@
           plugin = pkgs.unstable.vimPlugins.colorful-menu-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/colorful-menu.lua;
-        }
-        {
-          plugin = pkgs.unstable.vimPlugins.opencode-nvim;
-          type = "lua";
-          config = builtins.readFile ./nvim/opencode.lua;
         }
       ];
     };
