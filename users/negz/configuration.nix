@@ -218,10 +218,12 @@
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
+      withRuby = true;
+      withPython3 = true;
       extraPackages = [
         # Nix
         pkgs.nil
-        pkgs.nixfmt-rfc-style
+        pkgs.nixfmt
 
         # Lua / NeoVim
         pkgs.lua-language-server
@@ -279,11 +281,11 @@
 
         filetype indent on
       '';
-      extraLuaConfig = builtins.readFile ./nvim/lspconfig.lua;
+      initLua = builtins.readFile ./nvim/lspconfig.lua;
       plugins = [
         # Intentionally loaded first, to make sure it applies to other plugins.
         {
-          plugin = pkgs.vimUtils.buildVimPlugin {
+          plugin = pkgs.unstable.vimUtils.buildVimPlugin {
             name = "github-nvim-theme";
             src = pkgs.fetchFromGitHub {
               owner = "projekt0n";
@@ -296,7 +298,7 @@
           config = builtins.readFile ./nvim/github-theme.lua;
         }
         {
-          plugin = pkgs.vimUtils.buildVimPlugin {
+          plugin = pkgs.unstable.vimUtils.buildVimPlugin {
             name = "neominimap";
             src = pkgs.fetchFromGitHub {
               owner = "Isrothy";
@@ -308,9 +310,9 @@
           type = "lua";
           config = builtins.readFile ./nvim/neominimap.lua;
         }
-        pkgs.vimPlugins.plenary-nvim
+        pkgs.unstable.vimPlugins.plenary-nvim
         {
-          plugin = pkgs.vimPlugins.mini-icons;
+          plugin = pkgs.unstable.vimPlugins.mini-icons;
           type = "lua";
           config = builtins.readFile ./nvim/mini-icons.lua;
         }
@@ -320,7 +322,7 @@
           config = builtins.readFile ./nvim/snacks.lua;
         }
         {
-          plugin = pkgs.vimPlugins.gitsigns-nvim;
+          plugin = pkgs.unstable.vimPlugins.gitsigns-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/gitsigns.lua;
         }
@@ -345,12 +347,12 @@
           config = builtins.readFile ./nvim/blink-cmp.lua;
         }
         {
-          plugin = pkgs.vimPlugins.which-key-nvim;
+          plugin = pkgs.unstable.vimPlugins.which-key-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/which-key.lua;
         }
         {
-          plugin = pkgs.vimPlugins.flash-nvim;
+          plugin = pkgs.unstable.vimPlugins.flash-nvim;
           type = "lua";
           config = builtins.readFile ./nvim/flash.lua;
         }
@@ -370,7 +372,7 @@
           config = builtins.readFile ./nvim/bqf.lua;
         }
         {
-          plugin = pkgs.vimPlugins.neotest;
+          plugin = pkgs.unstable.vimPlugins.neotest;
           type = "lua";
           config = builtins.readFile ./nvim/neotest.lua;
         }
@@ -398,25 +400,24 @@
       enable = true;
       enableDefaultConfig = false;
 
-      matchBlocks = {
+      settings = {
         # ghostty uses its own terminfo, which most hosts won't have
-        "ghostty-terminfo" = {
-          host = "!mael,!tehol,!dragnipur,!roach,*";
-          setEnv = {
+        "!mael,!tehol,!dragnipur,!roach,*" = {
+          SetEnv = {
             TERM = "xterm-256color";
           };
         };
         "*" = {
-          forwardAgent = true;
-          serverAliveInterval = 0;
-          serverAliveCountMax = 3;
-          compression = false;
-          addKeysToAgent = "no";
-          hashKnownHosts = false;
-          userKnownHostsFile = "~/.ssh/known_hosts";
-          controlMaster = "no";
-          controlPath = "~/.ssh/master-%r@%n:%p";
-          controlPersist = "no";
+          ForwardAgent = true;
+          ServerAliveInterval = 0;
+          ServerAliveCountMax = 3;
+          Compression = false;
+          AddKeysToAgent = "no";
+          HashKnownHosts = false;
+          UserKnownHostsFile = "~/.ssh/known_hosts";
+          ControlMaster = "no";
+          ControlPath = "~/.ssh/master-%r@%n:%p";
+          ControlPersist = "no";
         };
       };
     };

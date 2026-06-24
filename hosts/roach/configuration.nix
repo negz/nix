@@ -101,13 +101,11 @@
 
     plex = {
       enable = true;
-      package = pkgs.unstable.plex;
       openFirewall = true;
     };
 
     zwave-js-ui = {
       enable = true;
-      package = pkgs.unstable.zwave-js-ui;
       serialPort = "/dev/serial/by-id/usb-Nabu_Casa_ZWA-2_1CDBD4AE1ABC-if00";
       settings = {
         TRUST_PROXY = "loopback";
@@ -122,7 +120,6 @@
 
     openthread-border-router = {
       enable = true;
-      package = pkgs.unstable.openthread-border-router;
       backboneInterfaces = [ "enp3s0f0" ];
       radio = {
         device = "/dev/serial/by-id/usb-Nabu_Casa_ZBT-2_14C19FC4D3AC-if00";
@@ -136,7 +133,7 @@
       enable = true;
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
-        hash = "sha256-vNSHU7txQLs0m0UChuszURXjEoMj4r1902+1ei0/DaI=";
+        hash = "sha256-8yZDrejNKsaUnUaTUFYbarWNmxafqp2z2rWo+XRsxV8=";
       };
       virtualHosts."home.i.rk0n.org" = {
         extraConfig = ''

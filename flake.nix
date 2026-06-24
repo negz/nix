@@ -8,29 +8,29 @@
 
     # MacOS
     nixpkgs-darwin = {
-      url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
+      url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
     };
     nixpkgs-unstable = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";
     };
     darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     hm-darwin = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
 
     # NixOS
     nixos = {
-      url = "github:nixos/nixpkgs/nixos-25.11";
+      url = "github:nixos/nixpkgs/nixos-26.05";
     };
     nixos-unstable = {
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
     hm-nixos = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixos";
     };
   };
@@ -153,9 +153,6 @@
           modules = [
             { nixpkgs.overlays = nixos-overlays; }
             ./hosts/roach/configuration.nix
-            # services.openthread-border-router only exists in nixos-unstable
-            # as of 25.11; import the module explicitly.
-            "${nixos-unstable}/nixos/modules/services/home-automation/openthread-border-router.nix"
             hm-nixos.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
