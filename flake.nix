@@ -33,6 +33,11 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixos";
     };
+
+    # Meridian - to allow Opencode to use the Claude Code SDK
+    meridian = {
+      url = "github:rynfar/meridian";
+    };
   };
 
   nixConfig = {
@@ -61,6 +66,8 @@
       nixos,
       nixos-unstable,
       hm-nixos,
+
+      meridian,
     }:
     let
       darwin-overlays = [
@@ -76,6 +83,9 @@
             config.allowUnfree = true;
           };
         })
+
+        # Allow pkgs.meridian.
+        meridian.overlays.default
       ];
       nixos-overlays = [
         # Allow configurations to use pkgs.unstable.<package-name>.
@@ -90,6 +100,9 @@
             config.allowUnfree = true;
           };
         })
+
+        # Allow pkgs.meridian.
+        meridian.overlays.default
       ];
     in
     {

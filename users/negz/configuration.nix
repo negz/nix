@@ -43,6 +43,7 @@
       pkgs.kind
 
       # AI things
+      pkgs.unstable.claude-code
       pkgs.unstable.opencode
 
       # Useful dependencies for AI tools
@@ -86,16 +87,45 @@
                     macos-option-as-alt = true
                     link-url = true
                     adjust-cursor-thickness = 100%
-          	  clipboard-paste-protection = false
+          	    clipboard-paste-protection = false
         '';
       };
 
       # OpenCode configuration. Run /connect to set up API keys.
       "opencode/opencode.json" = {
-        source = ./opencode/opencode.json;
+        text = builtins.toJSON {
+          "$schema" = "https://opencode.ai/config.json";
+          plugin = [ "${pkgs.meridian}/lib/meridian/plugin/meridian.ts" ];
+          provider = {
+            anthropic = {
+              options = {
+                apiKey = "x"; # Dummy value: use Meridian instead.
+                baseURL = "http://127.0.0.1:3456"; # Meridian.
+              };
+            };
+          };
+          mcp = {
+            context7 = {
+              type = "remote";
+              url = "https://mcp.context7.com/mcp";
+            };
+          };
+          permission = {
+            edit = "allow";
+            bash = {
+              "*" = "allow";
+              "git push *" = "ask";
+              "git commit *" = "ask";
+              "rm *" = "ask";
+            };
+          };
+        };
       };
       "opencode/tui.json" = {
-        source = ./opencode/tui.json;
+        text = builtins.toJSON {
+          "$schema" = "https://opencode.ai/tui.json";
+          "theme" = "github";
+        };
       };
       "opencode/skills" = {
         source = ./opencode/skills;
@@ -466,6 +496,29 @@
 
     jq = {
       enable = true;
+    };
+  };
+
+  systemd = {
+    user = {
+      services = {
+        meridian = {
+          Unit = {
+            Description = "Meridian - Local Anthropic API proxy";
+          };
+
+          Service = {
+            Type = "simple";
+            ExecStart = "${pkgs.meridian}/bin/meridian";
+            Restart = "on-failure";
+            RestartSec = 5;
+          };
+
+          Install = {
+            WantedBy = [ "default.target" ];
+          };
+        };
+      };
     };
   };
 }
