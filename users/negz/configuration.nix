@@ -131,6 +131,15 @@
         source = ./opencode/skills;
         recursive = true;
       };
+
+      "meridian/sdk-features.json" = {
+        text = builtins.toJSON {
+          opencode = {
+            thinking = "adaptive";
+            thinkingPassthrough = true;
+          };
+        };
+      };
     };
 
     # For Neovim's dashboard - see nvim/snacks.lua.
