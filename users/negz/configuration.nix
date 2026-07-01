@@ -5,6 +5,27 @@
   ...
 }:
 
+let
+  # The npm package ships a prebuilt dist/index.js and has no runtime deps
+  # (its only dependency is an optional peer dep on meridian), so we just
+  # fetch and unpack the published tarball. The hash is the integrity value
+  # from meridian/plugins/package-lock.json.
+  meridian-plugin-opencode-scrub = pkgs.stdenvNoCC.mkDerivation {
+    pname = "meridian-plugin-opencode-scrub";
+    version = "0.2.0";
+    src = pkgs.fetchurl {
+      url = "https://registry.npmjs.org/@rynfar/meridian-plugin-opencode-scrub/-/meridian-plugin-opencode-scrub-0.2.0.tgz";
+      hash = "sha512-RaXNkIwPB2NmicdNvDmYLKbLz5KsnAlNt3XfuejstPpMZBbogxhi6JSsU3k6nHGj/yoYmbpLYMGD4Bv4v30Tvg==";
+    };
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      cp -r . $out/
+      runHook postInstall
+    '';
+  };
+in
+
 {
   home = {
     enableNixpkgsReleaseCheck = true;
@@ -138,6 +159,17 @@
             thinking = "adaptive";
             thinkingPassthrough = true;
           };
+        };
+      };
+
+      "meridian/plugins.json" = {
+        text = builtins.toJSON {
+          plugins = [
+            {
+              path = "${meridian-plugin-opencode-scrub}/dist/index.js";
+              enabled = true;
+            }
+          ];
         };
       };
     };
@@ -512,11 +544,15 @@
     user = {
       services = {
         meridian = {
+
           Unit = {
             Description = "Meridian - Local Anthropic API proxy";
           };
 
           Service = {
+            Environment = [
+              "MERIDIAN_PASSTHROUGH=1"
+            ];
             Type = "simple";
             ExecStart = "${pkgs.meridian}/bin/meridian";
             Restart = "on-failure";
