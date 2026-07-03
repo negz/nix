@@ -81,13 +81,14 @@
     configFile = {
       "ghostty/config" = {
         text = ''
-                    theme = light:GitHub Light Default,dark:GitHub Dark Default
-                    font-family = Menlo
-                    font-size = 12
-                    macos-option-as-alt = true
-                    link-url = true
-                    adjust-cursor-thickness = 100%
-          	    clipboard-paste-protection = false
+          theme = light:GitHub Light Default,dark:GitHub Dark Default
+          font-family = Menlo
+          font-size = 12
+          macos-option-as-alt = true
+          link-url = true
+          adjust-cursor-thickness = 100%
+          clipboard-paste-protection = false
+          clipboard-read = allow
         '';
       };
 
