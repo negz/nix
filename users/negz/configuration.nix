@@ -5,6 +5,25 @@
   ...
 }:
 
+let
+  # Vale rules that flag the tells of LLM-written prose. It isn't in Vale's
+  # package registry, so pin the released package rather than have Vale sync
+  # it into an unmanaged StylesPath at runtime.
+  vale-ai-tells = pkgs.fetchzip {
+    url = "https://github.com/tbhb/vale-ai-tells/releases/download/v1.31.0/ai-tells.zip";
+    hash = "sha256-+LCr3Fx3M5ui91x3mj5qs9BK7IKGGTtZuGvin8gvbLQ=";
+  };
+
+  # Vale reads one config file per document. Handing vale-ls an explicit
+  # configPath replaces Vale's own search, so this is the whole config rather
+  # than an overlay on whatever a project ships.
+  vale-config = pkgs.writeText "vale.ini" ''
+    StylesPath = ${vale-ai-tells}/styles
+
+    [*.md]
+    BasedOnStyles = ai-tells
+  '';
+in
 {
   home = {
     enableNixpkgsReleaseCheck = true;
@@ -45,6 +64,11 @@
       # Spelling and grammar, for Neovim
       pkgs.unstable.harper
       pkgs.unstable.typos-lsp
+
+      # Prose linting, for opencode. vale-ls shells out to vale, which it
+      # expects to find on PATH.
+      pkgs.unstable.vale
+      pkgs.unstable.vale-ls
 
       # Go things
       pkgs.go-outline
@@ -216,6 +240,18 @@
                     SpellCheck = false;
                   };
                 };
+              };
+            };
+            vale = {
+              command = [ "vale-ls" ];
+              extensions = [ ".md" ];
+              initialization = {
+                configPath = "${vale-config}";
+                # Both already default to false. Set them anyway, because the
+                # only thing they do is fetch Vale and its styles over the
+                # network, which is Nix's job here.
+                installVale = false;
+                syncOnStartup = false;
               };
             };
             typos = {
