@@ -102,7 +102,9 @@
       "opencode/opencode.json" = {
         text = builtins.toJSON {
           "$schema" = "https://opencode.ai/config.json";
-          plugin = [ "opencode-claude-bridge" ];
+          # Pin explicitly. An unversioned spec is resolved once and cached in
+          # ~/.cache/opencode, which isn't managed by Nix - so hosts drift.
+          plugin = [ "opencode-claude-bridge@1.10.12" ];
           mcp = {
             context7 = {
               type = "remote";
