@@ -13,6 +13,11 @@
       EDITOR = "nvim";
       TMPDIR = "/tmp"; # Prevent nix-shell from using $XDG_RUNTIME_DIR.
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
+
+      # Setting opencode's lsp option to an attrset leaves its built-in servers
+      # enabled, and several of those install themselves into
+      # ~/.local/share/opencode/bin. Keep language servers coming from Nix.
+      OPENCODE_DISABLE_LSP_DOWNLOAD = "true";
     };
 
     shellAliases = {
@@ -125,6 +130,115 @@
             context7 = {
               type = "remote";
               url = "https://mcp.context7.com/mcp";
+            };
+          };
+          # opencode uses LSP for diagnostics only, as feedback for the agent.
+          # These mirror the servers Neovim uses. They come from home.packages,
+          # not opencode's own downloads. Defining a server here overrides the
+          # built-in of the same name.
+          #
+          # opencode has no equivalent of Neovim's per-server settings table.
+          # It answers workspace/configuration requests with initialization,
+          # so servers configured either way are configured through that.
+          lsp = {
+            gopls = {
+              command = [ "gopls" ];
+              extensions = [ ".go" ];
+            };
+            golangci-lint = {
+              command = [ "golangci-lint-langserver" ];
+              extensions = [ ".go" ];
+              initialization = {
+                # golangci-lint v2 renamed the JSON output flags. Neovim
+                # detects the version at runtime; here we can rely on
+                # unstable being v2.
+                command = [
+                  "golangci-lint"
+                  "run"
+                  "--output.json.path"
+                  "stdout"
+                  "--show-stats=false"
+                  "--issues-exit-code=1"
+                ];
+              };
+            };
+            ty = {
+              command = [
+                "ty"
+                "server"
+              ];
+              extensions = [
+                ".py"
+                ".pyi"
+              ];
+            };
+            ruff = {
+              command = [
+                "ruff"
+                "server"
+              ];
+              extensions = [
+                ".py"
+                ".pyi"
+              ];
+            };
+            nil = {
+              command = [ "nil" ];
+              extensions = [ ".nix" ];
+            };
+            lua-ls = {
+              command = [ "lua-language-server" ];
+              extensions = [ ".lua" ];
+            };
+            buf = {
+              command = [
+                "buf"
+                "beta"
+                "lsp"
+              ];
+              extensions = [ ".proto" ];
+            };
+            harper = {
+              command = [
+                "harper-ls"
+                "--stdio"
+              ];
+              extensions = [
+                ".md"
+                ".txt"
+              ];
+              initialization = {
+                # Same suppressions as Neovim - see nvim/lspconfig.lua.
+                "harper-ls" = {
+                  linters = {
+                    ToDoHyphen = false;
+                    SentenceCapitalization = false;
+                    SpellCheck = false;
+                  };
+                };
+              };
+            };
+            typos = {
+              command = [ "typos-lsp" ];
+              extensions = [
+                ".go"
+                ".py"
+                ".pyi"
+                ".nix"
+                ".lua"
+                ".proto"
+                ".md"
+                ".txt"
+                ".sh"
+                ".ts"
+                ".js"
+                ".json"
+                ".yaml"
+                ".yml"
+              ];
+              initialization = {
+                diagnosticSeverity = "Info";
+              };
             };
           };
           permission = {
