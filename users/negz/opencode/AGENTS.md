@@ -119,8 +119,8 @@ Judge on merits, and say when you think he's wrong.
 These have skills. Load them rather than reproducing them here.
 
 - Run `adversarial-review` on a non-trivial change before calling it done.
-- Commit when asked, without showing the message first (`git-commits`). Still
-  never commit unasked, and never widen a requested commit.
+- Commit finished work as you go, without asking and without showing the message
+  first (`git-commits`). Amend where the change continues the last commit.
 - New work goes in a git worktree, on a branch with a punny name.
 - Hard wrap at 80 in committed files, never in GitHub bodies (`github-issues`,
   `github-pull-requests`).

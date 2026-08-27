@@ -1,22 +1,56 @@
 ---
 name: git-commits
-description: Write git commits in Nic Cope's style. Use when creating commits, staging changes for commit, or when the user asks to commit. Includes Signed-off-by requirements and problem-first messaging.
+description: Write git commits in Nic Cope's style, and decide when to commit and what belongs in each one. Use when creating or amending commits, when staging changes, or whenever you finish a unit of work. Also use when the user asks to commit. Includes Signed-off-by requirements and problem-first messaging.
 ---
 
 # Git Commit Style Guide
 
-## Committing
+## When to Commit
 
-Commit when asked to, without showing the message first. Write it, commit it, and
-report the subject line. Waiting for approval on every message costs a round trip
-that the message rarely needs.
+Commit finished work as you go. Don't ask whether to commit, and don't show the
+message first. Write it, commit it, and report the subject line. Waiting for
+approval costs a round trip that the message rarely needs.
 
-This is about the message, and not about when to commit. Don't commit unasked, and
-don't widen a requested commit with unrelated work.
+Commit once a logical unit of work is complete and working, which is usually
+several edits in rather than after each one. A commit that leaves the tree
+broken isn't a smaller commit, it's half of one, so run the project's own checks
+first.
+
+Don't commit while he's still deciding what the work is. A question is a
+question, and a half-finished edit is not a unit of work.
 
 Where something in the change needs a decision rather than a message, ask about
 that. The usual case is a commit that would record a rationale you're guessing
 at. Ask why instead of committing and hoping.
+
+Stage the paths you touched, by name. `git add -A` sweeps up whatever else sits
+in the tree, which turns one commit into two changes.
+
+## Amending
+
+Work arrives in passes. He asks for a change, reads it, then asks for another
+that turns out to be the first change told better. A commit per pass gives a
+history of how the work unfolded, which is exactly what the history should hide.
+
+So before committing, read HEAD's subject and diff. Where the new change
+continues that commit's story rather than starting a new one, amend it, and
+rewrite the message to cover the amended whole. A subject that fitted the first
+pass rarely fits all three.
+
+Amend only when all of these hold:
+
+- It's HEAD. Never rewrite further back unless he asks.
+- It's unpushed. Check `git status -sb` rather than assuming.
+- It's yours, from this session.
+- The new change serves the same goal, and not merely the same file. Two
+  unrelated edits to one file are two commits.
+
+The test is the message, as it is for grouping. Where one coherent message
+covers the old commit and the new change together, amend. Where the honest
+message for the new change alone would open with "also" or "actually, make that",
+that's the same signal.
+
+Rewriting a message means checking it again, against the whole amended diff.
 
 ## Write as Nic, Not About Him
 
@@ -95,6 +129,23 @@ layers, and never as a record of how the work unfolded.
 - Keep the message proportional to the diff, and not to the order the work
   happened in. A session's final tweak shouldn't occupy half the message.
 
+Mechanical changes belong in their own commits, so a reader can skim them and
+study the rest:
+
+- Generated code goes in its own commit, following the commit that changes the
+  generator or its input.
+- Copy a file in one commit, then edit the copy in the next. Git then shows the
+  edit as a diff, instead of burying it inside a wholly new file. Moves and
+  renames work the same way.
+- A commit either moves code or changes what it does, and never both.
+- Formatting and lint passes stand alone.
+- Dependency bumps stand alone, ahead of the code that needs them.
+
+Order the series so each commit builds on the last: prerequisites, then the
+change they enable, then the cleanup. Someone reading only the subject lines
+should get the argument. Someone checking out a commit from the middle should
+get a tree that works.
+
 Before committing a series, check whether reordering or squashing would make it
 tell a more coherent story.
 
@@ -172,7 +223,7 @@ A mechanical change gets a subject line and a sign-off, with no body.
 ## Key Principles
 
 1. One paragraph by default, and a subject line alone for a mechanical change
-2. Commit when asked, without waiting for approval of the message
+2. Commit finished work as you go, without asking and without showing the message
 3. Explain problems before solutions
 4. Focus on "why" as much as "what"
 5. Never invent a rationale you don't know
@@ -180,4 +231,5 @@ A mechanical change gets a subject line and a sign-off, with no body.
 7. Use precise, domain-specific terminology
 8. Describe previous work in neutral language
 9. One logical layer per commit, with review fixes folded into it
-10. Have a subagent check the message against the diff, and let it cut only
+10. Amend HEAD where the change continues it, rather than stacking a second commit
+11. Have a subagent check the message against the diff, and let it cut only
