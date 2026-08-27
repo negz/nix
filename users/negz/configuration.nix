@@ -279,11 +279,24 @@ in
           };
           permission = {
             edit = "allow";
+
+            question = "deny";
+
             bash = {
               "*" = "allow";
+              "git * push *" = "ask"; # git -C dir push
               "git push *" = "ask";
-              "git commit *" = "ask";
-              "rm *" = "ask";
+              "rm -rf /*" = "deny";
+              "rm -fr /*" = "deny";
+              "rm -rf ~*" = "deny";
+              "rm -fr ~*" = "deny";
+              "sudo *" = "deny";
+            };
+
+            external_directory = {
+              "/nix/store/*" = "allow";
+              "/tmp/*" = "allow";
+              "~/control/*" = "allow";
             };
           };
         };
