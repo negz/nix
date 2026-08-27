@@ -1,9 +1,9 @@
 ---
-name: calibrate-workflow
-description: Improve how Nic and an agent work together by mining chat transcripts for places he corrected the agent, then fixing the cause with whatever mechanism fits, such as a linter rule, a skill, AGENTS.md, opencode configuration, or a subagent check. Use when Nic wants to know what he keeps correcting, or wants to harvest or mine transcripts from past sessions. Also use when he wants a skill built or tuned from real feedback, or wants to improve how he and an agent work together. He may ask why he repeats himself.
+name: fix-friction
+description: Remove recurring friction between Nic and an agent by mining chat transcripts for corrections he makes repeatedly, then fixing the cause with whatever mechanism fits, such as a linter rule, a skill, AGENTS.md, opencode configuration, or a subagent check. Use when Nic asks what he keeps correcting, or wants to harvest or mine past sessions. Also use when he wants a skill built or tuned from real feedback, or wants to improve how he and an agent work together. He may say he repeats himself. For a one-off annoyance, fix that directly instead.
 ---
 
-# Calibrate the Workflow
+# Fix Friction
 
 Find what Nic corrects repeatedly, then remove the cause. The evidence is in
 the opencode transcripts, and the remedy is whichever mechanism enforces the
