@@ -137,14 +137,16 @@ This PR updates the converter to use `isManagedResource()` to identify which CRD
 
 When describing complex changes, include:
 - How the change fits into existing systems
-- What alternatives were considered
+- What alternatives you considered
 - The reasoning behind the chosen approach
 - Any limitations or trade-offs
 
 ## Respectful Communication
 
 - Focus on what's different/improved, never criticize previous implementations
+<!-- vale off -->
 - Use neutral language: "The converter now distinguishes..." not "The old converter was broken"
+<!-- vale on -->
 
 ## Key Principles
 

@@ -113,7 +113,7 @@ Crossplane version: main (commit abc1234)
 Use the repo's feature template sections. Key principles:
 
 - **Problem first.** Explain the use case and the pain point before proposing anything.
-- **Context.** Why does this matter, and who is affected?
+- **Context.** Why does this matter, and who does it affect?
 - **Prior art.** Reference existing solutions and related designs.
 - **Concrete examples.** The YAML, code, or CLI commands showing the proposed UX.
 - **Trade-offs.** Acknowledge the complexity and the alternatives considered.

@@ -12,7 +12,7 @@ report the subject line. Waiting for approval on every message costs a round tri
 that the message rarely needs.
 
 This is about the message, and not about when to commit. Don't commit unasked, and
-don't bundle unrelated work into a commit that was asked for.
+don't widen a requested commit with unrelated work.
 
 Where something in the change needs a decision rather than a message, ask about
 that. The usual case is a commit that would record a rationale you're guessing
@@ -32,7 +32,7 @@ at. Ask why instead of committing and hoping.
 - Include scope when helpful. "Use WIRE_JSON level buf breaking change detection"
 - Avoid vague terms. Write "Fix composed resource names containing invalid characters" rather than "Update code"
 - Name the thing the commit accomplishes, and let the mechanics follow from it. A
-  commit that swaps a DaemonSet for something else is framed as "Detect readiness
+  commit that swaps a DaemonSet for something else takes the subject "Detect readiness
   correctly", with the removal noted as part of that.
 
 ## Body Content
@@ -43,7 +43,7 @@ else.
 
 Add a second paragraph where the diff hides a trade-off, or where a reader can't
 recover the context from the code. Going beyond that is rare, and usually means
-the change should have been split.
+you should have split the change.
 
 What goes in:
 
@@ -57,8 +57,8 @@ What to leave out:
 - A hunk-by-hunk account. Describe the change, and let the diff show the edits.
 - Detail proportional to your effort rather than to the reader's need. A hard-won
   one-line fix still gets one line.
-- Table stakes. Tests, formatting, and linting are expected, so reporting them is
-  noise.
+- Table stakes. Readers expect tests, formatting, and linting, so reporting them
+  is noise.
 - Promotional language. Nothing is "elegant" or "powerful".
 - **Invented rationale.** A diff shows what changed, and not why. Ask when you
   don't know, rather than supplying a plausible reason.
@@ -96,7 +96,7 @@ or from justifying a decision no reader would question.
 You draft the message with the whole session in your head, which is the one
 position from which you can't judge it. You can't tell which parts a reader could
 infer from the change, and you can't see where you supplied a reason from memory
-rather than from the diff. A reader with only the diff and the message sees both.
+rather than from the diff. A reader with only the diff and the message catches both.
 
 So for anything beyond a mechanical change, dispatch a subagent before
 committing. Give it the staged diff and the drafted message and nothing else, no
@@ -107,7 +107,7 @@ session context and no explanation. Ask it two questions:
 
 The reviewer can recommend cuts and flag unsupported claims. It cannot recommend
 additions. A reviewer invited to say what's missing will always find something,
-the message grows every round, and you've rebuilt the problem this is meant to
+the message grows every round, and you've rebuilt the problem this exists to
 catch. Keep the brief to those two questions.
 
 Act on what comes back, and don't relay it. Where the reviewer says a claim isn't
@@ -156,7 +156,7 @@ A mechanical change gets a subject line and a sign-off, with no body.
 ## Key Principles
 
 1. One paragraph by default, and a subject line alone for a mechanical change
-2. Commit when asked, without waiting for the message to be approved
+2. Commit when asked, without waiting for approval of the message
 3. Explain problems before solutions
 4. Focus on "why" as much as "what"
 5. Never invent a rationale you don't know
