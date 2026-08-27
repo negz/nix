@@ -62,7 +62,7 @@ of backticks (code spans like `semver.MustParse`), `$`, and apostrophes. On the
 command line inside a double-quoted `--body` string, the shell runs unescaped
 backticks and `$(...)` as command substitution and expands `$`, corrupting the
 body. Escaping and single-quoting each handle some of these but break on others.
-Writing the body to a file sidesteps all of it — use it every time:
+Writing the body to a file avoids the problem, so use it every time:
 
 ```bash
 gh issue create --title "..." --body-file /tmp/issue-body.md
@@ -81,11 +81,11 @@ EOF
 
 Use the repo's bug template sections. Key principles:
 
-- **What happened**: Describe the problem clearly and technically
-- **Evidence**: Include logs, error messages, stack traces, code links
-- **Root cause**: If known, explain why it happens (link to specific code)
-- **Reproduction**: Numbered steps, specific commands, example YAML
-- **Environment**: Version, platform, relevant configuration
+- **What happened.** Describe the problem clearly and technically.
+- **Evidence.** Include the logs, error messages, and code links a reader can't reconstruct.
+- **Root cause.** Where known, explain why it happens, and link to the code.
+- **Reproduction.** Numbered, copy-pasteable steps with example YAML.
+- **Environment.** The versions, platform, and relevant configuration.
 
 ### Example Bug Report
 
@@ -112,11 +112,11 @@ Crossplane version: main (commit abc1234)
 
 Use the repo's feature template sections. Key principles:
 
-- **Problem first**: Explain the use case and pain point before proposing solutions
-- **Context**: Why does this matter? Who is affected?
-- **Prior art**: Reference existing solutions, related issues, or designs
-- **Concrete examples**: YAML, code, CLI commands showing the proposed UX
-- **Trade-offs**: Acknowledge complexity, alternatives considered
+- **Problem first.** Explain the use case and the pain point before proposing anything.
+- **Context.** Why does this matter, and who is affected?
+- **Prior art.** Reference existing solutions and related designs.
+- **Concrete examples.** The YAML, code, or CLI commands showing the proposed UX.
+- **Trade-offs.** Acknowledge the complexity and the alternatives considered.
 
 ### Example Proposal
 
@@ -132,11 +132,40 @@ We added the `ImageConfig` API to solve this. It's proven useful, so we've expan
 I think we should make it possible to configure everything via an ImageConfig. If you can configure it on a Provider spec, you should be able to configure it via an ImageConfig as well.
 ```
 
+## Scope and Framing
+
+An issue states the problem. It doesn't prescribe the fix.
+
+- Explain why the problem happens without dictating how to solve it. A
+  well-framed problem is worth more than a proposed fix, and being prescriptive
+  about the code invites the wrong argument.
+- Keep an issue scoped to one problem. Where options exist, mention them briefly
+  and generally rather than litigating them.
+- Leave out a "scope" section and a verdict on what should happen next.
+- Don't explain what a linked issue says. The reader can click through.
+- Link code through a pinned-commit permalink, so GitHub renders it as a snippet
+  rather than a line that drifts.
+
+The issue appears under Nic's name, so it reads as his. Don't add attribution,
+co-author lines, or credit he didn't ask for. Credit a colleague's analysis in
+prose where it's warranted.
+
+Run Vale over the body before creating the issue, since the body file is
+markdown:
+
+```bash
+vale /tmp/issue-body.md
+```
+
+The **writing-style** skill governs the prose. Cut the draft by 30%, then read it
+again and cut more. Never invent rationale.
+
 ## Key Principles
 
-1. Be technical and specific - link to code, include line numbers
-2. Lead with the problem, not the solution
-3. Include evidence: logs, examples, reproduction steps
-4. Credit others who contributed analysis
+1. Be technical and specific, linking to code with line numbers
+2. Lead with the problem rather than the solution
+3. Include the evidence a reader can't reconstruct
+4. State the problem without prescribing the fix
 5. No marketing language or bragging
-6. Fill out all template sections (strike through if N/A)
+6. Fill out all template sections, striking through what doesn't apply
+7. No attribution he didn't ask for

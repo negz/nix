@@ -14,24 +14,57 @@ description: Write git commits in Nic Cope's style. Use when creating commits, s
 4. Only then create the commit
 
 ## Required Format
-- **Always** include: `Signed-off-by: Nic Cope <nicc@rk0n.org>`
-- Subject line: 50-80 characters, imperative mood
-- Body: Wrap at 80 characters, explain the "why"
+- **Always** include `Signed-off-by: Nic Cope <nicc@rk0n.org>`
+- Subject line, 50-80 characters, imperative mood
+- Body wrapped at 80 characters, explaining the "why"
+- No other trailers unless asked. Leave out `Reported-by`, `Co-authored-by`, and
+  any AI attribution.
+- No typed prefix. Don't write `feat:`, `fix:`, or `chore:`.
 
 ## Subject Line Patterns
-- Start with imperative verbs: "Fix", "Add", "Update", "Implement", "Use", "Support"
-- Be specific and technical: "Fix CRD-to-MRD converter to preserve provider configuration CRDs"
-- Include scope when helpful: "Use WIRE_JSON level buf breaking change detection"
-- Avoid vague terms: Not "Update code" but "Fix composed resource names containing invalid characters"
+- Start with an imperative verb. "Fix", "Add", "Update", "Use", "Support"
+- Be specific and technical. "Fix CRD-to-MRD converter to preserve provider configuration CRDs"
+- Include scope when helpful. "Use WIRE_JSON level buf breaking change detection"
+- Avoid vague terms. Write "Fix composed resource names containing invalid characters" rather than "Update code"
+- Name the thing the commit accomplishes, and let the mechanics follow from it. A
+  commit that swaps a DaemonSet for something else is framed as "Detect readiness
+  correctly", with the removal noted as part of that.
 
 ## Body Content
-- **Problem-first**: Explain what was wrong or missing
-- **Solution flow**: Use natural language like "This commit replaces..." or "This change updates..." not bare imperatives
-- **Technical details**: Include implementation specifics
-- **Behavior changes**: Show before/after examples when relevant
-- **Context**: Reference related issues, design decisions, trade-offs
-- **No bragging**: Don't say things are "elegant", "robust", or "powerful"
-- **No table stakes**: Don't mention tests, code formatting, linting fixes, or other expected practices. Focus on what the code does, not on proving you followed development standards.
+- **Problem first.** Explain what was wrong or missing.
+- **Solution.** Describe it in natural language, using something like "This commit replaces…" or "This change updates…" rather than bare imperatives.
+- **Technical details.** Include the specifics.
+- **Behaviour changes.** Show before/after examples where relevant.
+- **Context.** Reference related issues, design decisions, and trade-offs. Include the real motivating context, such as a reviewer's original concern and why the commit goes this way instead.
+- **Nothing promotional.** Don't call things "elegant" or "powerful".
+- **No table stakes.** Don't mention tests, formatting, or linting fixes. Focus on what the code does rather than on proving you followed the basics.
+- **Never invent rationale.** A diff shows what changed, and not why. Ask when you don't know, rather than supplying a plausible reason.
+
+For a documentation change, mirror the document's own summary rather than writing
+a fresh description.
+
+## Scope and Grouping
+
+Each commit is one self-contained logical layer. The history reads as designed
+layers, and never as a record of how the work unfolded.
+
+- Fold review fixes into the commit that introduced the problem, or into a
+  targeted commit naming the specific fix. Never write "address review feedback",
+  "fix review", "fix tests", or a catch-all like "issues found during E2E".
+- Decide grouping by whether one coherent message covers the whole change. Where
+  you can't write that message, the changes belong in separate commits.
+- Keep the message proportional to the diff, and not to the order the work
+  happened in. A session's final tweak shouldn't occupy half the message.
+- Size the message to the change. A small fix warrants a short paragraph.
+
+Before proposing, check whether reordering or squashing would make the series
+tell a more coherent story. Expect to walk through a series one commit at a time
+for approval.
+
+## Writing
+
+The **writing-style** skill governs the prose. Cut the draft by 30%, then read it
+again and cut more.
 
 ## Example
 
@@ -58,10 +91,12 @@ Signed-off-by: Nic Cope <nicc@rk0n.org>
 
 ## Key Principles
 
-1. Be technical, not promotional
+1. Be technical rather than promotional
 2. Explain problems before solutions
-3. Acknowledge complexity honestly
-4. Focus on "why", not just "what"
-5. Never brag or oversell
+3. Acknowledge complexity
+4. Focus on "why" as much as "what"
+5. Never invent a rationale you don't know
 6. Use precise, domain-specific terminology
-7. Respect previous implementations - use neutral language
+7. Describe previous work in neutral language
+8. One logical layer per commit, with review fixes folded into it
+9. Keep the message proportional to the diff
