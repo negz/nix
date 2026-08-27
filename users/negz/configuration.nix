@@ -26,9 +26,28 @@
     };
 
     packages = [
+      # Language servers. Neovim's wrapper only appends to PATH, so anything
+      # here is what it actually runs. opencode only sees this profile.
+      pkgs.unstable.gopls
+      pkgs.unstable.golangci-lint
+      pkgs.unstable.golangci-lint-langserver
+      pkgs.unstable.ty
+      pkgs.unstable.ruff
+      pkgs.unstable.nil
+      pkgs.lua-language-server
+      pkgs.unstable.buf
+
+      # Spelling and grammar, for Neovim
+      pkgs.unstable.harper
+      pkgs.unstable.typos-lsp
+
       # Go things
       pkgs.go-outline
       pkgs.gcc # For cgo
+      pkgs.gotestsum
+
+      # Formatters
+      pkgs.nixfmt
 
       # For crossplane/crossplane build
       pkgs.unstable.earthly
@@ -46,13 +65,10 @@
       pkgs.unstable.claude-code
       pkgs.unstable.opencode
 
-      # Useful dependencies for AI tools
+      # Useful dependencies for AI tools, and for Neovim
       pkgs.gh
       pkgs.ripgrep
-      pkgs.unstable.nil
-      pkgs.unstable.gopls
-      pkgs.unstable.golangci-lint
-      pkgs.unstable.golangci-lint-langserver
+      pkgs.fd
 
       # Tools I find handy to have around.
       pkgs.file
@@ -252,34 +268,10 @@
       vimdiffAlias = true;
       withRuby = true;
       withPython3 = true;
+      # Only things nothing outside Neovim needs. Language servers live in
+      # home.packages, because opencode has to be able to run them too.
       extraPackages = [
-        # Nix
-        pkgs.nil
-        pkgs.nixfmt
-
-        # Lua / NeoVim
-        pkgs.lua-language-server
-        pkgs.ripgrep
-        pkgs.fd
-
-        # Spelling and grammar
-        pkgs.unstable.harper
-        pkgs.unstable.typos-lsp
-
-        # Go
-        pkgs.unstable.gopls
-        pkgs.unstable.golangci-lint
-        pkgs.unstable.golangci-lint-langserver
-        pkgs.gotestsum
-
-        # Python
-        pkgs.unstable.ty
-        pkgs.unstable.ruff
-
-        # Protobuf
-        pkgs.unstable.buf
-
-        # Images
+        # Rendering images - see nvim/snacks.lua
         pkgs.imagemagick
         pkgs.ghostscript_headless
         pkgs.mermaid-cli
