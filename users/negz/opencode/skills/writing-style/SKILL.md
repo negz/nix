@@ -61,11 +61,13 @@ Your first draft runs about 40% longer than it should. That's predictable enough
 to treat as a step in the process. Draft, cut 30%, then read it again and remove
 the 10-20% still there. Nic's calibration, verbatim:
 
+<!-- vale off -->
 > Even when I ask you to cut 30% of what you write I can easily find another
 > 10-20% that can be cut with zero loss.
+<!-- vale on -->
 
 Do both passes before showing him anything. A draft he has to cut himself costs
-him the time the document was supposed to save, and he has said plainly that
+him the time the document should have saved, and he has said plainly that
 repairing LLM prose is expensive:
 
 > Generally when you write a document it costs me a lot of time spent getting it
@@ -123,8 +125,8 @@ read the review thread or the previous draft. Delete it if it wouldn't. The
 reader has access to neither.
 
 Feedback changes what a section says, and never makes the section defend itself.
-So rewrite from first principles, positively, as though the objection had never
-been raised. Patching won't do. A framing error in one sentence usually means the
+So rewrite from first principles, positively, as though nobody had raised the
+objection. Patching won't do. A framing error in one sentence usually means the
 section needs redoing, and patching prose in place is how documents become
 incoherent.
 
@@ -133,8 +135,8 @@ Alternatives Considered. An inline rebuttal is the wrong home for it.
 
 ### Never Invent Rationale
 
-The reason behind a decision comes from the author's intent. A diff shows that a
-field was renamed, without saying why. A plausible reason invented to fill the
+The reason behind a decision comes from the author's intent. A diff shows a rename
+without saying why. A plausible reason invented to fill the
 gap is worse than no reason, because the reader can't tell it apart from a real
 one and it becomes part of the permanent record.
 
@@ -148,7 +150,7 @@ When he catches it the response is blunt: "You just made that all up."
 This extends past rationale:
 
 - **Invented terminology.** Don't coin a phrase that sounds like a term of art
-  and isn't. Confirm a term is established before asserting that it is.
+  and isn't. Check a term has currency in the domain before asserting it does.
 - **Invented APIs.** Never show a field, resource, or flag that doesn't exist,
   above all in another project's API.
 - **Invented policy.** Don't document a rule that nothing enforces.
@@ -160,8 +162,8 @@ argument attaches to the alternative it truly applies to.
 ### Substantiate or Delete
 
 Assertion is not argument. "Dynamo's KV cache offloading is ahead of vLLM" needs
-the mechanism and the baseline: ahead how, and what does vLLM do? Expect to be
-asked "why?" about any sentence claiming a causal necessity, and "what's your
+the mechanism and the baseline: ahead how, and what does vLLM do? Expect the question
+"why?" about any sentence claiming a causal necessity, and "what's your
 source for that insight?" about any confident claim. A sentence you can't defend
 is filler, so remove it.
 
@@ -179,7 +181,7 @@ and them, and rhetorical absolutes rarely survive scrutiny.
 
 ### Space Signals Importance
 
-How much room a topic gets tells the reader how much it matters, so proportion
+The room a topic gets is how a reader judges its importance, so proportion
 is a property to check. Nic checks it by eye and by line count: "Your new
 section takes up more space than any other in the doc. Should it?"
 
@@ -216,7 +218,7 @@ the first and only one:
   generously outward to upstream issues, specs, talks, and prior art.
 - A superseded document gets a one or two sentence preface saying it remains for
   historical context, rather than a rewrite.
-- Don't link a durable document to a scratch file that will be deleted.
+- Don't link a durable document to a scratch file you'll delete.
 
 At some point a design stops absorbing revisions and gets extended by
 supplementary designs. Prefer minimal surgery to a rewrite, because it's cheaper
@@ -225,7 +227,7 @@ to review.
 A proposal proposes the intended end state, and leaves out the limitations
 currently blocking it. Goals appear positively, as what gets delivered, and at
 project level rather than scoped to a release. Don't confess open unknowns in
-passing. Stay deliberately vague where the mechanism is unsettled, and state the
+passing. Stay deliberately vague where the mechanism remains unsettled, and state the
 requirement instead.
 
 Leave out an Open Questions section. A design takes a position. Opinions belong
@@ -246,7 +248,7 @@ scrutiny.
 - **Calibrate realistically.** Selectors should ask for what a model actually
   needs, and examples should reflect the scale users really run.
 - **Cut examples that don't do any work.** One that only shows an off-the-shelf
-  resource tells the reader nothing new. Merge a pair that make the same point. A
+  resource adds nothing a reader lacks. Merge a pair that make the same point. A
   contrived example damages credibility more than an absent one, so omit rather
   than force.
 - **Annotate lightly.** Brief YAML comments where semantics aren't obvious, and
@@ -284,8 +286,8 @@ precedes the prose.
 
 ## Formatting
 
-Reasoning belongs in prose. Reserve structure for content that really is
-structured.
+Reasoning belongs in prose. Reserve structure for content with real
+structure.
 
 - **No decorative structure.** Bold, headings, and bullets sprinkled in to look
   organised are a tell. A pair of paragraphs doesn't need an `###`. Resist
@@ -326,8 +328,8 @@ Nic won't spend his reading time on an un-de-slopped draft:
 
 Getting there takes two passes, which catch different things.
 
-**Vale catches the mechanical tells.** Nic runs the
-[vale-ai-tells](https://github.com/tbhb/vale-ai-tells) rules over every markdown
+**Vale catches the mechanical fingerprints.** Nic runs the
+[`vale-ai-tells`](https://github.com/tbhb/vale-ai-tells) rules over every markdown
 file, both through `vale-ls` in his editor and from the CLI:
 
 ```bash
@@ -336,10 +338,49 @@ vale path/to/doc.md
 
 The config is global, so a bare `vale` works from any directory. Its 110 rules
 cover em dashes, filler, hedging, puffery, figurative verbs, rhetorical
-scaffolding, and the rest of the phrase-level fingerprints. Fix everything it
-reports before handing the document over. Where a document must quote a banned
-construction to discuss it, wrap that region in `<!-- vale off -->` and
-`<!-- vale on -->` rather than leaving an alert.
+scaffolding, and the rest of the phrase-level fingerprints.
+
+Some rules from the Google developer documentation style run alongside them:
+`Passive`, `Semicolons`, `ExcessiveClaims`, and `Anthropomorphism`. The rest of
+that style stays off, since it bans first person, bans "we", and wants
+sentence-case headings, each of which contradicts this skill.
+
+**Fix what it reports.** Nic compared 16 linter-driven rewrites against the
+originals across two design docs. He preferred the rewrite in 14 and called the
+other two a tie. He never preferred the original. His summary: the edits drive
+toward more succinct and direct phrasing, and that's the project style.
+
+So comply by default, and override only when you can name the specific reason the
+alert is wrong.
+
+Be suspicious of your own sense of which alerts are noise, because it runs in one
+direction: you will defend phrasing you wrote. Every alert in that comparison that
+an agent had confidently called a false positive turned out to be a real catch.
+The most confident defence was `StackedAnaphora` on "one engine, one member, one
+pod", argued as deliberate repetition mapping onto the API. Nic's verdict was that
+it "reads very AI", and the repetition was the reason.
+
+The exceptions are mechanical rather than matters of taste:
+
+<!-- vale off -->
+- `UniversalObject` where the quantifier is the semantics. In a matching rule,
+  "satisfies every selector" is precise, and cutting "every" makes it wrong.
+- `ColonUsage` firing on a document's metadata block or on YAML, where the parser
+  reads a field name as prose.
+<!-- vale on -->
+
+The config downgrades `FormalRegister` on `implementation` to a warning, so it
+won't reach you at all.
+
+For prose Nic wrote himself, assume he meant it and raise the alert rather than
+acting on it.
+
+Because opencode reports at most 20 diagnostics per edit, and a 5,000 word design
+doc runs to about 50, a clean edit doesn't mean a clean file. Run `vale doc.md`
+directly before handing the document over.
+
+Where a document must quote a banned construction to discuss it, wrap that region
+in `<!-- vale off -->` and `<!-- vale on -->` rather than leaving an alert.
 
 The Edit and Write tools report the same alerts as LSP diagnostics whenever you
 touch a markdown file, so fix those as part of the edit.

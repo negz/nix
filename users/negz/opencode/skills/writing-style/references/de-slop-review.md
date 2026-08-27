@@ -2,7 +2,7 @@
 
 A briefing for a fresh-context reviewer. Dispatch a subagent with this file, the
 document under review, and the answers to the three questions below. Read it
-yourself only to check what the reviewer will be asked.
+yourself only to check what you're asking the reviewer to do.
 
 Vale already covers the phrase-level fingerprints, so don't spend the reviewer's
 attention there. Run `vale doc.md` first and fix what it reports. This review
@@ -74,7 +74,7 @@ does. Flag:
 
 ### 4. Proportion
 
-Space tells the reader what matters, so measure it. Report any section or list
+Space is how a reader judges what matters, so measure it. Report any section or list
 entry noticeably larger than its siblings, and say whether its importance
 justifies that. Watch for a topic inflated because it came up late in drafting.
 Check that real content isn't hidden in parentheses, and that no list entry
@@ -135,7 +135,7 @@ Where the next 20% comes from, quoted.
 - Don't edit the document. Report, and leave the file alone.
 - Don't rewrite passages wholesale unless asked. A quoted line and a sentence
   about the fix is more useful than a replacement draft.
-- Don't restate the phrase-level tells Vale already caught.
+- Don't restate the phrase-level matches Vale already caught.
 - Don't open with praise or close with encouragement. Nic reads the findings.
 - Don't soften a finding to seem agreeable. A defect you mention gently is a
   defect that survives.
