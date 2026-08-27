@@ -1,251 +1,388 @@
 ---
 name: writing-style
-description: Write documents in Nic Cope's voice and style. Use when drafting designs, one-pagers, PRDs, proposals, explorations, blog posts, or any prose document. Also use when the user asks to draft, write, or author a document, or asks you to capture their thoughts in writing.
+description: Write and edit documents in Nic Cope's voice and style. Use when drafting designs, one-pagers, PRDs, proposals, explorations, blog posts, or any prose document. Also use when tightening, de-slopping, or copy editing prose, whether yours, Nic's, or someone else's. Also use when the user asks to draft, write, author, capture thoughts in writing, or review a document.
 ---
 
 # Writing Style
 
-Write documents that sound like Nic Cope wrote them. This skill captures tone,
-structure, and rhetorical habits from ~30 real documents spanning 2019–2025.
+Write documents that sound like Nic wrote them. He reads every word and deletes
+whatever the reader doesn't need, so aim for a draft that survives that pass.
+
+Most of this skill covers what goes wrong. An LLM's instinct for a good design
+doc is roughly right about voice and section structure, and badly wrong about
+length, honesty about rationale, and who the document addresses. So the failure
+modes come first.
+
+For voice, the section-by-section skeleton, and worked examples of the target,
+read [references/voice.md](references/voice.md). Read it when drafting from
+scratch. Skip it when tightening prose that already exists.
 
 ## When to Use This (vs Other Skills)
 
-Use **this skill** whenever producing prose — designs, one-pagers, PRDs,
-proposals, explorations, blog posts, or similar documents.
+Use **this skill** for how a document reads: designs, one-pagers, PRDs,
+proposals, explorations, blog posts.
 
-Use **scratch-docs** for the mechanics of where to put the file, how to branch,
-and how to open a PR. This skill governs *how the document reads*.
+Use **scratch-docs** for the mechanics of where a document belongs, how to
+branch, and how to open a PR.
 
-## Voice and Tone
+Use **git-commits**, **github-pull-requests**, and **github-issues** for those
+artifacts. Each has its own conventions, and "Cut Hard, Twice", "Never Invent
+Rationale", and "Substantiate or Delete" below apply to them unchanged.
 
-### First Person, Direct
+Use **negz-review** and **adversarial-review** for reviewing code.
 
-Write in first person. "I propose…", "I believe…", "I think…", "I'd argue…".
-State positions plainly rather than hedging behind passive voice or committee
-language. The reader should always know what the author thinks and why.
+## Before You Draft
 
-When uncertain, say so honestly: "I'm not sure how real or widespread these
-concerns are" or "I suspect…" — but still take a position.
+Establish three things, and ask rather than guess:
 
-### Conversational Authority
+1. **Audience.** Who reads this? Nic's team, project maintainers, the community,
+   a partner's engineers, his CEO? "High level but deeply technical" produces a
+   different document from "internal, to align on asks".
+2. **Purpose.** What decision does it serve, or what does the reader do
+   differently afterwards?
+3. **Premise and scope.** What does this document assume, and what falls outside
+   it? State the premise in the document rather than hedging across several
+   scenarios.
 
-The tone is that of an experienced engineer talking to peers. It's informal
-enough to use contractions ("it's", "we'd", "that's", "they'll", "don't") and
-phrases like "a lot of", "pretty complex", "not so bad", but rigorous enough to
-include precise technical detail, concrete numbers, and YAML examples.
+Almost every framing correction traces back to a document drafted for nobody in
+particular. Naming the reader up front prevents most of them.
 
-Avoid:
-- Corporate/marketing voice ("leverage synergies", "drive alignment")
-- Overly academic voice ("it is posited that", "the authors contend")
-- Excessive hedging ("it might perhaps be worth considering")
-- Filler phrases ("it's worth noting that", "it should be mentioned")
+**Public documents argue technical merit alone.** Where the real motivation is
+commercial, find the honest technical reason or write nothing. Never dress a
+commercial motive as engineering rationale, and never write a circular one.
+"We're building Dynamo support because we said we'd build Dynamo support" is not
+a background section. If you can't find a real reason, say so and ask.
 
-### Empathy for the Reader
+## The Failure Modes
 
-Assume the reader is smart but might not have all the context. Provide enough
-background for someone joining the conversation, but don't over-explain things
-peers would know. When introducing a concept that might be surprising, share the
-surprise — tell the reader you found it counterintuitive, then explain what made
-it click.
+### Cut Hard, Twice
 
-Be careful with words like "obvious", "obviously", "clearly", and "of course."
-Something obvious to a senior engineer often isn't obvious to a junior one.
-Using these words risks making the reader feel bad for not already knowing. It's
-not a hard ban — sometimes something genuinely is obvious — but default to just
-stating the thing rather than editorializing that it should be apparent.
+Your first draft runs about 40% longer than it should. That's predictable enough
+to treat as a step in the process. Draft, cut 30%, then read it again and remove
+the 10-20% still there. Nic's calibration, verbatim:
 
-Use analogies to connect unfamiliar ideas to familiar ones. "An MRD is to an MR
-CRD as an XRD is to an XR CRD." "Think of this like AWS Lambda." "`flake.nix`
-is a bit like a Makefile backed by a snapshot of nixpkgs."
+> Even when I ask you to cut 30% of what you write I can easily find another
+> 10-20% that can be cut with zero loss.
 
-## Document Structure
+Do both passes before showing him anything. A draft he has to cut himself costs
+him the time the document was supposed to save, and he has said plainly that
+repairing LLM prose is expensive:
 
-### Standard Sections
+> Generally when you write a document it costs me a lot of time spent getting it
+> to an actually good state.
 
-Most documents follow this skeleton, though not all sections appear in every
-document:
+Delete first:
 
-1. **Title** — short, descriptive
-2. **Author and date** — "Nic Cope, Month Day, Year"
-3. **Executive Summary** (optional, for longer docs) — a few paragraphs that
-   give the whole picture so a busy reader can stop here
-4. **Background** — what the reader needs to know to understand the proposal;
-   historical context, prior art, and the problem being addressed
-5. **Goals** — what this document is trying to achieve; also what's explicitly
-   *not* a goal
-6. **Proposal** — the meat; the concrete design or recommendation
-7. **Workstreams** or **Migration Plan** (optional) — what needs to happen to
-   make it real
-8. **Future Improvements** (optional) — things that are out of scope now but
-   could be added later
-9. **Alternatives Considered** — what else was evaluated and why it was rejected
-10. **Open Questions** or **Risks** (optional) — what's still unresolved
+- Sentences restating the previous sentence in different words.
+- Throat-clearing and hedging preambles.
+- Anything a competent author would obviously have done.
+- Explanation the reader can reconstruct from what you already wrote, or from a
+  link. Link out instead of paraphrasing.
+- Trailing summaries, recaps, and closing questions. An assessment is a
+  statement.
+- Background the argument doesn't rest on. Explain only the property that does
+  the work: that Volcano and Kueue can gang schedule LeaderWorkerSet, without
+  explaining how either works.
 
-Not every document has every section. Shorter one-pagers often skip the
-executive summary and jump straight to Background → Proposal → Alternatives.
-Use judgment.
+Accuracy is never a reason to grow. When correcting a claim, keep the fix inside
+the existing footprint. "Give me a more accurate version of my last paragraph
+that isn't any longer" is a routine request, as is a copy edit capped at one or
+two extra lines.
 
-### Front-Load the Destination
+Prose is the expensive part of a document. Trading paragraphs for a worked YAML
+example is usually a win. After a concrete sketch, delete the prose that repeats
+it and keep only what the sketch can't express.
 
-Before the background starts building the case, give the reader a one- or
-two-sentence statement of where you're going. This can live at the end of a
-brief introduction, as the last line before the Background heading, or as the
-opening of the executive summary. The reader should know the thesis before they
-start absorbing context — it turns the background from "where is this going?"
-into "ah, I see why this matters."
+Depth of thinking and length of output vary independently. "Think hard, but
+answer succinctly" is a coherent instruction.
 
-### Background Sections Are Generous
+### Write for the Reader, Not Against the Conversation
 
-Background sections are long relative to the rest of the document. They tell a
-story — how we got here, what we tried before, what changed. They include
-links to prior work (issues, design docs, PRDs, talks) so the reader can go
-deeper. They set up the problem so well that the proposal feels like the
-obvious next step.
+Nic makes this correction more sharply than any other, and you won't infer it,
+because from inside the session the reactive version feels responsive.
 
-A good background section makes the reader nod along thinking "yes, I see why
-this is a problem" before the proposal even starts.
+<!-- vale off -->
+> You're once again doing the thing where: A) you write a doc, B) I criticize a
+> point, C) you edit the doc to specifically react to that point, explicitly
+> naming the point (without reason) throughout. For example your doc now
+> litigates what requirements are due to fleet and what aren't, when the reader
+> doesn't actually care.
 
-### Goals Are Crisp
+> This is garbage writing. You're writing this section in reaction to the
+> discussion we just had. Think about the audience. Think about the flow of the
+> document. Rewrite the section from first principles.
+<!-- vale on -->
 
-Goals sections are short — a few bullet points or a brief paragraph. They
-explicitly state what's in scope and what isn't. "It's not a goal to…" or
-"It's explicitly *not* a goal…" appears often.
+It appears two ways. The document argues with a reviewer's objection, or it
+argues with its own earlier draft. Phrasings like "this replaces an earlier
+approach", "GPUs per node isn't a…", and "not a fleet layer on top of a cluster
+level platform" all give it away.
 
-Goals also frame the document's level of ambition. "My goal with this document
-is to sketch out…" sets different expectations than "The goal of this proposal
-is to have Upbound Crossplane install only the CRDs customers actually use."
+To catch it, check whether a sentence would make sense to somebody who never
+read the review thread or the previous draft. Delete it if it wouldn't. The
+reader has access to neither.
 
-### Proposals Are Concrete
+Feedback changes what a section says, and never makes the section defend itself.
+So rewrite from first principles, positively, as though the objection had never
+been raised. Patching won't do. A framing error in one sentence usually means the
+section needs redoing, and patching prose in place is how documents become
+incoherent.
 
-Proposals include YAML examples, protobuf definitions, API specs, and
-architecture diagrams. They don't describe things abstractly when they can show
-them. If there's an API, show the API. If there's a flow, describe each step.
+Where a reader might reasonably ask "why not do it the other way", answer that in
+Alternatives Considered. An inline rebuttal is the wrong home for it.
 
-Walk through the user experience step by step. "Assume you've installed
-provider-aws-ec2 with mrdActivationPolicy: Manual… You then install a
-Configuration that depends on provider-aws-ec2. The Configuration would consider
-its dependency satisfied, because the Provider is installed. The Configuration
-wouldn't be usable though…"
+### Never Invent Rationale
 
-### Code Is for Developer Experience, Not Implementation
+The reason behind a decision comes from the author's intent. A diff shows that a
+field was renamed, without saying why. A plausible reason invented to fill the
+gap is worse than no reason, because the reader can't tell it apart from a real
+one and it becomes part of the permanent record.
 
-Design documents are not the place to sketch implementation-level code. Don't
-include Go, Python, or other code unless the code *is* the design — for
-example when proposing a library API, an SDK, or a developer experience where
-what the user writes is the thing being designed.
+If you don't know why, ask. Nic has said so outright:
 
-Show code when the document's argument is "here's what the developer experience
-would feel like" — SDK usage mockups, what a `composition.py` or `fn.go` would
-look like. Don't show code to illustrate how a controller, service, or
-reconciler would be implemented internally. That belongs in the implementation,
-not the design.
+> DO NOT invent justification unless you know for sure why something is like it
+> is. You can ask me if you don't know.
 
-### Alternatives Are Honest
+When he catches it the response is blunt: "You just made that all up."
 
-Alternatives Considered sections give each alternative a fair shake. Describe
-what the alternative is, what's good about it, and then explain specifically
-why the proposal is better. Don't set up strawmen. This applies doubly when the
-alternative is the current system — see "Respect What Came Before" below.
+This extends past rationale:
 
-## Rhetorical Patterns
+- **Invented terminology.** Don't coin a phrase that sounds like a term of art
+  and isn't. Confirm a term is established before asserting that it is.
+- **Invented APIs.** Never show a field, resource, or flag that doesn't exist,
+  above all in another project's API.
+- **Invented policy.** Don't document a rule that nothing enforces.
+- **Invented examples.** See "Examples Are Real" below.
 
-### Build the Case Before the Proposal
+An Alternatives Considered entry records what actually happened, and each
+argument attaches to the alternative it truly applies to.
 
-The document is structured so the reader arrives at the proposal already
-understanding the problem. Background and goals do the heavy lifting. By the
-time the reader hits "I propose…", the proposal should feel natural.
+### Substantiate or Delete
 
-### Acknowledge Tradeoffs
+Assertion is not argument. "Dynamo's KV cache offloading is ahead of vLLM" needs
+the mechanism and the baseline: ahead how, and what does vLLM do? Expect to be
+asked "why?" about any sentence claiming a causal necessity, and "what's your
+source for that insight?" about any confident claim. A sentence you can't defend
+is filler, so remove it.
 
-Don't pretend the proposal is perfect. Call out downsides explicitly: "The
-(big?) tradeoff is that the better the upstream UX gets, the less compelling our
-proprietary lazy-loading feature is." "Composing arbitrary resources is a
-tradeoff."
+Root claims in primary evidence. For behaviour the code decides, over the docs
+and over the README.
 
-### Use Concrete Numbers
+Word choice must not imply a conclusion the facts don't support. Describing a
+cache as LRU to suggest it's worse, when it also supports frecency, is a writing
+defect as much as a factual one. Evaluative adjectives need a definition and
+even application. Don't call one project's feature "experimental and niche"
+while staying silent about its peers.
 
-Prefer specific numbers over vague claims. "90 superfluous CRDs × 1.75 MB =
-157.5 MB of API server memory. That's not so bad for one control plane, but
-across 10 control planes it's 1.5GB of wasted memory." "~16 reconciles per
-second — so let's say somewhere between 16 and 160 external API requests."
+Avoid a partisan frame. A comparison of two stacks is not a contest between us
+and them, and rhetorical absolutes rarely survive scrutiny.
 
-### Respect What Came Before
+### Space Signals Importance
 
-When proposing a replacement or improvement, assume the person who designed the
-previous system did the best they could with the information they had — and
-assume they're reading this document. Catalog concrete shortcomings ("the
-ingestion pipeline adds substantial machinery for a debugging tool") but don't
-call the old system "bad", "broken", or "poorly designed." Focus on what changed
-— new requirements, new context, new constraints — that makes the old approach
-no longer the best fit. The goal is to explain why it's time to move on, not to
-belittle what came before.
+How much room a topic gets tells the reader how much it matters, so proportion
+is a property to check. Nic checks it by eye and by line count: "Your new
+section takes up more space than any other in the doc. Should it?"
 
-### Address Skeptics Directly
+- Sections stay proportional to their importance to the whole document, never to
+  how recently they came up. Recency bias is a defect. A commit message follows
+  the diff, not the order the work happened in.
+- List entries stay balanced against their siblings. Any number of entries is
+  fine. One entry three times the size of the others because it's your current
+  focus is not.
+- After trimming one section, trim its neighbours. Cutting one part leaves an
+  adjacent part oversized.
+- Real content doesn't belong in parentheses. Something worth a mention is worth
+  a sentence, and something that deserves billing equal to its peers deserves a
+  paragraph.
+- One concept per list entry. Don't bundle rate limiting and authentication
+  under "identity", and don't drop an item while reorganising.
 
-Anticipate objections and address them in-line. Name the likely objection in
-the reader's voice, take it seriously, then answer it. Vary how you introduce
-the objection — there's no single formula.
+### Write the Design as If It Preceded the Code
 
-### Frame Decisions as Preferences, Not Absolutes
+A design records direction. It concentrates on APIs and UX with broad-strokes
+mechanics. It doesn't mirror the code, and it isn't a recipe to build it. The bar
+is that it must not actively mislead. Things the design shows that don't exist
+yet are fine, because they aren't done yet.
 
-Use phrases like "I'd prefer…", "I lean toward…", "I don't feel very
-strongly" to signal confidence in the reasoning without shutting down
-discussion.
+So write in the present tense, describing the current position as though it were
+the first and only one:
 
-### Reference Prior Art and History
+- No changelog framing. The reader doesn't care how a previous unreleased
+  iteration worked.
+- Discarded thinking belongs in Alternatives Considered, gathered there rather
+  than scattered inline.
+- No links to issues or PRs in the same repo. They expose the document's real
+  chronology, and a design should read as the first artifact in the repo. Link
+  generously outward to upstream issues, specs, talks, and prior art.
+- A superseded document gets a one or two sentence preface saying it remains for
+  historical context, rather than a rewrite.
+- Don't link a durable document to a scratch file that will be deleted.
 
-Link to and summarize relevant prior work — upstream issues, old design docs,
-community discussions, conference talks. Show awareness of the full history of
-a problem.
+At some point a design stops absorbing revisions and gets extended by
+supplementary designs. Prefer minimal surgery to a rewrite, because it's cheaper
+to review.
+
+A proposal proposes the intended end state, and leaves out the limitations
+currently blocking it. Goals appear positively, as what gets delivered, and at
+project level rather than scoped to a release. Don't confess open unknowns in
+passing. Stay deliberately vague where the mechanism is unsettled, and state the
+requirement instead.
+
+Leave out an Open Questions section. A design takes a position. Opinions belong
+inline beside the thing they concern, rather than in a trailing "positions" or
+"recommendations" section.
+
+### Examples Are Real
+
+An example does more work than the prose around it, so give it the same
+scrutiny.
+
+- **Reuse validated artifacts from the repo.** Copy the tested manifest instead
+  of composing one from memory, and use the same example throughout the
+  document, including the executive summary.
+- **Show whole objects.** A full ModelDeployment, and not a `spec:` fragment.
+- **If you can't verify it, say so.** "I couldn't build a credible example here"
+  beats a plausible fabrication.
+- **Calibrate realistically.** Selectors should ask for what a model actually
+  needs, and examples should reflect the scale users really run.
+- **Cut examples that don't do any work.** One that only shows an off-the-shelf
+  resource tells the reader nothing new. Merge a pair that make the same point. A
+  contrived example damages credibility more than an absent one, so omit rather
+  than force.
+- **Annotate lightly.** Brief YAML comments where semantics aren't obvious, and
+  `# Omitted for brevity` where you trim.
+- **Cover the awkward case.** Worked examples are how a proposal proves it
+  handles the topologies it claims to, so include the pathological one.
+
+Long verified artifacts belong in collapsed blocks, so they illustrate without
+bloating the document.
+
+## Naming
+
+Naming draws more corrections than anything but length, so treat it as work that
+precedes the prose.
+
+- Offer two or three candidates with trade-offs instead of one answer.
+- Prefer terms already established in the domain. Where a category label is
+  contested, name the specific things instead.
+- Don't borrow a loaded term unless you've adopted its semantics. Using DRA's
+  "attributes" promises DRA's behaviour.
+- Test a candidate by saying the sentence a reader would say aloud. "Configure
+  serving" beats "configure the endpoint".
+- Reject names that mislead in the degenerate case. "Leader" is wrong when
+  there's one pod, and "gang" is wrong for a gang of one.
+- Weigh precision against length. A more specific name is also longer, which
+  costs something.
+- Consider what a name connotes. "Size" suggests how big, where "count"
+  suggests how many.
+- One term per concept, across prose, field names, and environment variables. A
+  document drifting between "stacks" and "backends" has a bug.
+- No blanket bans. The repair for one inaccurate use of "orchestrator" is
+  accuracy in that instance, rather than global find and replace.
+- Re-derive the title and filename at the end, from what the document argues.
+  Titles are pithy and descriptive. Anything that sounds like a slogan is out.
 
 ## Formatting
 
-### Paragraphs and Flow
+Reasoning belongs in prose. Reserve structure for content that really is
+structured.
 
-Write in flowing paragraphs, not bullet-point-heavy outlines. Use bullet points
-for lists of concrete items (API fields, workstreams, goals) but prefer prose
-for reasoning and narrative. Paragraphs are medium-length — typically 3–6
-sentences.
+- **No decorative structure.** Bold, headings, and bullets sprinkled in to look
+  organised are a tell. A pair of paragraphs doesn't need an `###`. Resist
+  subheadings in PR descriptions altogether.
+- **Consistent heading hierarchy**, and headings that sound like Nic. "The shape
+  I'm proposing" is not a heading he would write.
+- **Ordered lists for sequential content**, prose for reasoning, bullets for
+  parallel items. Parallel content gets parallel structure and matched depth.
+  Labels in a parallel list run one to three words and stay consistent with each
+  other.
+- **Tables** where the content really is tabular. Give a table a lead-in sentence
+  saying what it shows, use title case headers, and make column names convey
+  their role. Avoid a hyphen as a placeholder, because it reads as "none".
+- **Real links.** A bare `#34` doesn't resolve in a repo markdown file. Link code
+  through a pinned-commit permalink so GitHub renders it as a snippet. Keep named
+  projects hyperlinked.
+- **No mathematical shorthand** in prose. Spell out what a Σ means.
+- **Wrapping** depends on the surface. Hard-wrap commit messages and repo
+  markdown at 80. Never hard-wrap GitHub issue or PR bodies, which reflow to the
+  viewport.
+- **Introduce a term before leaning on it.** "The composition function" is a
+  defect if the document hasn't said it's built on composition functions. Avoid
+  forward references to concepts the reader hasn't met.
+- **Don't make the reader infer.** If CUDA matters to two things, introduce it
+  for both.
 
-### Headings
+Grammar gets its own pass. Run-on sentences are the recurring offender.
 
-Use descriptive headings. Prefer "Namespace Composite Resources" over
-"Proposal Item 1". Use heading levels to create clear hierarchy. H2 for major
-sections, H3 for subsections within them.
+## The Pass Before You Hand It Back
 
-### Code and YAML Examples
+Nic won't spend his reading time on an un-de-slopped draft:
 
-Include YAML, protobuf, Go, or Python examples inline where they clarify the
-proposal. Add brief comments in examples when helpful. Keep examples focused —
-trim fields that aren't relevant ("# Omitted for brevity").
+<!-- vale off -->
+> I want you to tackle the prose cuts and AI tells edits before I spend time
+> reading. This should be a tight design that reads like I wrote it. No slop, no
+> filler.
+<!-- vale on -->
 
-### Links
+Getting there takes two passes, which catch different things.
 
-Link generously to prior art, issues, PRs, and external references. Use inline
-links in prose or reference-style links at the bottom of the document
-(especially for upstream Crossplane design docs).
+**Vale catches the mechanical tells.** Nic runs the
+[vale-ai-tells](https://github.com/tbhb/vale-ai-tells) rules over every markdown
+file, both through `vale-ls` in his editor and from the CLI:
 
-## Pacing and Length
+```bash
+vale path/to/doc.md
+```
 
-Longer documents (design docs, proposals) run 1,500–5,000 words. They're not
-padded — they're thorough. Every paragraph earns its place by adding context,
-reasoning, or technical detail.
+The config is global, so a bare `vale` works from any directory. Its 110 rules
+cover em dashes, filler, hedging, puffery, figurative verbs, rhetorical
+scaffolding, and the rest of the phrase-level fingerprints. Fix everything it
+reports before handing the document over. Where a document must quote a banned
+construction to discuss it, wrap that region in `<!-- vale off -->` and
+`<!-- vale on -->` rather than leaving an alert.
 
-Shorter documents (one-pagers, explorations) run 500–1,500 words. They get to
-the point faster but still include enough background to stand alone.
+The Edit and Write tools report the same alerts as LSP diagnostics whenever you
+touch a markdown file, so fix those as part of the edit.
 
-Don't artificially compress or expand. Let the complexity of the topic
-determine the length.
+**A subagent catches what Vale can't see.** Vale matches phrases, and it has no
+opinion about whether a section argues with a reviewer, invents a reason, or
+gives four paragraphs to something that deserves one. Dispatch a subagent
+briefed with [references/de-slop-review.md](references/de-slop-review.md), plus
+the audience, the purpose, and one or two of Nic's existing designs for house
+style. Fix what it finds and repeat until a reviewer comes back clean, because
+one pass rarely suffices.
+
+Use a subagent rather than reviewing inline. Fresh context is the point, since
+the drafting agent can't see its own reactive framing, for the same reason
+adversarial-review exists.
+
+Where accuracy matters, run a separate pass that tests every assertion against a
+skeptical reader rather than a friendly one. Prose review and correctness review
+are orthogonal.
+
+## Do Not
+
+- Don't publish without approval. Draft in chat and let Nic decide when it
+  lands. Don't act on review feedback he hasn't approved.
+- Don't credit yourself or add AI attribution. Text published under his name
+  reads as his.
+- Don't lose his edits. He copy edits in parallel, often cutting further than
+  you did. His edits win, and they must survive any later rewrite, so re-read
+  the file before editing.
+- Don't edit when asked to diagnose. "Don't edit, just tell me" and "respond
+  here" mean answer in chat and leave the file alone.
+- Don't summarise material he wrote or already knows.
 
 ## Key Principles
 
-1. First person, direct — "I propose", "I believe", "I think"
-2. Conversational but precise — contractions are fine, vague claims aren't
-3. Background tells a story; the proposal is the punchline
-4. Show don't tell — YAML, protobuf, code examples over abstract descriptions
-5. Acknowledge tradeoffs honestly — no proposal is perfect
-6. Use concrete numbers instead of "significant" or "a lot"
-7. Anticipate and address objections inline
-8. Reference prior art generously — link to issues, docs, talks
-9. Goals are crisp; explicitly state what's not a goal
-10. Alternatives get a fair hearing before being rejected
+1. Cut 30%, then cut another 10-20%, before he reads it.
+2. Write for the reader, never against the last draft or the last comment.
+3. Never invent rationale. Ask instead.
+4. Support every claim with a mechanism and a baseline, or delete it.
+5. Space signals importance, so keep sections and list entries proportional.
+6. A design reads as though it preceded the code.
+7. Examples are real, whole, verified, and doing work.
+8. Name things deliberately: established terms, honest in the edge case, one
+   term per concept.
+9. Reasoning belongs in prose. Structure is for structured content.
+10. Run Vale, then a fresh-context subagent, and loop until both come back clean.
