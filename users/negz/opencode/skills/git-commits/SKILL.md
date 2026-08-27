@@ -5,13 +5,18 @@ description: Write git commits in Nic Cope's style. Use when creating commits, s
 
 # Git Commit Style Guide
 
-## IMPORTANT: Require Confirmation
+## Committing
 
-**Never run `git commit` without explicit user approval.** Always:
-1. Draft the commit message
-2. Show it to the user
-3. Wait for confirmation or requested changes
-4. Only then create the commit
+Commit when asked to, without showing the message first. Write it, commit it, and
+report the subject line. Waiting for approval on every message costs a round trip
+that the message rarely needs.
+
+This is about the message, and not about when to commit. Don't commit unasked, and
+don't bundle unrelated work into a commit that was asked for.
+
+Where something in the change needs a decision rather than a message, ask about
+that. The usual case is a commit that would record a rationale you're guessing
+at. Ask why instead of committing and hoping.
 
 ## Required Format
 - **Always** include `Signed-off-by: Nic Cope <nicc@rk0n.org>`
@@ -31,14 +36,32 @@ description: Write git commits in Nic Cope's style. Use when creating commits, s
   correctly", with the removal noted as part of that.
 
 ## Body Content
-- **Problem first.** Explain what was wrong or missing.
-- **Solution.** Describe it in natural language, using something like "This commit replaces…" or "This change updates…" rather than bare imperatives.
-- **Technical details.** Include the specifics.
-- **Behaviour changes.** Show before/after examples where relevant.
-- **Context.** Reference related issues, design decisions, and trade-offs. Include the real motivating context, such as a reviewer's original concern and why the commit goes this way instead.
-- **Nothing promotional.** Don't call things "elegant" or "powerful".
-- **No table stakes.** Don't mention tests, formatting, or linting fixes. Focus on what the code does rather than on proving you followed the basics.
-- **Never invent rationale.** A diff shows what changed, and not why. Ask when you don't know, rather than supplying a plausible reason.
+
+**One paragraph is the default.** What was wrong, then what the change does about
+it. That covers most commits. A trivial change needs a subject line and nothing
+else.
+
+Add a second paragraph where the diff hides a trade-off, or where a reader can't
+recover the context from the code. Going beyond that is rare, and usually means
+the change should have been split.
+
+What goes in:
+
+- **Problem first.** What was wrong or missing.
+- **Solution.** Describe it in natural language, using something like "This commit replaces…" rather than a bare imperative.
+- **Context the diff doesn't hold.** A trade-off, a constraint that forced the approach, or a reviewer's concern and why the commit goes this way instead. Reference the issue.
+
+What to leave out:
+
+- Anything the subject line already said.
+- A hunk-by-hunk account. Describe the change, and let the diff show the edits.
+- Detail proportional to your effort rather than to the reader's need. A hard-won
+  one-line fix still gets one line.
+- Table stakes. Tests, formatting, and linting are expected, so reporting them is
+  noise.
+- Promotional language. Nothing is "elegant" or "powerful".
+- **Invented rationale.** A diff shows what changed, and not why. Ask when you
+  don't know, rather than supplying a plausible reason.
 
 For a documentation change, mirror the document's own summary rather than writing
 a fresh description.
@@ -55,48 +78,90 @@ layers, and never as a record of how the work unfolded.
   you can't write that message, the changes belong in separate commits.
 - Keep the message proportional to the diff, and not to the order the work
   happened in. A session's final tweak shouldn't occupy half the message.
-- Size the message to the change. A small fix warrants a short paragraph.
 
-Before proposing, check whether reordering or squashing would make the series
-tell a more coherent story. Expect to walk through a series one commit at a time
-for approval.
+Before committing a series, check whether reordering or squashing would make it
+tell a more coherent story.
 
 ## Writing
 
-The **writing-style** skill governs the prose. Cut the draft by 30%, then read it
-again and cut more.
+The **writing-style** skill governs the prose, and its cutting passes apply here.
+Write the body, cut a third of it, then read what's left and cut again. A message
+that survives both passes is about the right length.
 
-## Example
+Most of the flab comes from explaining the change twice at different altitudes,
+or from justifying a decision no reader would question.
+
+## Check the Message Against the Diff
+
+You draft the message with the whole session in your head, which is the one
+position from which you can't judge it. You can't tell which parts a reader could
+infer from the change, and you can't see where you supplied a reason from memory
+rather than from the diff. A reader with only the diff and the message sees both.
+
+So for anything beyond a mechanical change, dispatch a subagent before
+committing. Give it the staged diff and the drafted message and nothing else, no
+session context and no explanation. Ask it two questions:
+
+1. Which claims in this message does this diff not support?
+2. What does this message say that the diff already shows?
+
+The reviewer can recommend cuts and flag unsupported claims. It cannot recommend
+additions. A reviewer invited to say what's missing will always find something,
+the message grows every round, and you've rebuilt the problem this is meant to
+catch. Keep the brief to those two questions.
+
+Act on what comes back, and don't relay it. Where the reviewer says a claim isn't
+in the diff, either cut the claim or ask why, since that's the case where a
+guessed rationale would otherwise reach the permanent record.
+
+Skip this for a rename, a version bump, or a formatting pass. Run it whenever the
+message explains why.
+
+## Examples
+
+The common case, one paragraph:
+
+```
+Use unstable Home Assistant package on roach
+
+Home Assistant releases monthly and the stable nixpkgs channel is
+currently 5 releases behind (2025.11.3 vs 2026.4.3). Using unstable
+keeps HA current with security patches, new integrations, and device
+compatibility. This matches the existing pattern for Plex on roach.
+
+Signed-off-by: Nic Cope <nicc@rk0n.org>
+```
+
+A second paragraph, where the reader needs the mechanism as well as the problem:
 
 ```
 Fix XRD controller restart to detect all spec changes
 
 When XRD spec fields change, the XR controller doesn't always restart
-automatically. Users must manually restart the Crossplane deployment for
-some changes to take effect, as reported in issue #6736.
+automatically, so users have to restart the Crossplane deployment by
+hand for some changes to take effect. The existing logic only detected
+referenceable version changes, and missed everything else in the spec.
 
-The existing restart logic only detected referenceable version changes.
-This missed other spec changes like connection details modifications.
-
-This commit replaces the referenceable version based detection with
-generation-based controller restart detection using the existing
-condition system. The ControllerNeedsRestart() helper checks if the
-WatchingComposite condition's observedGeneration differs from the
-current metadata.generation.
+This commit replaces that with generation-based restart detection. The
+ControllerNeedsRestart() helper compares the WatchingComposite
+condition's observedGeneration against the current metadata.generation.
 
 Fixes #6736.
 
 Signed-off-by: Nic Cope <nicc@rk0n.org>
 ```
 
+A mechanical change gets a subject line and a sign-off, with no body.
+
 ## Key Principles
 
-1. Be technical rather than promotional
-2. Explain problems before solutions
-3. Acknowledge complexity
+1. One paragraph by default, and a subject line alone for a mechanical change
+2. Commit when asked, without waiting for the message to be approved
+3. Explain problems before solutions
 4. Focus on "why" as much as "what"
 5. Never invent a rationale you don't know
-6. Use precise, domain-specific terminology
-7. Describe previous work in neutral language
-8. One logical layer per commit, with review fixes folded into it
-9. Keep the message proportional to the diff
+6. Be technical rather than promotional
+7. Use precise, domain-specific terminology
+8. Describe previous work in neutral language
+9. One logical layer per commit, with review fixes folded into it
+10. Have a subagent check the message against the diff, and let it cut only

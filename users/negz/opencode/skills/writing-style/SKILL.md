@@ -362,8 +362,9 @@ are orthogonal.
 
 ## Do Not
 
-- Don't publish without approval. Draft in chat and let Nic decide when it
-  lands. Don't act on review feedback he hasn't approved.
+- Don't publish a document, PR, or issue without approval. Draft in chat and let
+  Nic decide when to publish it. Don't act on review feedback he hasn't approved.
+  Commits are the exception, and **git-commits** covers them.
 - Don't credit yourself or add AI attribution. Text published under his name
   reads as his.
 - Don't lose his edits. He copy edits in parallel, often cutting further than
