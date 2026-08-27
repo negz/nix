@@ -91,6 +91,18 @@
             config.allowUnfree = true;
           };
         })
+        # The guest tools want to match the Parallels Desktop version running on
+        # the host. nixpkgs is still on 26.4.1, so pin 27.0.0 ourselves. Drop
+        # this once nixpkgs catches up.
+        (final: prev: {
+          prl-tools = prev.prl-tools.overrideAttrs (finalAttrs: _prevAttrs: {
+            version = "27.0.0-58628";
+            src = prev.fetchurl {
+              url = "https://download.parallels.com/desktop/v27/${finalAttrs.version}/ParallelsDesktop-${finalAttrs.version}.dmg";
+              hash = "sha256-WH3Ivc+ahWzlAbBpjlh37yUtSCIb27TqvxJmrR1Rq+8=";
+            };
+          });
+        })
       ];
     in
     {
