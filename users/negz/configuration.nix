@@ -354,6 +354,12 @@ in
           "theme" = "github";
         };
       };
+      # Global rules, loaded into every opencode session. A project's own
+      # AGENTS.md adds to this rather than replacing it - opencode treats
+      # local and global rules as separate categories and loads both.
+      "opencode/AGENTS.md" = {
+        source = ./opencode/AGENTS.md;
+      };
       "opencode/skills" = {
         source = ./opencode/skills;
         recursive = true;
