@@ -14,6 +14,24 @@ let
     hash = "sha256-+LCr3Fx3M5ui91x3mj5qs9BK7IKGGTtZuGvin8gvbLQ=";
   };
 
+  # Google's developer documentation style guide. Most of it is tailored to
+  # product documentation rather than design docs, so the config below enables
+  # five of its rules by name rather than the whole style.
+  vale-google = pkgs.fetchzip {
+    url = "https://github.com/vale-cli/Google/releases/download/v0.7.1/Google.zip";
+    hash = "sha256-Oiaz1Eu6jwocHr0j06ZJJ82knpMSvGVZP5Pif2C2+4Y=";
+    stripRoot = false;
+  };
+
+  # Vale takes a single StylesPath, so both rulesets have to sit under one tree.
+  vale-styles = pkgs.symlinkJoin {
+    name = "vale-styles";
+    paths = [
+      "${vale-ai-tells}/styles"
+      vale-google
+    ];
+  };
+
   # Vale finds this at $XDG_CONFIG_HOME/vale/.vale.ini when nothing more
   # specific applies, so installing it globally means a bare `vale foo.md` works
   # in any directory. Vale merges configs rather than replacing them, so a
@@ -130,10 +148,33 @@ in
     configFile = {
       "vale/.vale.ini" = {
         text = ''
-          StylesPath = ${vale-ai-tells}/styles
+          StylesPath = ${vale-styles}
 
           [*.md]
           BasedOnStyles = ai-tells
+
+          # "Implementation" is the precise word in an engineering document, and
+          # the plainer alternatives this rule suggests are all worse. Warnings
+          # still reach Neovim, but opencode only reports errors to an agent, so
+          # this stops it rewriting the word on every edit.
+          ai-tells.FormalRegister = warning
+
+          # Four rules from the Google style that apply to design docs as much as
+          # to product documentation. Naming them individually leaves the rest of
+          # that style off, including the ones that fight this project's voice:
+          # First person, We, and sentence-case headings. Google ships these at
+          # suggestion level, which opencode doesn't report to an agent, so raise
+          # them to error.
+          #
+          # Acronyms is deliberately absent. It matches any three to five letter
+          # capitalised token, so it flags SKILL.md, placeholders like #XXXX, and
+          # the word NOT in a heading. Its exception list also covers general
+          # developer vocabulary rather than this project's, so it asks for GCP,
+          # GKE and LLM to be spelled out.
+          Google.Anthropomorphism = error
+          Google.ExcessiveClaims = error
+          Google.Passive = error
+          Google.Semicolons = error
         '';
       };
       "ghostty/config" = {
