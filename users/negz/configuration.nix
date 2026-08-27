@@ -273,7 +273,7 @@
         pkgs.gotestsum
 
         # Python
-        pkgs.unstable.basedpyright
+        pkgs.unstable.ty
         pkgs.unstable.ruff
 
         # Protobuf

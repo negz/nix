@@ -130,16 +130,15 @@ vim.lsp.config('golangci_lint_ls', {
 
 -- Python
 
-vim.lsp.config('basedpyright', {
-	cmd = { 'basedpyright-langserver', '--stdio' },
+vim.lsp.config('ty', {
+	cmd = { 'ty', 'server' },
 	filetypes = { 'python' },
-	root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' },
+	root_markers = { 'ty.toml', 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' },
 	capabilities = caps,
 	settings = {
-		-- Let Ruff handle all linting, formatting, and imports.
-		basedpyright = {
-			analysis = { ignore = { '*' } },
-			disableOrganizeImports = true
+		ty = {
+			-- Ruff reports syntax errors too. Prefer one source.
+			showSyntaxErrors = false,
 		}
 	}
 })
@@ -168,7 +167,7 @@ vim.lsp.enable({
 	'lua_ls',
 	'gopls',
 	'golangci_lint_ls',
-	'basedpyright',
+	'ty',
 	'ruff',
 	'buf_ls',
 })
