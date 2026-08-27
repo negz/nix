@@ -146,9 +146,10 @@ An issue states the problem. It doesn't prescribe the fix.
 - Link code through a pinned-commit permalink, so GitHub renders it as a snippet
   rather than a line that drifts.
 
-The issue appears under Nic's name, so it reads as his. Don't add attribution,
-co-author lines, or credit he didn't ask for. Credit a colleague's analysis in
-prose where it's warranted.
+The issue appears under Nic's name, so it reads as his. Write in first person or
+drop the pronoun, and never refer to him in the third person, which reads as the
+author talking about himself. Don't add attribution, co-author lines, or credit
+he didn't ask for. Credit a colleague's analysis in prose where it's warranted.
 
 Run Vale over the body before creating the issue, since the body file is
 markdown:

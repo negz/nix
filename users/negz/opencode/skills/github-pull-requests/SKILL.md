@@ -89,6 +89,9 @@ wrapping differing. Refer to "this PR" rather than "this commit".
 
 ## Writing Style
 
+The PR opens under Nic's name, so write first person or drop the pronoun, and
+never refer to him in the third person.
+
 - **Technical and precise.** Use exact terminology.
 - **Problem-focused.** Always explain the underlying issue.
 - **Honest about complexity.** Acknowledge hacks, limitations, and edge cases.

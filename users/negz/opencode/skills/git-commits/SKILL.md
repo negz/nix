@@ -18,6 +18,22 @@ Where something in the change needs a decision rather than a message, ask about
 that. The usual case is a commit that would record a rationale you're guessing
 at. Ask why instead of committing and hoping.
 
+## Write as Nic, Not About Him
+
+Git records the commit as authored by Nic Cope, so the message is his voice.
+Write in first person, or drop the pronoun. Never refer to him in the third
+person, which reads to everyone else as the author talking about himself:
+
+- Wrong: "Nic compared 16 rewrites against the originals."
+- Right: "I compared 16 rewrites against the originals."
+- Also right: "Comparing 16 rewrites against the originals showed…"
+
+The same holds for anything else published under his name, including PR
+descriptions, issue bodies, and design docs.
+
+Note that this inverts inside the skill files themselves. Those describe Nic to
+an agent, so third person belongs there and nowhere that carries his byline.
+
 ## Required Format
 - **Always** include `Signed-off-by: Nic Cope <nicc@rk0n.org>`
 - Subject line, 50-80 characters, imperative mood
