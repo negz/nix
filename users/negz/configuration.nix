@@ -14,15 +14,13 @@ let
     hash = "sha256-+LCr3Fx3M5ui91x3mj5qs9BK7IKGGTtZuGvin8gvbLQ=";
   };
 
-  # Vale reads one config file per document. Handing vale-ls an explicit
-  # configPath replaces Vale's own search, so this is the whole config rather
-  # than an overlay on whatever a project ships.
-  vale-config = pkgs.writeText "vale.ini" ''
-    StylesPath = ${vale-ai-tells}/styles
-
-    [*.md]
-    BasedOnStyles = ai-tells
-  '';
+  # Vale finds this at $XDG_CONFIG_HOME/vale/.vale.ini when nothing more
+  # specific applies, so installing it globally means a bare `vale foo.md` works
+  # in any directory. Vale merges configs rather than replacing them, so a
+  # project that ships its own .vale.ini adds to these rules on the CLI, and can
+  # opt individual ones out. vale-ls still gets this path explicitly, so the
+  # editor always applies the AI tells rules whatever a repo ships.
+  vale-config-path = "${config.xdg.configHome}/vale/.vale.ini";
 in
 {
   home = {
@@ -130,6 +128,14 @@ in
     enable = true;
 
     configFile = {
+      "vale/.vale.ini" = {
+        text = ''
+          StylesPath = ${vale-ai-tells}/styles
+
+          [*.md]
+          BasedOnStyles = ai-tells
+        '';
+      };
       "ghostty/config" = {
         text = ''
           theme = light:GitHub Light Default,dark:GitHub Dark Default
@@ -246,7 +252,7 @@ in
               command = [ "vale-ls" ];
               extensions = [ ".md" ];
               initialization = {
-                configPath = "${vale-config}";
+                configPath = vale-config-path;
                 # Both already default to false. Set them anyway, because the
                 # only thing they do is fetch Vale and its styles over the
                 # network, which is Nix's job here.
