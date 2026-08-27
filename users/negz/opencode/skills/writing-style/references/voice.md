@@ -45,6 +45,26 @@ Use analogies to connect unfamiliar ideas to familiar ones. "An MRD is to an MR
 CRD as an XRD is to an XR CRD." "Think of this like AWS Lambda." "`flake.nix` is
 a bit like a Makefile backed by a snapshot of nixpkgs."
 
+### Release verbs point forward
+
+<!-- vale off -->
+Nic uses "ship" for the act of releasing, as intent or as something still ahead.
+"We need to ship X." "Should v0.1 ship with something simpler?" "Biasing toward
+shipping rather than another review round."
+
+He never uses it to describe what a product has or does. "Modelplane ships a
+Traefik gateway" and "nobody ships this layer today" are LLM phrasings. The fix
+is the specific verb: Modelplane *installs* a Traefik gateway, *includes* the
+connector runtime, *composes* the HTTPRoute. Naming the real action is more
+precise anyway, which is what the linter asks for when it flags the word.
+<!-- vale on -->
+
+Frequency isn't the problem, so don't overcorrect into avoiding the word. Nic
+uses it about as often as an LLM does. What differs is the direction it points.
+
+The same test applies to any verb of delivery or provision with a product as its
+subject. Say what the software does, and reserve the release verb for releases.
+
 ## Structure
 
 ### Standard sections
@@ -63,7 +83,7 @@ Most documents follow this skeleton, though few use all of it:
 7. **Workstreams** or **Migration plan** (optional). What makes it real.
 8. **Future improvements** (optional). Out of scope now, plausible later. This
    is where speculative material belongs.
-9. **Alternatives considered.** What else was evaluated, and why it lost.
+9. **Alternatives considered.** What else you evaluated, and why it lost.
 
 Shorter one-pagers skip the executive summary and run background, proposal,
 alternatives. Drop any section with nothing to say.
@@ -77,7 +97,7 @@ two saying where this goes. It can close a brief introduction or open the
 executive summary. Knowing the thesis turns the background from "where is this
 going?" into "I see why this matters".
 
-### Background tells a story
+### Background is a story
 
 Background sections run long relative to their neighbours, because they carry
 the narrative of how we got here and what changed. They link out to
@@ -122,7 +142,7 @@ per case, including the pathological one.
 
 Design documents aren't the place to sketch how the code works inside. Leave out
 Go or Python unless the code is itself the design, as with a library API, an SDK,
-or a developer experience where what the user writes is the thing being designed.
+or a developer experience where what the user writes is the thing you're designing.
 
 Show code where the argument concerns how something would feel to use. Leave it
 out where it would only illustrate the innards of a controller or a reconciler.
@@ -170,7 +190,7 @@ or utilisation rates to strengthen an argument.
 
 ### Respect what came before
 
-Assume whoever designed the previous system did the best they could with what
+Assume whoever designed the previous system did what they could with what
 they knew, and assume they're reading this. Catalogue concrete shortcomings
 ("the ingestion pipeline adds substantial machinery for a debugging tool")
 without calling the old system bad or broken. Focus on what changed, meaning new
@@ -192,7 +212,7 @@ reviewer who already raised one is not.
 "I'd prefer…", "I lean toward…", "I don't feel very strongly" signal confidence
 in the reasoning without shutting down discussion.
 
-Where a choice was forced rather than preferred, say that instead. Traefik isn't
+Where constraints forced a choice rather than taste, say that instead. Traefik isn't
 a favourite. It's the only thing meeting the requirements today, and framing it
 as a preference misleads.
 
