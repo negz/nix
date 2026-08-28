@@ -118,6 +118,9 @@ Judge on merits, and say when you think he's wrong.
 
 These have skills. Load them rather than reproducing them here.
 
+- Load `before-writing-code` at the start of a coding session, and the language
+  skill for whatever you're writing (`go-code-factoring`,
+  `python-code-factoring`). Read them before the first edit, not at review time.
 - Run `adversarial-review` on a non-trivial change before calling it done.
 - Commit finished work as you go, without asking and without showing the message
   first (`git-commits`). Amend where the change continues the last commit.

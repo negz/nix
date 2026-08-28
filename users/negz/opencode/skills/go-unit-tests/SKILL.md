@@ -5,36 +5,20 @@ description: Write unit tests for Go code. Use when creating, adding, or updatin
 
 # Go Unit Tests
 
-## When to Use This Skill
+Read `before-writing-code` first. It covers what a test has to be worth: assert
+whole outputs, keep cases as data, never compute an expectation with the code
+under test, and prove the test can fail. This skill covers the Go mechanics.
 
-Use this skill when the user asks to:
-- Write, add, or update unit tests for Go code
-- Create mocks or fakes for interfaces
-- Improve test coverage
-- Review whether code is structured for testability
+## Existing Codebase Conventions
 
-## Existing Codebase Conventions Take Precedence
+Read the package's existing tests first. Where it already uses testify,
+`[]struct` with a name field, codegen mocks, `reflect.DeepEqual` or black-box
+`package foo_test`, match that rather than half-adopting the style below. Don't
+mix the two.
 
-Before writing any tests, read the existing test files in the package and its
-neighbors. If the codebase already has established testing patterns, follow them
-— even if they differ from what this skill describes.
-
-Signs that the codebase uses different conventions:
-- Tests use testify (`assert.*`, `require.*`, `suite.*`)
-- Tests use `[]struct` with a `name` field instead of `map[string]struct`
-- Tests use gomock, mockgen, counterfeiter, or other codegen mocks
-- Tests use `reflect.DeepEqual` instead of `cmp.Diff`
-- Tests use black-box testing (`package foo_test`)
-
-If you see any of these, match the existing style. Consistency within a codebase
-is more important than following this skill's preferences. These patterns are
-opinionated defaults for greenfield code and codebases that already use them (or
-something very close). They are not meant to override a codebase's established
-practices.
-
-When the codebase is close but not identical — say it uses `cmp.Diff` but with
-`[]struct` instead of `map[string]struct` — follow the codebase. Don't
-selectively adopt pieces of this skill.
+The exception is a pattern nobody vetted. `before-writing-code` covers weighing
+an existing pattern by where it came from, and an unreviewed one in a test file
+carries no more weight than it does anywhere else.
 
 ## IMPORTANT: Factor Code Before Testing
 
@@ -105,6 +89,9 @@ func TestFunctionName(t *testing.T) {
   dependencies alongside `args` for method inputs.
 - **No per-case setup or teardown.** All dependencies are mocks injected via
   struct fields. Object construction happens inside `t.Run`.
+- **Keep the `t.Run` body close to just the `cmp.Diff`.** Setup in a helper is
+  fine. A body thick with conditionals means the case isn't carrying its own
+  data.
 
 ### Assertions
 
@@ -134,7 +121,9 @@ Useful `cmp` options:
 - `cmpopts.AnyError` — match any non-nil error in the `want` struct.
 - `cmpopts.EquateEmpty()` — treat nil and empty slices/maps as equal.
 - `cmpopts.SortSlices(less)` — order-independent slice comparison.
-- `cmp.AllowUnexported(T{})` — compare unexported fields of type T.
+- `cmp.AllowUnexported(T{})` — compare unexported fields of type T. Reach for
+  it only when there's no alternative; needing it usually means the test is
+  reaching somewhere it shouldn't.
 
 ### Error Handling in Tests
 
@@ -268,7 +257,26 @@ different conventions, follow those instead (see above).
   genuinely prevents remaining assertions in that subtest from running. Prefer
   `t.Errorf` to report and continue.
 - **Construct errors inconsistently.** Match the project's error convention.
-- **Skip the `reason` field.** Every case needs one.
+- **Skip the `reason` field.** Every case needs one. It documents intent and
+  prints on failure.
+- **Reconstruct the exact wrapped error in `want`.** Use `cmpopts.AnyError` to
+  assert that an error occurred. Rebuild the concrete error only where the
+  specific value is part of the contract.
+- **Put an underscore in a test name.** `TestWorkspaceApply`, not
+  `TestWorkspace_Apply`.
+- **Gate an assertion on the case data.** No `if tc.want.obj != nil { ... }`.
+  Every case runs the same `cmp.Diff` calls. A conditional around an assertion
+  means some cases silently assert nothing.
+- **Mutate the data to make an assertion pass.** Stripping a timestamp out of
+  the objects before comparing them, or dropping a `cmp` option like
+  `protocmp.Transform` to get a clean diff, deletes the check rather than
+  satisfying it. Fix the comparison with a `cmpopts` filter that names what it
+  ignores and why.
+- **Rewrite an assertion to match the output.** When a test fails, decide
+  whether the test or the code is wrong before touching either.
+
+- **Leave a compile-time interface check in production code.**
+  `var _ Iface = &Impl{}` belongs in the test file. It's a test.
 
 ## Edge Cases
 

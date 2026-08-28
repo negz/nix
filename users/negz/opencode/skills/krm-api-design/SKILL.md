@@ -5,6 +5,9 @@ description: Design Kubernetes Resource Model (KRM) APIs - CRDs and XRDs. Use wh
 
 # KRM API Design
 
+Read `before-writing-code` first for how to approach a change at all. This skill
+covers the schema.
+
 Help users design Kubernetes Resource Model APIs that are future-proof, clear to
 consume, and follow established conventions. This applies to CRDs and Crossplane
 XRDs equally -- an XRD schema is a thin wrapper on a CRD schema.
@@ -29,6 +32,27 @@ to the storage version and back without data loss. This means:
 Introducing a new version buys you surprisingly little. The better path is
 designing an API that can evolve with purely additive, backward-compatible
 changes. Kubernetes evolved Deployment v1 for 7+ years without needing v2.
+
+## Terminology
+
+A thing of `kind: Foo` is a **custom resource**. A **CRD** is the *definition*
+that allows it to exist. They're different objects and conflating them in code,
+docs or review comments confuses readers who are still learning the model.
+
+## What Counts as a Breaking Change
+
+Adding an optional field is not breaking. Changing a field's type or its JSON
+casing is. Say so explicitly when a change breaks something, and weigh whether
+you can avoid it: keep the old casing, add an alias, or deprecate rather than
+remove.
+
+Being allowed to break an API is not a reason to need to. Below v1.0 a workable
+compromise is to hold compatibility within a patch release, allow deprecations
+on a patch, and accept trivial behaviour changes.
+
+Optional fields are pointers, marked `+optional`, with `,omitempty` on the JSON
+tag. Required fields are none of those. The Kubernetes API conventions are the
+source to cite: see `go-code-factoring/references/sources.md`.
 
 ## The Core Rules
 
@@ -233,6 +257,9 @@ vector and signal an unfinished API.
   omit status or rename spec to something domain-appropriate (e.g. `data`).
 - **Spec fields are declarative.** They describe what the user wants, not what
   actions to take.
+- **Don't carry "READ-ONLY" into a status field description.** Every status
+  field is read-only from the user's side, so the note only raises the question
+  of why this one said it.
 
 ## CRD Metadata
 
@@ -257,3 +284,5 @@ vector and signal an unfinished API.
 8. Declare list merge semantics explicitly on every list
 9. Set conditions on first reconcile; provide a summary condition
 10. Make `kubectl get` useful with printer columns that surface conditions and key fields
+11. A thing of `kind: Foo` is a custom resource. The CRD is its definition
+12. Being free to break an API is no substitute for not needing to

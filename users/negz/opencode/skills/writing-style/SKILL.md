@@ -29,7 +29,7 @@ Use **git-commits**, **github-pull-requests**, and **github-issues** for those
 artifacts. Each has its own conventions, and "Cut Hard, Twice", "Never Invent
 Rationale", and "Substantiate or Delete" below apply to them unchanged.
 
-Use **negz-review** and **adversarial-review** for reviewing code.
+Use **adversarial-review** for reviewing code.
 
 ## Before You Draft
 

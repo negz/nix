@@ -1,6 +1,6 @@
 ---
 name: github-pull-requests
-description: Create and manage GitHub pull requests in Nic Cope's style. Use when creating, opening, or drafting PRs, or updating PR descriptions. Uses gh CLI.
+description: Create, manage and review GitHub pull requests in Nic Cope's style. Use when creating, opening or drafting PRs, updating PR descriptions, or leaving review comments on someone else's PR. Uses gh CLI.
 compatibility: Requires authenticated gh CLI
 ---
 
@@ -11,6 +11,9 @@ compatibility: Requires authenticated gh CLI
 Use **this skill** when creating, editing, or drafting pull requests.
 
 Use **github** for read-only operations (viewing, listing, diffing PRs).
+
+Use this skill too when reviewing someone else's PR, for how to phrase findings.
+Use **adversarial-review** to review your own change before committing it.
 
 Use **github-issues** when creating or filing issues.
 
@@ -151,6 +154,27 @@ When describing complex changes, include:
 - Use neutral language: "The converter now distinguishes..." not "The old converter was broken"
 <!-- vale on -->
 
+## Reviewing Someone Else's PR
+
+Leaving review comments on a PR is a different job from `adversarial-review`,
+which reviews your own change before you commit it. The framing here is what
+makes a finding land as collaborative rather than dictatorial.
+
+- **Ask rather than decree** where the author may have context you don't. "Do we
+  need this branch?" / "Is there a reason we do Y rather than Z?"
+- **Offer a concrete alternative.** Not "this is wrong" but "rather than X, how
+  about Y?" Where the fix is small and mechanical, write a GitHub
+  ` ```suggestion ` block with the exact replacement.
+- **Label taste as `Nit:`** and make clear it doesn't block, so the author can
+  tell must-fix from preference.
+- **Cite the source.** Link the Kubernetes API conventions, Go Code Review
+  Comments, or pkg.go.dev, and let the authority carry the weight instead of "I
+  prefer".
+- **Hold opinions loosely and say so.** "I don't feel strongly, but..." /
+  "Either way is fine", where that's true.
+- **Be terse.** Most findings are one sentence.
+- **Acknowledge good work.** "Good catch." / "Nice." / "LGTM once X is fixed."
+
 ## Key Principles
 
 1. Be technical rather than promotional
@@ -159,4 +183,5 @@ When describing complex changes, include:
 4. Focus on "why" as much as "what"
 5. Use precise, domain-specific terminology
 6. Keep it flat and short, at roughly a third of the commit message
+7. Reviewing: ask rather than decree, and label taste as `Nit:`
 7. Show a complete YAML example rather than describing one

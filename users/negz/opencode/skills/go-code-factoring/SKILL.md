@@ -5,14 +5,10 @@ description: Factor and structure Go code for clarity, testability, and composab
 
 # Go Code Factoring
 
-## When to Use This Skill
-
-Use this skill when:
-- Writing new Go code (to get the structure right from the start)
-- Refactoring existing code for clarity or testability
-- Reviewing whether code is well structured
-- Preparing code for unit testing (the `go-unit-tests` skill expects this)
-- The user asks about Go architecture, decomposition, or design
+Read `before-writing-code` first. It covers how to approach a change, how much
+weight an existing pattern deserves, and the standing bias toward writing less
+code. Everything here sits under that: reach for a pattern below when the code
+needs it, not because this skill names it.
 
 ## Working in Existing Codebases
 
@@ -57,16 +53,16 @@ preference.
 
 ### Improving code you're already changing
 
-When you need to modify existing code — to add functionality, fix a bug, or
-generalize behavior — it's fine to improve its structure as part of that change.
-Extracting an interface from a concrete dependency you're already modifying, or
-adding error context to a function you're already reworking, are natural
-improvements.
+Improve the structure of code you have to modify anyway. Extracting an interface
+from a concrete dependency you're already reworking, or adding error context to
+a function you're already touching, are part of the change rather than scope
+creep. So is a larger restructuring, when the code you're changing is badly
+shaped and the change makes that obvious. Correctness and clarity beat a small
+diff, and "we'll fix the structure in a follow-up" usually means nobody will.
 
-What to avoid is refactoring for its own sake — rewriting working code that you
-don't otherwise need to touch, or going on a crusade through neighboring files.
-The scope of structural improvement should roughly match the scope of the
-functional change.
+What to avoid is refactoring for its own sake: rewriting working code that this
+change gives you no reason to touch, or going on a crusade through neighboring
+files.
 
 ## Think Like a Library Author
 
@@ -108,13 +104,7 @@ The library-author test catches several common mistakes:
   should define an interface for what it needs, and the caller provides the
   implementation.
 
-## How to Apply This Skill
-
-When factoring code, read the existing codebase first. Match its conventions. The
-patterns below are guidelines — apply judgment based on context. Not every
-function needs an interface, and not every struct needs functional options.
-
-### Before you write
+## Before You Write a Package
 
 Before writing a new package, answer these questions:
 
@@ -136,9 +126,13 @@ Before writing a new package, answer these questions:
 
 ### Define Interfaces Where They're Consumed
 
-Define interfaces in the file that uses them, not alongside the implementation.
-Keep them small — one to three methods. If an interface has more than five
-methods, it's likely too broad.
+Define interfaces in the file that uses them, not alongside the implementation,
+and keep them to one to three methods. More than five is usually too broad.
+
+Create one when you need a seam, which usually means testability: a dependency
+that does I/O, has side effects, or is slow wants faking. You don't need a
+second real implementation in mind. Pure computation doesn't want an interface
+at all, because the caller can test it with real inputs and outputs.
 
 ```go
 // In reconciler.go — the file that calls these methods.
@@ -155,8 +149,9 @@ The implementation lives elsewhere. It doesn't need to know about the interface.
 
 ### Function Type Adapters
 
-For every single-method interface, define a matching function type that satisfies
-it. This is the single most useful Go pattern for composability and testability.
+Where a single-method interface has earned its place, a matching function type
+that satisfies it is worth defining alongside. It's the cheapest way to get a
+fake without a mock struct.
 
 ```go
 type FetcherFn func(ctx context.Context, id string) (Record, error)
@@ -171,8 +166,15 @@ This enables:
 - Trivial nop defaults: `FetcherFn(func(...) (Record, error) { return Record{}, nil })`
 - Direct use as test fakes without a mock struct
 
-Always define the `*Fn` type alongside the interface it satisfies. They're a
-pair.
+Define the `*Fn` type alongside the interface, not on its own. A `*Fn` with no
+interface to satisfy is a type alias nobody needed.
+
+### Don't Leak a Dependency's Types
+
+Don't expose another package's types or options through your own public API.
+Wrap them in something you control, so a breaking change in the dependency
+doesn't become a breaking change for your callers. See Hyrum's Law:
+https://www.hyrumslaw.com
 
 ### Interface Composition
 
@@ -184,28 +186,9 @@ interface.
 ### The Shape
 
 Required dependencies are positional parameters. Optional dependencies are
-functional options. The constructor sets defaults before applying options. Always
-return a concrete pointer type.
-
-```go
-type ProcessorOption func(*Processor)
-
-func WithLogger(l Logger) ProcessorOption {
-    return func(p *Processor) { p.log = l }
-}
-
-func NewProcessor(s Store, o ...ProcessorOption) *Processor {
-    p := &Processor{
-        store:   s,                 // required
-        log:     NewNopLogger(),    // default — never nil
-        timeout: 30 * time.Second,  // default
-    }
-    for _, fn := range o {
-        fn(p)
-    }
-    return p
-}
-```
+functional options. The constructor sets defaults before applying options, and
+returns a concrete pointer type. See
+[references/example.md](references/example.md) for the full shape.
 
 ### Nop Defaults
 
@@ -251,6 +234,24 @@ should be independently usable.
 Unexport a function only when you've decided it shouldn't be part of the
 package's API — not because you haven't thought about it.
 
+Every exported symbol needs Godoc. Don't explain a public symbol by referring to
+a private one: a reader on pkg.go.dev can't see it.
+
+Don't return an unexported type for another package to consume, including
+behind an exported interface that hides one. A caller browsing the godoc gets a
+dangling reference. Return the exported concrete type.
+
+### Don't write Python in Go
+
+A chain of private methods on a receiver, each existing so the next one can
+reach a field, is a Python habit. It reads as decomposition and works as
+plumbing: `loadTarball` calls `loadImage` calls `decompress` calls `ensureDir`,
+all to thread one path. Ask what the standard library would do. Usually it
+passes the value as an argument to a free function, and lets the caller own the
+resource's lifetime.
+
+If a method doesn't use its receiver, it's a function.
+
 ## Composable Behavior
 
 Chain types and decorators enable composable behavior without modifying existing
@@ -285,8 +286,39 @@ indirection that makes the code harder to read without adding value — the stri
 is only used in one place, and the constant name just restates the string. Error
 constants were a pattern in older Crossplane code but are no longer preferred.
 
-Match the project's error wrapping convention — whether that's `fmt.Errorf` with
-`%w`, a `pkg/errors`-style library, or something else. Check existing code.
+Match the project's error wrapping convention. In a Crossplane project that
+means the crossplane-runtime errors package
+(`github.com/crossplane/crossplane-runtime/v2/pkg/errors`), not `fmt.Errorf`.
+Outside one, stdlib `errors` with `fmt.Errorf("...: %w", err)` is fine. Don't
+reach for `github.com/pkg/errors`. [references/sources.md](references/sources.md)
+has the links worth citing when you claim a convention.
+
+`errors.Wrap(err, msg)` returns nil when `err` is nil, so a guarded return
+collapses:
+
+```go
+// Before.
+err := doThing()
+if err != nil {
+    return errors.Wrap(err, "cannot do thing")
+}
+return nil
+
+// After.
+return errors.Wrap(doThing(), "cannot do thing")
+```
+
+Use `Wrapf` only when the message contains a formatting verb, and `Wrap` over
+`WithMessage` because `Wrap` adds the stack trace. In a utility function, wrap
+context onto the error and return it rather than logging it. Trust a caller
+higher up to log.
+
+### Panic vs Return an Error
+
+Panic when the failure is programmer error, or when the binary is broken in a
+way that could never work: `AddToScheme` failing at startup, a type assertion
+that can't fail unless someone wired it wrong. Returning an error there asks
+every caller to handle something that can't happen.
 
 ## Naming
 
@@ -302,6 +334,18 @@ Match the project's error wrapping convention — whether that's `fmt.Errorf` wi
 - Actions: verb-first — `Fetch`, `Validate`, `Publish`, `RunFunction`.
 - Predicates: `Is` prefix — `IsValid`, `IsReady`.
 - Derivation: `For` prefix — `ForRecord`, `ForUser`.
+
+### What a Name Has to Do
+
+- **Be precise.** `Config`, `data` and `process` usually want to say more.
+- **Not collide with an adjacent concept.** A template's own name field is
+  `templateName`, so nobody reads it as `metadata.name`.
+- **Match the convention's intent.** `verbsUpdate` for "verbs that allow
+  update". `EnableWebhooks` rather than `EnableWebhook` when there's more than
+  one.
+- **Read as a predicate** where it's a bool or a set: `if satisfied[dep]`.
+- No underscores in function or test names: `TestWorkspaceApply`, not
+  `TestWorkspace_Apply`. No camelCase in package names.
 
 ### Receivers
 
@@ -343,6 +387,40 @@ type UserID string
 type TeamID string
 ```
 
+### Sets
+
+Use `map[T]bool`. It reads cleaner at the use site (`dependant[xr] = true`).
+Reach for `map[T]struct{}` only where the bools would cost a non-trivial amount
+of memory.
+
+Name the map so that assignments and reads scan as prose. `dependant[xr] = true`
+beats `deps[xr] = true`.
+
+## Crossplane Conventions
+
+In a Crossplane repo these are settled and worth matching. Errors are covered
+above.
+
+**Logging.** Use the crossplane-runtime `logging` package, structured. There is
+deliberately no `Error` method, so pass the error as a field:
+`log.Debug("cannot sync", "error", err)`. Don't log a value that isn't there,
+such as an empty diff. Keep loggers at the reconciler level and pass errors up
+rather than plumbing a logger down into the implementations.
+
+**Reconcilers.** On error, set the relevant condition, emit an event, write a
+debug log and requeue. Returning a raw error gets you a tight requeue loop with
+bad backoff. When updating an existing reconciler or its tests, match the newest
+one in the repo rather than the one you happened to open.
+
+**Trust the framework.** Rely on CRD schema defaulting and the guarantees
+controller-runtime already makes, rather than re-checking values that can't be
+nil by the time you see them.
+
+**API struct tags.** An optional field is a pointer, marked `+optional`, with
+`,omitempty`. A required field is none of those. Changing a function or return
+signature breaks every implementer, and renaming a metric breaks dashboards, so
+say so when you're doing either. `krm-api-design` covers the schema itself.
+
 ## Dependency Direction
 
 Dependencies flow in one direction — down, never up. A package should never
@@ -367,21 +445,6 @@ See [references/example.md](references/example.md) for a full worked example
 showing a well-factored package with interfaces, function type adapters,
 functional options, sub-struct grouping, a chain type, and a decorator.
 
-## When to Create Interfaces
-
-Create an interface when you need a seam — a point where you can swap in a
-different implementation. The most common reason is testability: if a dependency
-does I/O, has side effects, or is slow/expensive, you'll want to mock it when
-testing the caller. Write code that's testable from the start.
-
-You don't need a strong idea of what other real implementations might exist.
-Sometimes there's only ever the production implementation and a mock. That's
-fine — the interface is earning its keep by making the caller testable.
-
-Conversely, if a dependency is pure computation — data transformations,
-formatting, validation logic with no I/O — the caller can test with real inputs
-and outputs. An interface just adds indirection without value.
-
 ## After You Write
 
 After finishing a package, review it against these questions:
@@ -403,9 +466,8 @@ After finishing a package, review it against these questions:
 
 ## Anti-Rationalizations
 
-The instinct to skip factoring and just make the code work is strong. Each
-excuse sounds reasonable, and each one trades a small cost now for a larger
-one later.
+Go-specific excuses. `before-writing-code` covers the general ones about diff
+size and deferring work.
 
 | Rationalization | Reality |
 |---|---|
@@ -413,19 +475,17 @@ one later.
 | "The constructor doing I/O is fine, it's convenient" | A constructor that loads config or builds clients can't be tested without real infrastructure. Convenience now buys untestable code later. Inject the built dependencies. |
 | "It's pure computation, no need for an interface" | Correct — don't abstract what doesn't need it. But if it does I/O or has side effects, the caller needs a seam to test against. Check which it actually is. |
 | "An unexported method is simpler than extracting it" | Unexported methods can't be swapped, mocked, or reused. If the logic is a swappable step, it wants an interface; if it's pure, a package-level function. |
-| "Matching this skill matters more than the codebase" | It doesn't. Consistency within a codebase beats any individual mechanism this skill recommends. Read the existing code first. |
-| "Refactoring this neighboring code while I'm here is helpful" | Scope creep. The scope of structural improvement should match the scope of the functional change. Don't go on a crusade through files you don't need to touch. |
+| "Matching this skill matters more than the codebase" | It doesn't. Consistency within a codebase beats any individual mechanism this skill recommends. Read the existing code first, and weigh the pattern by where it came from. |
 
 ## Key Principles
 
-1. Write every package like a library — self-contained, documented, extractable
-2. Interfaces at the consumer, not the implementer
-3. `*Fn` adapters for every single-method interface
-4. Functional options for optional dependencies, nop defaults for all of them
-5. Group related interfaces into sub-structs on the orchestrator
-6. One primary method per orchestrating struct
-7. Chain types and decorators for composable behavior
-8. Wrap errors inline at the call site with verb-first context
-9. Prefer exported functions — unexport by decision, not by default
-10. Dependencies flow downward — never import up or sideways
-11. Don't abstract what doesn't need abstracting
+1. Don't abstract what doesn't need abstracting. Every pattern below is
+   conditional on a need you can name
+2. Write every package like a library: self-contained, documented, extractable
+3. Interfaces at the consumer, not the implementer, and only where you need a seam
+4. A `*Fn` adapter alongside each single-method interface that exists
+5. Functional options for optional dependencies, nop defaults for all of them
+6. Wrap errors inline at the call site with verb-first context
+7. Prefer exported functions. Unexport by decision, not by default
+8. Dependencies flow downward. Never import up or sideways
+9. Don't write Python in Go: no private method chains threading a field
