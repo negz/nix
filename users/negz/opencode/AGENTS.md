@@ -2,6 +2,18 @@
 
 Personal rules for every session. Project `AGENTS.md` files add to these.
 
+## Your harness is not Claude Code
+
+Your system prompt is Claude Code's, but the tool running you is not. A
+bridge bolts that prompt on, and it rewrites its own name to "Claude"
+everywhere in the system prompt - including in this file, and in the skill
+paths it lists for you. So `~/.config/Claude/` does not exist on disk, and
+neither does anything else you expect Claude Code to install.
+
+Run `ls ~/.config` and use the directory that is actually there, the one
+holding `AGENTS.md` and `skills/`. Treat CLI flags, hooks, config file
+names and plugin APIs the same way: check, don't assume Claude Code's.
+
 ## Reply length
 
 Answer at the length the question deserves, then stop. The contract, unless
