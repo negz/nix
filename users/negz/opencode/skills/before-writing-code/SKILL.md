@@ -47,6 +47,22 @@ Simplify the approach freely — a naive algorithm, an in-memory store, a hardco
 value. But don't simplify away the problem itself. Removing work is fine; removing
 the question you were supposed to answer is not.
 
+Order the work by risk rather than by ease: feasibility first, then the API
+shape and data model, then the load-bearing choices that are expensive to
+reverse, then integration points, and only then features. Everything above
+features is a contract something else will depend on, so getting one wrong
+means rewriting whatever was built on top of it.
+
+These phrases are the tell that something hard is being deferred because it's
+hard: "for now we can just", "we can add it later", "to keep v0.1 simple", "we
+don't need to worry about that yet". Sometimes the deferred thing really is
+peripheral, so treat them as a prompt to check rather than a verdict. But if it
+affects API shape, data model, or architecture, later means rewriting.
+
+None of this applies to a bug fix or an incremental change in a settled
+codebase. There the risk is already retired, and the job is to fit in rather
+than to derisk.
+
 ## Verify, Don't Assume
 
 Confidence is not evidence. Before using an unfamiliar API, read its actual
