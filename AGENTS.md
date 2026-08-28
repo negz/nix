@@ -1,6 +1,9 @@
 # AGENTS.md
 
-This file provides guidance for agentic coding tools working with this NixOS configuration repository.
+## Working in This Repo
+
+Commit straight to `main`. This repo is the exception to the global rule that new
+work goes in a worktree on a branch.
 
 ## Build/Apply Commands
 ```bash
