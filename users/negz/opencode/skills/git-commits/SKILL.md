@@ -167,15 +167,26 @@ rather than from the diff. A reader with only the diff and the message catches b
 
 So for anything beyond a mechanical change, dispatch a subagent before
 committing. Give it the staged diff and the drafted message and nothing else, no
-session context and no explanation. Ask it two questions:
+session context and no explanation. Ask it three questions:
 
 1. Which claims in this message does this diff not support?
 2. What does this message say that the diff already shows?
+3. Which sentences don't follow from the sentences before them, or from the diff?
+
+The first two questions check sentences one at a time, so a message where every
+sentence holds up but the joins between them don't survives both. The third
+catches a cause the diff doesn't establish, a conclusion the stated problem
+doesn't reach, and two sentences that contradict each other.
 
 The reviewer can recommend cuts and flag unsupported claims. It cannot recommend
 additions. A reviewer invited to say what's missing will always find something,
 the message grows every round, and you've rebuilt the problem this exists to
-catch. Keep the brief to those two questions.
+catch. Keep the brief to those three questions.
+
+Extending the brief later means naming an operation the reviewer can perform, as
+those three do. "Is this message coherent?" asks for a verdict instead, and a
+reviewer holding a verdict either waves the message through or goes looking for
+what's missing.
 
 Act on what comes back, and don't relay it. Where the reviewer says a claim isn't
 in the diff, either cut the claim or ask why, since that's the case where a
@@ -233,3 +244,4 @@ A mechanical change gets a subject line and a sign-off, with no body.
 9. One logical layer per commit, with review fixes folded into it
 10. Amend HEAD where the change continues it, rather than stacking a second commit
 11. Have a subagent check the message against the diff, and let it cut only
+12. Check the joins between sentences, not just the sentences
