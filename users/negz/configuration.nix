@@ -695,7 +695,7 @@ in
 
     go = {
       enable = true;
-      package = pkgs.unstable.go_1_25;
+      package = pkgs.unstable.go_1_27;
       env = {
         GOPATH = "${config.home.homeDirectory}/control/go";
         GOBIN = "${config.home.homeDirectory}/control/go/bin";
