@@ -360,6 +360,13 @@ in
               "/nix/store/*" = "allow";
               "/tmp/*" = "allow";
               "~/control/*" = "allow";
+              # The model thinks it's Claude Code, so it probes Claude Code's
+              # config paths before working out it's in opencode. Allow them so
+              # that guessing doesn't cost a prompt. ~/.config/Claude/ doesn't
+              # exist, but the system prompt names it, so the model still tries.
+              "~/.claude/*" = "allow";
+              "~/.claude.json" = "allow";
+              "~/.config/Claude/*" = "allow";
             };
           };
         };
