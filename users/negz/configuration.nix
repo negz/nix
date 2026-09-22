@@ -53,6 +53,12 @@ in
       # enabled, and several of those install themselves into
       # ~/.local/share/opencode/bin. Keep language servers coming from Nix.
       OPENCODE_DISABLE_LSP_DOWNLOAD = "true";
+
+      # The Claude bridge spoofs the Claude Code CLI version upstream, reading
+      # it from the installed `claude` (2.1.278 here). Anthropic gates Opus 5.5
+      # behind 2.1.280+, so pin the spoofed version above the gate rather than
+      # wait for nixpkgs to bump claude-code.
+      ANTHROPIC_CLI_VERSION = "2.1.280";
     };
 
     shellAliases = {
