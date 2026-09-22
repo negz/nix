@@ -324,6 +324,22 @@ in
               };
             };
           };
+          # Opus 5.5 rejects the block_binding field opencode injects under
+          # adaptive thinking (see anomalyco/opencode#46729). Opt out per
+          # anomalyco/opencode#46820. The model comes from models.dev, not the
+          # bridge, so this override doesn't collide with the plugin's list.
+          provider = {
+            anthropic = {
+              models = {
+                "claude-opus-5-5" = {
+                  options.thinking = {
+                    type = "adaptive";
+                    blockBinding = false;
+                  };
+                };
+              };
+            };
+          };
           permission = {
             edit = "allow";
 
