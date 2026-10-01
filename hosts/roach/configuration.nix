@@ -106,6 +106,10 @@
 
     zwave-js-ui = {
       enable = true;
+      # Home Assistant 2026.7 requires zwave-js-server >= 3.9.0 (schema 49),
+      # which means Z-Wave JS UI >= 11.19.1. The 26.05 stable package is
+      # stuck on 11.18.0, so pull a newer build from unstable.
+      package = pkgs.unstable.zwave-js-ui;
       serialPort = "/dev/serial/by-id/usb-Nabu_Casa_ZWA-2_1CDBD4AE1ABC-if00";
       settings = {
         TRUST_PROXY = "loopback";
