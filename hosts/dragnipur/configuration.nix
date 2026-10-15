@@ -44,7 +44,8 @@
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 3;
+        # /boot is 252M and each aarch64 kernel plus initrd is about 90M.
+        configurationLimit = 2;
       };
       efi.canTouchEfiVariables = true;
     };
