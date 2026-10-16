@@ -39,6 +39,28 @@ let
   # opt individual ones out. vale-ls still gets this path explicitly, so the
   # editor always applies the AI tells rules whatever a repo ships.
   vale-config-path = "${config.xdg.configHome}/vale/.vale.ini";
+
+  # Lets opencode use my Claude subscription. The 1.10.12 release on npm
+  # default-exports a bare function, so opencode 1.19 calls each of its named
+  # exports as a plugin and fails to load it. Upstream's main fixes that
+  # (dotCipher/opencode-claude-bridge#27), but hasn't been released.
+  opencode-claude-bridge = pkgs.buildNpmPackage {
+    pname = "opencode-claude-bridge";
+    version = "1.10.12-unstable-2026-09-14";
+    src = pkgs.fetchFromGitHub {
+      owner = "dotCipher";
+      repo = "opencode-claude-bridge";
+      rev = "946dcae21c38f09fe0197aa6451876152e0299c9";
+      hash = "sha256-ODZSUxN7X82Ib4UVSy6qgEvcSCVHuhkHLRdPFMCj1BA=";
+    };
+    npmDepsHash = "sha256-HXo85Ek0GP6hoEvcwEoBvp+pP3YJHbJh5R7aGIvVOhk=";
+    doCheck = true;
+    checkPhase = ''
+      runHook preCheck
+      npm test
+      runHook postCheck
+    '';
+  };
 in
 {
   home = {
@@ -200,9 +222,9 @@ in
       "opencode/opencode.json" = {
         text = builtins.toJSON {
           "$schema" = "https://opencode.ai/config.json";
-          # Pin explicitly. An unversioned spec is resolved once and cached in
-          # ~/.cache/opencode, which isn't managed by Nix - so hosts drift.
-          plugin = [ "opencode-claude-bridge@1.10.12" ];
+          plugin = [
+            "${opencode-claude-bridge}/lib/node_modules/opencode-claude-bridge/dist/index.js"
+          ];
           mcp = {
             context7 = {
               type = "remote";
