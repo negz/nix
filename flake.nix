@@ -33,6 +33,10 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixos";
     };
+    disko = {
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixos";
+    };
   };
 
   nixConfig = {
@@ -61,6 +65,7 @@
       nixos,
       nixos-unstable,
       hm-nixos,
+      disko,
 
     }:
     let
@@ -153,6 +158,20 @@
           modules = [
             { nixpkgs.overlays = nixos-overlays; }
             ./hosts/dragnipur/configuration.nix
+            hm-nixos.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.negz = import ./users/negz/configuration.nix;
+            }
+          ];
+        };
+        bottle = nixos.lib.nixosSystem {
+          system = "aarch64-linux";
+          modules = [
+            { nixpkgs.overlays = nixos-overlays; }
+            disko.nixosModules.disko
+            ./hosts/bottle/configuration.nix
             hm-nixos.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;

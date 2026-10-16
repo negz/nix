@@ -42,16 +42,12 @@
 
   boot = {
     loader = {
-      systemd-boot = {
-        enable = true;
-        # /boot is 252M and each aarch64 kernel plus initrd is about 90M.
-        configurationLimit = 2;
-      };
-      efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
+      # Boot from the ESP's fallback path rather than a UEFI boot entry, so
+      # booting doesn't depend on nixos-anywhere's installer or GCE writing and
+      # keeping one.
+      efi.canTouchEfiVariables = false;
     };
-
-    # To get the latest prltools package we need to the latest kernel.
-    # kernelPackages = pkgs.unstable.linuxPackages_latest;
 
     kernel = {
       sysctl = {
@@ -61,17 +57,19 @@
         "fs.inotify.max_user_instances" = "512";
       };
     };
-
   };
 
   networking = {
-    hostName = "dragnipur";
-    search = [ "v.rk0n.org" ];
+    hostName = "bottle";
     useDHCP = true;
 
     firewall = {
       enable = true;
       allowedTCPPorts = [ 22 ];
+      allowedUDPPorts = [
+        config.services.tailscale.port
+      ];
+      trustedInterfaces = [ "tailscale0" ];
     };
   };
 
@@ -92,7 +90,6 @@
         }
       ];
     };
-
   };
 
   users = {
@@ -112,7 +109,7 @@
     };
   };
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
 
   services = {
     openssh = {
@@ -121,6 +118,10 @@
         PermitRootLogin = "no";
         PasswordAuthentication = false;
       };
+    };
+
+    tailscale = {
+      enable = true;
     };
 
     fstrim.enable = true;
@@ -139,7 +140,6 @@
     };
 
     # For vscode-server - https://nixos.wiki/wiki/Visual_Studio_Code#nix-ld
-    # Note that as of NixOS 23.05 the env vars are set magically.
     nix-ld.enable = true;
 
     nix-index.enable = true;

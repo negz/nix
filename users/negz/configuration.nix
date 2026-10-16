@@ -668,7 +668,7 @@ in
 
       settings = {
         # ghostty uses its own terminfo, which most hosts won't have
-        "!mael,!tehol,!dragnipur,!roach,*" = {
+        "!mael,!tehol,!dragnipur,!roach,!bottle,*" = {
           SetEnv = {
             TERM = "xterm-256color";
           };
