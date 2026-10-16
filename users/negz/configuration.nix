@@ -137,6 +137,7 @@ in
       # AI things
       pkgs.unstable.claude-code
       pkgs.unstable.opencode
+      pkgs.unstable.paseo
 
       # Useful dependencies for AI tools, and for Neovim
       pkgs.gh
