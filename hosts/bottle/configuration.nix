@@ -6,6 +6,13 @@
   ...
 }:
 
+let
+  # TUIs and Tailscale reach the opencode server on loopback.
+  opencode-port = "4096";
+
+  # Kept out of this public repo. The server and its clients both read it.
+  opencode-password-file = "$HOME/secret/opencode-server-password";
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -106,6 +113,9 @@
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW8JjnxKQsDA/y88lkCr6/Z0nxp4/veNdZ0f/hB9qHR"
       ];
+      # Start my user services, like the opencode server, at boot rather than
+      # at login.
+      linger = true;
     };
   };
 
@@ -172,6 +182,78 @@
       RemainAfterExit = true;
       ExecStart = "${pkgs.docker}/bin/docker run --privileged --rm tonistiigi/binfmt --install all";
     };
+  };
+
+  # The opencode server listens on loopback, and Tailscale serves it to the
+  # tailnet over HTTPS at https://bottle.<tailnet>.ts.net, which gets the web
+  # UI. It needs HTTPS certificates enabled for the tailnet.
+  systemd.services.tailscale-serve-opencode = {
+    description = "Serve opencode to the tailnet over HTTPS";
+    after = [ "tailscaled.service" ];
+    wants = [ "tailscaled.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${config.services.tailscale.package}/bin/tailscale serve --bg --yes --https=443 http://127.0.0.1:${opencode-port}";
+      ExecStop = "${config.services.tailscale.package}/bin/tailscale serve --yes --https=443 off";
+      # tailscaled reports ready before it can serve, so retry until it can.
+      Restart = "on-failure";
+      RestartSec = "5s";
+      # The serve command waits for HTTPS certificates to be enabled for the
+      # tailnet. Don't hold up boot waiting.
+      TimeoutStartSec = "30s";
+    };
+  };
+
+  home-manager.users.negz = {
+    # One opencode server for every TUI (see the oc alias) and the web UI, so
+    # agents keep running when I disconnect, and a session started anywhere
+    # shows up everywhere.
+    systemd.user.services.opencode = {
+      Unit = {
+        Description = "opencode server";
+        # The server loads config and skills once and keeps them until it
+        # exits, so restart it when they change. That interrupts any running
+        # sessions.
+        X-Restart-Triggers = map (f: "${config.home-manager.users.negz.xdg.configFile.${f}.source}") [
+          "opencode/opencode.json"
+          "opencode/skills"
+        ];
+      };
+      Service = {
+        # Agents' tools run with the server's environment, not the attached
+        # TUI's. Running under zsh gives the server the same environment as a
+        # terminal.
+        ExecStart = pkgs.writeScript "opencode-serve" ''
+          #!${pkgs.zsh}/bin/zsh
+          setopt err_exit
+          # The server outlives SSH connections, so it can't use the agent
+          # socket any one of them forwards. See ~/.ssh/rc.
+          export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
+          # Without a password the server would serve anyone on the tailnet, so
+          # fail rather than start without one.
+          OPENCODE_SERVER_PASSWORD=$(<${opencode-password-file})
+          export OPENCODE_SERVER_PASSWORD=''${OPENCODE_SERVER_PASSWORD:?is empty}
+          exec ${pkgs.unstable.opencode}/bin/opencode serve --port ${opencode-port}
+        '';
+        Restart = "on-failure";
+      };
+      Install.WantedBy = [ "default.target" ];
+    };
+
+    # sshd runs this on each new connection. Point a stable path at the agent
+    # it forwards, for the opencode server. Connections without a forwarded
+    # agent leave it alone.
+    home.file.".ssh/rc".text = ''
+      if [ -n "$SSH_AUTH_SOCK" ]; then
+        ln -sfn "$SSH_AUTH_SOCK" ~/.ssh/agent.sock
+      fi
+    '';
+
+    # Attach a TUI to the opencode server, in the current directory. The
+    # server uses its own working directory when --dir isn't set.
+    home.shellAliases.oc = "OPENCODE_SERVER_PASSWORD=$(<${opencode-password-file}) opencode attach http://127.0.0.1:${opencode-port} --dir \"$PWD\"";
   };
 
   environment = {
