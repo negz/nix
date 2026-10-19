@@ -10,8 +10,8 @@ let
   # package registry, so pin the released package rather than have Vale sync
   # it into an unmanaged StylesPath at runtime.
   vale-ai-tells = pkgs.fetchzip {
-    url = "https://github.com/tbhb/vale-ai-tells/releases/download/v1.31.0/ai-tells.zip";
-    hash = "sha256-+LCr3Fx3M5ui91x3mj5qs9BK7IKGGTtZuGvin8gvbLQ=";
+    url = "https://github.com/tbhb/vale-ai-tells/releases/download/v1.37.0/ai-tells.zip";
+    hash = "sha256-c8J9B6sv4DlEpI3w6jVik8ughU3iqyc8X5IJZnhr1v4=";
   };
 
   # Google's developer documentation style guide. Most of it is tailored to
