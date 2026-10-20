@@ -70,6 +70,15 @@ in
     hostName = "bottle";
     useDHCP = true;
 
+    # Keep dhcpcd off Docker's interfaces. Otherwise it assigns them IPv4LL
+    # addresses and a 169.254.0.0/16 route that hijacks traffic to GCE's
+    # metadata DNS server at 169.254.169.254, breaking DNS.
+    dhcpcd.denyInterfaces = [
+      "veth*"
+      "docker*"
+      "br-*"
+    ];
+
     firewall = {
       enable = true;
       allowedTCPPorts = [ 22 ];
