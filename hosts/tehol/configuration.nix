@@ -149,6 +149,8 @@
 
     tailscale = {
       enable = true;
+      useRoutingFeatures = "server";
+      extraSetFlags = [ "--advertise-exit-node" ];
     };
 
     # Required to load drivers even when not using X.
