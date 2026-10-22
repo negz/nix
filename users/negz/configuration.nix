@@ -40,18 +40,17 @@ let
   # editor always applies the AI tells rules whatever a repo ships.
   vale-config-path = "${config.xdg.configHome}/vale/.vale.ini";
 
-  # Lets opencode use my Claude subscription. The 1.10.12 release on npm
-  # default-exports a bare function, so opencode 1.19 calls each of its named
-  # exports as a plugin and fails to load it. Upstream's main fixes that
-  # (dotCipher/opencode-claude-bridge#27), but hasn't been released.
+  # Lets opencode use my Claude subscription. opencode 2 replaced the plugin
+  # API, and no release of the bridge supports it yet
+  # (dotCipher/opencode-claude-bridge#34), so this builds my port from my fork.
   opencode-claude-bridge = pkgs.buildNpmPackage {
     pname = "opencode-claude-bridge";
-    version = "1.10.12-unstable-2026-09-14";
+    version = "1.10.12-unstable-2026-10-15";
     src = pkgs.fetchFromGitHub {
-      owner = "dotCipher";
+      owner = "negz";
       repo = "opencode-claude-bridge";
-      rev = "946dcae21c38f09fe0197aa6451876152e0299c9";
-      hash = "sha256-ODZSUxN7X82Ib4UVSy6qgEvcSCVHuhkHLRdPFMCj1BA=";
+      rev = "73daecc8c76957b5f646ebbd1c6facd7044fe5d2"; # bridge-two-far
+      hash = "sha256-efCJU9+DtwZHP64Yr3+QyFK3FAJLrXtTbAT1jkHMlzU=";
     };
     npmDepsHash = "sha256-HXo85Ek0GP6hoEvcwEoBvp+pP3YJHbJh5R7aGIvVOhk=";
     doCheck = true;
@@ -60,6 +59,17 @@ let
       npm test
       runHook postCheck
     '';
+  };
+
+  # opencode 2 accepts the lsp config below but has no language server client
+  # of its own. This plugin runs the servers that config defines, and gives
+  # the agent their diagnostics and an lsp tool. It's TypeScript with no
+  # dependencies, which opencode loads as is.
+  opencode-lsp = pkgs.fetchFromGitHub {
+    owner = "christensenjairus";
+    repo = "opencode-v2-lsp-support";
+    rev = "4a17bc8379e572ab104ec26b55f92ee9b51dce37";
+    hash = "sha256-vSlq1GVtqEdqYBVZU3+UyCH5Ke4nQwY1Y9VWcoUWiu8=";
   };
 in
 {
@@ -71,10 +81,14 @@ in
       TMPDIR = "/tmp"; # Prevent nix-shell from using $XDG_RUNTIME_DIR.
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
 
-      # Setting opencode's lsp option to an attrset leaves its built-in servers
-      # enabled, and several of those install themselves into
-      # ~/.local/share/opencode/bin. Keep language servers coming from Nix.
-      OPENCODE_DISABLE_LSP_DOWNLOAD = "true";
+      # opencode's TUI rewrites cli.json to save UI state, so it can't be a
+      # symlink into the store. It merges this over that file instead. Home
+      # Manager doesn't escape these values, so this escapes the JSON's quotes.
+      OPENCODE_CLI_CONFIG_CONTENT = lib.escape [ "\"" ] (
+        builtins.toJSON {
+          theme.name = "github";
+        }
+      );
 
       # The Claude bridge spoofs the Claude Code CLI version upstream, reading
       # it from the installed `claude` (2.1.278 here). Anthropic gates Opus 5.5
@@ -222,23 +236,28 @@ in
       "opencode/opencode.json" = {
         text = builtins.toJSON {
           "$schema" = "https://opencode.ai/config.json";
-          plugin = [
-            "${opencode-claude-bridge}/lib/node_modules/opencode-claude-bridge/dist/index.js"
+          # opencode loads a local plugin from a directory, not a file. It
+          # imports the directory's server or index module, ignoring
+          # package.json.
+          plugins = [
+            "${opencode-claude-bridge}/lib/node_modules/opencode-claude-bridge/dist"
+            "${opencode-lsp}"
           ];
-          mcp = {
+          mcp.servers = {
             context7 = {
               type = "remote";
               url = "https://mcp.context7.com/mcp";
             };
           };
-          # opencode uses LSP for diagnostics only, as feedback for the agent.
-          # These mirror the servers Neovim uses. They come from home.packages,
-          # not opencode's own downloads. Defining a server here overrides the
-          # built-in of the same name.
+          # opencode-lsp reports errors from these servers to the agent after
+          # it edits a file, and gives it an lsp tool. They mirror the servers
+          # Neovim uses, and come from home.packages. opencode-lsp has no
+          # built-in servers, so these are the only ones that run.
           #
-          # opencode has no equivalent of Neovim's per-server settings table.
-          # It answers workspace/configuration requests with initialization,
-          # so servers configured either way are configured through that.
+          # opencode-lsp has no equivalent of Neovim's per-server settings
+          # table. It answers workspace/configuration requests with
+          # initialization, so servers configured either way are configured
+          # through that.
           lsp = {
             gopls = {
               command = [ "gopls" ];
@@ -353,56 +372,53 @@ in
             };
           };
           # Opus 5.5 rejects the block_binding field opencode injects under
-          # adaptive thinking (see anomalyco/opencode#46729). Opt out per
-          # anomalyco/opencode#46820. The model comes from models.dev, not the
-          # bridge, so this override doesn't collide with the plugin's list.
-          provider = {
-            anthropic = {
-              models = {
-                "claude-opus-5-5" = {
-                  options.thinking = {
-                    type = "adaptive";
-                    blockBinding = false;
-                  };
-                };
-              };
-            };
+          # adaptive thinking (see anomalyco/opencode#46729). opencode only
+          # defaults to adaptive thinking when it injects that field, so turning
+          # it off needs thinking set explicitly.
+          providers.anthropic.models."claude-opus-5-5" = {
+            compatibility.supportsThinkingBlockBinding = false;
+            settings.thinking.type = "adaptive";
           };
-          permission = {
-            edit = "allow";
+          # opencode applies the last rule that matches. These follow its
+          # defaults, which allow everything but reading .env files.
+          permissions =
+            let
+              rule = effect: action: resource: { inherit action resource effect; };
+              allow = rule "allow";
+              ask = rule "ask";
+              deny = rule "deny";
+            in
+            [
+              (allow "edit" "*")
+              (deny "question" "*")
 
-            question = "deny";
+              (allow "shell" "*")
+              (ask "shell" "git * push *") # git -C dir push
+              (ask "shell" "git push *")
+              (deny "shell" "rm -rf /*")
+              (deny "shell" "rm -fr /*")
+              (deny "shell" "rm -rf ~*")
+              (deny "shell" "rm -fr ~*")
+              (deny "shell" "sudo *")
 
-            bash = {
-              "*" = "allow";
-              "git * push *" = "ask"; # git -C dir push
-              "git push *" = "ask";
-              "rm -rf /*" = "deny";
-              "rm -fr /*" = "deny";
-              "rm -rf ~*" = "deny";
-              "rm -fr ~*" = "deny";
-              "sudo *" = "deny";
-            };
-
-            external_directory = {
-              "/nix/store/*" = "allow";
-              "/tmp/*" = "allow";
-              "~/control/*" = "allow";
+              (ask "external_directory" "*")
+              (allow "external_directory" "/nix/store/*")
+              (allow "external_directory" "/tmp/*")
+              (allow "external_directory" "~/control/*")
+              # opencode points the agent at its skills, at tool and shell
+              # output too long to return, and at its temporary directory, which
+              # macOS resolves to /private/tmp.
+              (allow "external_directory" "${config.xdg.configHome}/opencode/skills/*")
+              (allow "external_directory" "${config.xdg.dataHome}/opencode/tool-output/*")
+              (allow "external_directory" "${config.xdg.dataHome}/opencode/shell/*")
+              (allow "external_directory" "/private/tmp/*")
               # The model thinks it's Claude Code, so it probes Claude Code's
               # config paths before working out it's in opencode. Allow them so
               # that guessing doesn't cost a prompt. ~/.config/Claude/ doesn't
               # exist, but the system prompt names it, so the model still tries.
-              "~/.claude/*" = "allow";
-              "~/.claude.json" = "allow";
-              "~/.config/Claude/*" = "allow";
-            };
-          };
-        };
-      };
-      "opencode/tui.json" = {
-        text = builtins.toJSON {
-          "$schema" = "https://opencode.ai/tui.json";
-          "theme" = "github";
+              (allow "external_directory" "~/.claude/*")
+              (allow "external_directory" "~/.config/Claude/*")
+            ];
         };
       };
       # Global rules, loaded into every opencode session. A project's own

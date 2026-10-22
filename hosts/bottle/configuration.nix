@@ -240,10 +240,10 @@ in
           # The server outlives SSH connections, so it can't use the agent
           # socket any one of them forwards. See ~/.ssh/rc.
           export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
-          # Without a password the server would serve anyone on the tailnet, so
-          # fail rather than start without one.
-          OPENCODE_SERVER_PASSWORD=$(<${opencode-password-file})
-          export OPENCODE_SERVER_PASSWORD=''${OPENCODE_SERVER_PASSWORD:?is empty}
+          # Without a password the server makes up one that TUIs and the web UI
+          # don't know, so fail rather than start without one.
+          OPENCODE_PASSWORD=$(<${opencode-password-file})
+          export OPENCODE_PASSWORD=''${OPENCODE_PASSWORD:?is empty}
           exec ${pkgs.unstable.opencode}/bin/opencode serve --port ${opencode-port}
         '';
         Restart = "on-failure";
@@ -260,9 +260,10 @@ in
       fi
     '';
 
-    # Attach a TUI to the opencode server, in the current directory. The
-    # server uses its own working directory when --dir isn't set.
-    home.shellAliases.oc = "OPENCODE_SERVER_PASSWORD=$(<${opencode-password-file}) opencode attach http://127.0.0.1:${opencode-port} --dir \"$PWD\"";
+    # Run a TUI against the opencode server, in the current directory. Without
+    # --server the TUI uses opencode's own background server rather than this
+    # one.
+    home.shellAliases.oc = "OPENCODE_PASSWORD=$(<${opencode-password-file}) opencode --server http://127.0.0.1:${opencode-port}";
   };
 
   environment = {
