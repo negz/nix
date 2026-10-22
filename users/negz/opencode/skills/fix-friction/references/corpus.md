@@ -4,22 +4,24 @@ How to pull Nic's corrections out of the opencode transcripts.
 
 ## The Database
 
-opencode stores sessions in SQLite at
-`~/.local/share/opencode/opencode-stable.db`. The file runs to gigabytes, and
-opencode holds it open, so always pass `-readonly`.
+opencode stores sessions in SQLite at `~/.local/share/opencode/opencode.db`. The
+file runs to gigabytes, and opencode holds it open, so always pass `-readonly`.
 
 The tables you need:
 
-- `session` has `id`, `directory`, `title`, `parent_id`, and `time_created`.
+- `session_v2` has `id`, `directory`, `title`, `parent_id`, and `time_created`.
   `directory` is the working directory, which is how you scope by repository.
   `parent_id` marks subagent sessions.
-- `message` has `session_id` and a `data` JSON column holding `role`.
-- `part` has `message_id`, `session_id`, and a `data` JSON column. Text lives at
-  `$.text` where `$.type` is `text`. Tool calls live at `$.tool`, with arguments
-  under `$.state.input`.
+- `session_message` has `session_id`, `type`, `seq`, `time_created`, and a
+  `data` JSON column. `type` is `user` or `assistant`, among others. A user
+  message keeps its text at `$.text`. An assistant message's text and tool
+  calls are elements of the `$.content` array. A tool call has `$.type` of `tool`,
+  its name at `$.name`, and its arguments under `$.state.input`.
 
-Message text sits in `part` rather than `message`, which is the detail that trips
-up a first attempt.
+The edit and write tools take the file as `path`, except in sessions opencode 1
+recorded, which call it `filePath`. Those sessions also sit, unconverted, in
+opencode 1's `session`, `message` and `part` tables. Ignore those tables.
+opencode 2 converted their contents once, and they miss everything since.
 
 ## Orienting
 
@@ -27,7 +29,7 @@ Start by seeing which directories hold sessions, so the scope discussion has
 numbers behind it:
 
 ```sql
-SELECT directory, COUNT(*) FROM session GROUP BY directory ORDER BY COUNT(*) DESC;
+SELECT directory, COUNT(*) FROM session_v2 GROUP BY directory ORDER BY COUNT(*) DESC;
 ```
 
 ## Scoping by Artifact
@@ -36,23 +38,29 @@ The sharpest scoping. Find sessions where a tool edited a file matching the
 domain, then take the user messages from those sessions.
 
 ```sql
-WITH ds AS (
-  SELECT DISTINCT s.id
-  FROM session s JOIN part p ON p.session_id = s.id
+WITH edits AS (
+  SELECT m.session_id,
+         COALESCE(json_extract(c.value, '$.state.input.path'),
+                  json_extract(c.value, '$.state.input.filePath')) AS file
+  FROM session_message m, json_each(m.data, '$.content') c
+  WHERE m.type = 'assistant'
+    AND json_extract(c.value, '$.type') = 'tool'
+    AND json_extract(c.value, '$.name') IN ('edit', 'write')
+),
+ds AS (
+  SELECT DISTINCT e.session_id AS id
+  FROM edits e JOIN session_v2 s ON s.id = e.session_id
   WHERE s.directory IN ('/path/to/repo')
-    AND json_extract(p.data, '$.tool') IN ('edit','write','patch','multiedit')
-    AND json_extract(p.data, '$.state.input.filePath') LIKE '%/design/%.md'
+    AND e.file LIKE '%/design/%.md'
 )
-SELECT s.id, datetime(s.time_created/1000,'unixepoch') AS sdate, s.title AS stitle,
-       datetime(p.time_created/1000,'unixepoch') AS mtime,
-       json_extract(p.data,'$.text') AS text
-FROM part p
-JOIN message m ON m.id = p.message_id
-JOIN session s ON s.id = p.session_id
-WHERE p.session_id IN (SELECT id FROM ds)
-  AND json_extract(m.data,'$.role') = 'user'
-  AND json_extract(p.data,'$.type') = 'text'
-ORDER BY s.time_created DESC, p.time_created ASC, p.id ASC;
+SELECT s.id AS sid, datetime(s.time_created/1000,'unixepoch') AS sdate,
+       s.title AS stitle, datetime(m.time_created/1000,'unixepoch') AS mtime,
+       json_extract(m.data, '$.text') AS text
+FROM session_message m
+JOIN session_v2 s ON s.id = m.session_id
+WHERE m.session_id IN (SELECT id FROM ds)
+  AND m.type = 'user'
+ORDER BY s.time_created DESC, m.seq ASC;
 ```
 
 Change the `LIKE` to suit the domain. Go review feedback wants `%.go`, and
@@ -62,10 +70,18 @@ To find what file types a repo's sessions actually touch, which helps pick the
 filter:
 
 ```sql
-SELECT json_extract(p.data,'$.state.input.filePath') AS f, COUNT(*) c
-FROM part p JOIN session s ON s.id = p.session_id
+WITH edits AS (
+  SELECT m.session_id,
+         COALESCE(json_extract(c.value, '$.state.input.path'),
+                  json_extract(c.value, '$.state.input.filePath')) AS file
+  FROM session_message m, json_each(m.data, '$.content') c
+  WHERE m.type = 'assistant'
+    AND json_extract(c.value, '$.type') = 'tool'
+    AND json_extract(c.value, '$.name') IN ('edit', 'write')
+)
+SELECT e.file AS f, COUNT(*) c
+FROM edits e JOIN session_v2 s ON s.id = e.session_id
 WHERE s.directory = '/path/to/repo'
-  AND json_extract(p.data,'$.tool') IN ('edit','write','patch','multiedit')
 GROUP BY f ORDER BY c DESC;
 ```
 
@@ -92,7 +108,7 @@ Use `.mode json` and write to a file, then reshape with `jq`. Piping raw text
 through a shell mangles anything containing quotes or backticks.
 
 ```bash
-sqlite3 -readonly opencode-stable.db < query.sql > raw.json
+sqlite3 -readonly opencode.db < query.sql > raw.json
 jq -r 'group_by(.sid) | sort_by(.[0].sdate) | reverse | .[] |
   "@@@SESSION \(.[0].sdate) | \(.[0].stitle) | \(.[0].sid)\n" +
   ([.[] | "\n--- USER MSG \(.mtime) ---\n\(.text)"] | join("\n"))
@@ -126,9 +142,18 @@ dozen subagents.
 
 ## Getting an Agent's Own Prose
 
-Swap `role = 'user'` for `role = 'assistant'` to pull the other side. Useful for
-comparing an agent's habits against Nic's, though see the warning below before
-computing any rate.
+To pull the other side, take the `text` elements of an assistant message's
+`$.content` rather than a user message's `$.text`. Useful for comparing an
+agent's habits against Nic's, though see the warning below before computing any
+rate.
+
+```sql
+SELECT m.session_id AS sid, datetime(m.time_created/1000,'unixepoch') AS mtime,
+       json_extract(c.value, '$.text') AS text
+FROM session_message m, json_each(m.data, '$.content') c
+WHERE m.type = 'assistant'
+  AND json_extract(c.value, '$.type') = 'text';
+```
 
 ## Attribution Traps
 

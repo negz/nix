@@ -85,7 +85,7 @@ that isn't on PATH, a permission prompt that interrupts, a linter with no config
 outside the editor.
 
 Configured in `users/negz/configuration.nix` under `xdg.configFile` as
-`opencode/opencode.json`, covering `lsp`, `permission`, and related settings.
+`opencode/opencode.json`, covering `lsp`, `permissions`, and related settings.
 
 **Cost.** Low, and frequently the real fix. When an agent repeatedly fails at
 something mechanical, check whether it has the tool before writing guidance about
