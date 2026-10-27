@@ -64,6 +64,10 @@
         22
         443
       ];
+      allowedUDPPorts = [
+        config.services.tailscale.port
+      ];
+      trustedInterfaces = [ "tailscale0" ];
     };
   };
 
@@ -97,6 +101,10 @@
         PermitRootLogin = "no";
         PasswordAuthentication = false;
       };
+    };
+
+    tailscale = {
+      enable = true;
     };
 
     plex = {
