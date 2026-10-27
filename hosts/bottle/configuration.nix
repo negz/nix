@@ -85,7 +85,13 @@ in
       allowedUDPPorts = [
         config.services.tailscale.port
       ];
-      trustedInterfaces = [ "tailscale0" ];
+      # Only bottle's own containers send traffic in on docker0, so trusting
+      # it lets them reach services on the host without opening anything to
+      # other hosts.
+      trustedInterfaces = [
+        "tailscale0"
+        "docker0"
+      ];
     };
   };
 
