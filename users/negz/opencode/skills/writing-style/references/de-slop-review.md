@@ -90,6 +90,13 @@ Read the document end to end as somebody meeting it for the first time:
 - Is there a paragraph left over from an earlier framing that no longer holds?
 - Does the ordering respect what the reader knows so far?
 - Are there run-on sentences?
+- Does one sentence shape dominate? The usual offender is "X, and Y", either
+  two clauses where the second adds a loosely related fact, or one subject
+  with two verbs split by a comma. Count them. A third of the sentences is too
+  many, and so is a page of short declaratives written to avoid them. Nic's own
+  prose mixes long explanatory sentences, fronted clauses, and the odd short
+  one. Also flag the same opener repeated across sections, such as "used to",
+  "now", or "In v0.6".
 
 ### 6. Structure
 
