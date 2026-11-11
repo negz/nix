@@ -45,7 +45,7 @@
           };
         };
 
-        users.root.shell = "/bin/systemd-tty-ask-password-agent";
+        users.root.shell = "/bin/bash";
       };
 
       network = {
@@ -70,6 +70,10 @@
     "/" = {
       device = "/dev/disk/by-label/nixos";
       fsType = "ext4";
+      # This device only appears once cryptroot is unlocked, which may be long
+      # after boot when unlocking remotely. Don't give up and enter emergency
+      # mode while waiting.
+      options = [ "x-systemd.device-timeout=infinity" ];
     };
 
     "/boot" = {
