@@ -243,9 +243,6 @@ in
         ExecStart = pkgs.writeScript "opencode-serve" ''
           #!${pkgs.zsh}/bin/zsh
           setopt err_exit
-          # The server outlives SSH connections, so it can't use the agent
-          # socket any one of them forwards. See ~/.ssh/rc.
-          export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
           # Without a password the server makes up one that TUIs and the web UI
           # don't know, so fail rather than start without one.
           OPENCODE_PASSWORD=$(<${opencode-password-file})
@@ -256,15 +253,6 @@ in
       };
       Install.WantedBy = [ "default.target" ];
     };
-
-    # sshd runs this on each new connection. Point a stable path at the agent
-    # it forwards, for the opencode server. Connections without a forwarded
-    # agent leave it alone.
-    home.file.".ssh/rc".text = ''
-      if [ -n "$SSH_AUTH_SOCK" ]; then
-        ln -sfn "$SSH_AUTH_SOCK" ~/.ssh/agent.sock
-      fi
-    '';
 
     # Run a TUI against the opencode server, in the current directory. Without
     # --server the TUI uses opencode's own background server rather than this

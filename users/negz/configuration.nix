@@ -104,7 +104,6 @@ in
       t = "tmux attach-session";
       view = "nvim -R"; # programs.neovim can't symlink this.
       k = "kubectl";
-      fixssh = "eval $(tmux showenv -s SSH_AUTH_SOCK)";
     };
 
     packages = [
@@ -153,7 +152,6 @@ in
       pkgs.unstable.opencode
 
       # Useful dependencies for AI tools, and for Neovim
-      pkgs.gh
       pkgs.ripgrep
       pkgs.fd
 
@@ -712,7 +710,6 @@ in
           };
         };
         "*" = {
-          ForwardAgent = true;
           ServerAliveInterval = 0;
           ServerAliveCountMax = 3;
           Compression = false;
@@ -749,11 +746,15 @@ in
           default = "current";
         };
         url = {
-          "git@github.com:" = {
-            insteadOf = "https://github.com/";
+          "https://github.com/" = {
+            insteadOf = "git@github.com:";
           };
         };
       };
+    };
+
+    gh = {
+      enable = true;
     };
 
     eza = {
