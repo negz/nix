@@ -212,7 +212,7 @@
     };
 
     oci-containers.containers.esphome = {
-      image = "ghcr.io/esphome/esphome:2026.4.5";
+      image = "ghcr.io/esphome/esphome:2026.10.2";
       volumes = [
         "/var/lib/esphome:/config"
         "/etc/localtime:/etc/localtime:ro"
@@ -227,7 +227,7 @@
     };
 
     oci-containers.containers.home-assistant = {
-      image = "ghcr.io/home-assistant/home-assistant:2026.9.4";
+      image = "ghcr.io/home-assistant/home-assistant:2026.11.2";
       volumes = [
         "/var/lib/hass:/config"
         "/etc/localtime:/etc/localtime:ro"
